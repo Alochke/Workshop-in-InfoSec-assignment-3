@@ -2,7 +2,7 @@
 
 static int __init LKM_init(void)
 {
-    printk("%d\n", sizeof(sizeof(rule_t) * MAX_RULES));
+    printk("%d\n", sizeof(sizeof(rule_t)) * MAX_RULES);
     printk("%lu\n", PAGE_SIZE);
     return 0;
 }
