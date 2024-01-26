@@ -1,6 +1,6 @@
 #include "rule_table.h"
 
-static int __init init()
+static int __init LKM_init()
 {
     printk("%d\n", sizeof(sizeof(rule_t) * MAX_RULES));
     printk("%lu\n", PAGE_SIZE);
@@ -10,9 +10,9 @@ static int __init init()
 /*
     Module removal function.
 */
-static void __exit exit(void)
+static void __exit LKM_exit(void)
 {
 }
 
-module_init(init);
-module_exit(exit);
+module_init(LKM_init);
+module_exit(LKM_exit);
