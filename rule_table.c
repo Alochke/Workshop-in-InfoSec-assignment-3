@@ -15,5 +15,5 @@ static void __exit exit(void)
     hook_destroy();
 }
 
-module_init(LKM_init);
-module_exit(LKM_exit);
+module_init(init);
+module_exit(exit);
