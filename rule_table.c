@@ -3,5 +3,5 @@
 int main()
 {
     printk("%d\n", sizeof(sizeof(rule_t) * MAX_RULES));
-    printk("%ul\n", PAGE_SIZE);
+    printk("%lu\n", PAGE_SIZE);
 }
