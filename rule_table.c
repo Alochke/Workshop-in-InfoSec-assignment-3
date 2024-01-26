@@ -1,6 +1,6 @@
 #include "rule_table.h"
 
-int __init init()
+static int __init init()
 {
     printk("%d\n", sizeof(sizeof(rule_t) * MAX_RULES));
     printk("%lu\n", PAGE_SIZE);
@@ -12,7 +12,6 @@ int __init init()
 */
 static void __exit exit(void)
 {
-    hook_destroy();
 }
 
 module_init(init);
