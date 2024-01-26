@@ -2,5 +2,6 @@
 #define RULE_TABLE
 
 #include "fw.h"
+#include "main.h"
 
 #endif
