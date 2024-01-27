@@ -37,6 +37,8 @@ static void cleanup(enum stage stg)
     // We use the enum- stage, defined in main.c to choose action based on the state of the sysfs initialization the module is currently at. 
     switch (stg)
     {
+        case FIRST:
+            break;
         case LOGS_INIT:
             logs_destroy();
         case RULE_TABLE_INIT:
