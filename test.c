@@ -1,9 +1,10 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include "fw.h"
 
 static int __init LKM_init(void)
 {
-    printk("idk" "\n");
+    printk("%d" "\n", sizeof(ack_t));
     return 0;
 }
 

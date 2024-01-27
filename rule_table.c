@@ -5,6 +5,7 @@ static int rule_num = 0; // The number of rules currently loaded to the table.
 static struct device* sysfs_device; // The sysfs device.
 
 #define SYSFS_DEVICE "rules" // The name of the sysfs device.
+#define MAX_SIZE FW_MAX_RULES * sizeof(rule_t); // The maximal size of the rule table.
 
 /*
     The next enum is for the cleanup function in rule_table.c. Items represent the state of the rule_table initialization the module is currently at.
@@ -28,7 +29,13 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-    return MAIN_SUCEESS;
+    size_t i; // Iteration index.
+
+    for (i = 0; i < (sizeof());)
+    {
+        /* code */
+    }
+    
 }
 
 // Declares the attributes for the device.
