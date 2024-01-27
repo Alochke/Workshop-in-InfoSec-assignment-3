@@ -47,7 +47,7 @@ static void cleanup(enum stage stg)
             hook_destroy();
         case HOOK_INIT:
             hook_destroy();
-        default:
+        case FIRST:
     }
 }
 
