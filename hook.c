@@ -30,7 +30,6 @@ enum stage
 static void cleanup(enum stage stg)
 {
     // We use the enum- stage, defined in hook.c to choose action based on the state of the hook initialization the module is currently at. 
-    printk("NOTICE ME SENPAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
     switch (stg)
     {
         case FIRST:
