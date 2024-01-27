@@ -50,6 +50,7 @@ static void cleanup(enum stage stg)
 	    case DEVICE_INIT:
 		    device_destroy(sysfs_class, MKDEV(major_number, MAIN_RULE_TABLE_MINOR));
         case FIRST:
+            break;
 	}
 }
 
