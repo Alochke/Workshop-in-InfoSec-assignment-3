@@ -51,9 +51,6 @@ static void cleanup(enum stage stg)
     }
 }
 
-
-
-
 /*
     Module initialization function.
 

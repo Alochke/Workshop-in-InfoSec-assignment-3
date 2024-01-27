@@ -65,6 +65,8 @@ static void cleanup(enum stage stg)
             device_destroy(sysfs_class, MKDEV(major_number, MAIN_LOG_MINOR));
         case DEV_DEVICE_INIT:
             device_destroy(sysfs_class, MKDEV(major_number, MAIN_FW_LOG_MINOR));
+        default:
+            break;
     }
 }
 

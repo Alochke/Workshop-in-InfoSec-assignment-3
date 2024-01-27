@@ -36,6 +36,8 @@ static void cleanup(enum stage stg)
             nf_unregister_net_hook(&init_net, &hook);
         case ALLOCATION:
             kfree(hook);
+        default:
+            break;
     }
 }
 
