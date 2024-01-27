@@ -30,6 +30,7 @@ enum stage
 static void cleanup(enum stage stg)
 {
     // We use the enum- stage, defined in hook.c to choose action based on the state of the hook initialization the module is currently at. 
+    printk("NOTICE ME SENPAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
     switch (stg)
     {
         case FIRST:
@@ -55,7 +56,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     
     Returns: 0 on MAIN_SUCEESS and -1 in case of failure.
 */
-int  __init hook_init(void)
+int hook_init(void)
 {   
     MAIN_ERR_CHECK((hook = kmalloc(sizeof(struct nf_hook_ops), GFP_KERNEL)) == NULL, FIRST, "kmalloc")
 
@@ -72,10 +73,7 @@ int  __init hook_init(void)
     A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the hook part of the module,
 	In case the initialization of that part of the module is done.
 */
-void __exit hook_destroy(void)
+void hook_destroy(void)
 {
-    cleanup(HOOK_INIT);
+    cleanup(ALLOCATION);
 }
-
-module_init(hook_init);
-module_exit(hook_destroy);
