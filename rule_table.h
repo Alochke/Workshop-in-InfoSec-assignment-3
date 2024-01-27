@@ -3,7 +3,7 @@
 
 #include "fw.h"
 #include "main.h"
-#icnlude <linux/uaccess.h>
+#include <linux/uaccess.h>
 
 int rule_table_init(void);
 void rule_table_destroy(void);
