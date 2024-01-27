@@ -9,7 +9,7 @@ static struct device* sysfs_device; // The sysfs device.
 /*
     The next enum is for the cleanup function in rule_table.c. Items represent the state of the rule_table initialization the module is currently at.
 */
-static enum stage{
+enum stage{
     FIRST = 0,
     DEVICE_INIT = 1,
     ATTRIBUTE_INIT = 2

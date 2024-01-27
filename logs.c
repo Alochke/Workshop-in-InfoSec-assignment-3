@@ -9,7 +9,7 @@ static struct device* sysfs_device = NULL;
 /*
     The next enum is for the cleanup function in logs.c. Items represent the state of the logs initialization the module is currently at.
 */
-static enum stage{
+enum stage{
     FIRST,
     DEV_DEVICE_INIT,
     SYSFS_DEVICE_INIT,

@@ -13,7 +13,7 @@ static struct nf_hook* hook;
 /*
     The next enum is for the cleanup function in hook.c. Items represent the state of the hook initialization the module is currently at.
 */
-static enum stage
+enum stage
 {
     FIRST,
     ALLOCATION,
