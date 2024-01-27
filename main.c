@@ -46,7 +46,7 @@ static void cleanup(enum stage stg)
         case SYSFS_CLASS_INIT:
             class_destroy(sysfs_class);
         case CHAR_DEV_INIT:
-            hook_destroy();
+            unregister_chrdev(major_number, MAJOR_DEVICE);
         case HOOK_INIT:
             hook_destroy();
     }
