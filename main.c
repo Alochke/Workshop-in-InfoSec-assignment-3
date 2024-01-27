@@ -1,41 +1,75 @@
 #include "main.h"
 
-MODULE_SIGNATURE
+MAIN_MODULE_SIGNATURE
 
-int err;    /* We'll use that variable to preserve return values of failed functions.*/
-int major_number;
-struct class* sysfs_class = NULL;
+#define MAJOR_DEVICE "fw" // The name of the registered char device, all sysfs and dev devices will be minor instances of this char device.
+#define CLASS "fw" // The name of the sysfs class, all sysfs devices related to the module will be instances of this class.
+
+int major_number; // The major number of the char device.
+struct class* sysfs_class;
+
+static struct file_operations fops = {
+	.owner = THIS_MODULE,
+    .read = logs_read,
+    .open = logs_open
+};
 
 /*
-	Cleans the module according to the stage of initialization it is at.
+    The next enum is for the cleanup function in main.c. Items represent the state of the module initialization the module is currently at.
+*/
+static enum stage{
+    FIRST,
+    HOOK_INIT,
+    CHAR_DEV_INIT,
+    SYSFS_CLASS_INIT,
+    RULE_TABLE_INIT,
+    LOGS_INIT
+};
+
+/*
+	Cleans the module.
 
 	Parameters:
-    - stg (enum stage): A designated enum's member that represents the stage of initialization the sysfs part of the module is in.
+    - stg (stage): A designated enum's member that represents the stage of initialization the module is at.
 */
-void cleanup(enum stage stg)
+static void cleanup(enum stage stg)
 {
-	// We use the enum- stage, defined in main.h to choose action based on the state of the sysfs initialization the module is currently at. 
+    // We use the enum- stage, defined in main.c to choose action based on the state of the sysfs initialization the module is currently at. 
     switch (stg)
     {
-    case FINAL:
-    case CHRDEV:
-        unregister_chrdev(major_number, NAME_OF_DEVICE);
-	case HOOKS:
-		hook_destroy();
-	}
+        case LOGS_INIT:
+            logs_destroy();
+        case RULE_TABLE_INIT:
+            rule_table_destroy();
+        case SYSFS_CLASS_INIT:
+            class_destroy(sysfs_class);
+        case CHAR_DEV_INIT:
+            hook_destroy();
+        case HOOK_INIT:
+            hook_destroy();
+    }
 }
+
 
 /*
     Module initialization function.
+
+    Returns: 0 in case of success, else, it'll return -1.
 */
 static int __init fw_init(void)
 {
-    ERR_CHECK((err = hook_init()) < 0, FIRST,, err)
+    MAIN_ERR_CHECK(hook_init(), FIRST, "hook_init")
 
     // Create char device.
-	ERR_CHECK((major_number = register_chrdev(0, NAME_OF_DEVICE, &fops)) < 0, HOOKS ,printk(KERN_ERR "register_chrdev failed."), major_number)
+	MAIN_ERR_CHECK((major_number = register_chrdev(0, MAJOR_DEVICE, &fops)) < 0, HOOK_INIT, "register_chrdev")
 
-    return SUCCESS;
+    MAIN_ERR_CHECK(IS_ERR(sysfs_class = class_create(THIS_MODULE, CLASS)), CHAR_DEV_INIT, "class_create")
+
+    MAIN_ERR_CHECK(rule_table_init(), SYSFS_CLASS_INIT, "rule_table_init")
+
+    MAIN_ERR_CHECK(logs_init(), RULE_TABLE_INIT, "logs init")
+
+    return MAIN_SUCEESS;
 }
 
 /*
@@ -43,7 +77,8 @@ static int __init fw_init(void)
 */
 static void __exit LKM_exit(void)
 {
+    cleanup(LOGS_INIT);
 }
 
-module_init(LKM_init);
-module_exit(LKM_exit);
+module_init(fw_init);
+module_exit(fw_exit);
