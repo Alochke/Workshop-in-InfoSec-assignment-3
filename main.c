@@ -17,7 +17,7 @@ static struct file_operations fops = {
 /*
     The next enum is for the cleanup function in main.c. Items represent the state of the module initialization the module is currently at.
 */
-static enum stage{
+enum stage{
     FIRST,
     HOOK_INIT,
     CHAR_DEV_INIT,

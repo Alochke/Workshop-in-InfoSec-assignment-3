@@ -25,7 +25,7 @@
 }
 
 extern int major_number;
-extern class* sysfs_class;
+extern struct class* sysfs_class;
 
 enum main_minors{
     MAIN_RULE_TABLE_MINOR = 0,

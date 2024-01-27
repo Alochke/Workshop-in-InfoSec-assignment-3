@@ -28,7 +28,7 @@ typedef enum {
 	REASON_NO_MATCHING_RULE      = -2,
 	REASON_XMAS_PACKET           = -4,
 	REASON_ILLEGAL_VALUE         = -6,
-} fw_reason_t;
+} reason_t;
 	
 #define FW_DEVICE_NAME_CONN_TAB		"conn_tab"
 #define FW_LOOPBACK_NET_DEVICE_NAME	"lo"
@@ -51,13 +51,13 @@ typedef enum {
 	ACK_NO 		= 0x01,
 	ACK_YES 	= 0x02,
 	ACK_ANY 	= ACK_NO | ACK_YES,
-} fw_ack_t;
+} ack_t;
 
 typedef enum {
 	DIRECTION_IN 	= 0x01,
 	DIRECTION_OUT 	= 0x02,
 	DIRECTION_ANY 	= DIRECTION_IN | DIRECTION_OUT,
-} fw_direction_t;
+} direction_t;
 
 // rule base
 typedef struct {
