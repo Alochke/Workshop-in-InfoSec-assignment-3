@@ -65,9 +65,9 @@ int rule_table_init()
     MAIN_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, MAIN_RULE_TABLE_MINOR), NULL, SYSFS_DEVICE)), FIRST, "device_create")
 
     //create sysfs file attributes.
-	MAIN_ERR_CHECK(device_create_file(device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
+	MAIN_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
 
-    return MAIN_SUCEESS
+    return MAIN_SUCEESS;
 }
 
 /*
