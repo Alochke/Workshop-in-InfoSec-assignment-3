@@ -55,7 +55,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     
     Returns: 0 on MAIN_SUCEESS and -1 in case of failure.
 */
-int hook_init(void)
+int  __init hook_init(void)
 {   
     MAIN_ERR_CHECK((hook = kmalloc(sizeof(struct nf_hook_ops), GFP_KERNEL)) == NULL, FIRST, "kmalloc")
 
@@ -72,7 +72,10 @@ int hook_init(void)
     A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the hook part of the module,
 	In case the initialization of that part of the module is done.
 */
-void hook_destroy(void)
+void __exit hook_destroy(void)
 {
     cleanup(HOOK_INIT);
 }
+
+module_init(hook_init);
+module_exit(hook_destroy);
