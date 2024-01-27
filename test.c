@@ -1,17 +1,12 @@
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include "fw.h"
+#include <fcntl.h>
+#include <unistd.h>
 
-static int __init LKM_init(void)
+
+int main()
 {
-    printk("%d" "\n", sizeof(rule_t) * FW_MAX_RULES);
-    printk("%lu", PAGE_SIZE);
+    fd idk = open("/sys/class/fw/rules/rules");
+
+    write(idk, "idk", 1);
+    
     return 0;
 }
-
-static void __exit LKM_exit(void)
-{
-}
-
-module_init(LKM_init);
-module_exit(LKM_exit);
