@@ -4,7 +4,7 @@
 
 int main()
 {
-    fd idk = open("/sys/class/fw/rules/rules");
+    fd idk = open("/sys/class/fw/rules/rules", O_RDWR);
 
     write(idk, "idk", 1);
     
