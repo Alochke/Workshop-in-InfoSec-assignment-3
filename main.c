@@ -47,8 +47,11 @@ static void cleanup(enum stage stg)
             hook_destroy();
         case HOOK_INIT:
             hook_destroy();
+        default:
     }
 }
+
+
 
 
 /*
@@ -75,7 +78,7 @@ static int __init fw_init(void)
 /*
     Module removal function.
 */
-static void __exit LKM_exit(void)
+static void __exit fw_exit(void)
 {
     cleanup(LOGS_INIT);
 }

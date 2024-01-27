@@ -18,7 +18,7 @@
 
 #define MAIN_ERR_CHECK(condition, state, function_name){\
     if(condition){                                      \
-        cleanup(state)                                  \
+        cleanup(state);                                 \
         printk(KERN_ERR function_name " has failed\n"); \
         return MAIN_FAILURE;                            \
     }                                                   \
