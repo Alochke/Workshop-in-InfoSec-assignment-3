@@ -8,7 +8,7 @@
 */
 #define NF_IP_FORWARD   2 /* If the packet is destined for another interface. */
 
-static struct nf_hook* hook;
+static struct nf_hook_ops *hook;
 
 /*
     The next enum is for the cleanup function in hook.c. Items represent the state of the hook initialization the module is currently at.
@@ -32,11 +32,12 @@ static void cleanup(enum stage stg)
     // We use the enum- stage, defined in hook.c to choose action based on the state of the hook initialization the module is currently at. 
     switch (stg)
     {
+        case FIRST:
+            break;
         case HOOK_INIT:
-            nf_unregister_net_hook(&init_net, &hook);
+            nf_unregister_net_hook(&init_net, hook);
         case ALLOCATION:
             kfree(hook);
-        case FIRST:
     }
 }
 
@@ -46,7 +47,7 @@ static void cleanup(enum stage stg)
 */
 static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_ops *state)
 {
-    
+    return 0;
 }
 
 /*
@@ -58,10 +59,10 @@ int hook_init(void)
 {   
     MAIN_ERR_CHECK((hook = kmalloc(sizeof(struct nf_hook_ops), GFP_KERNEL)) == NULL, FIRST, "kmalloc")
 
-    hooks.pf = PF_INET;                     /* IPv4 */
-    hooks.priority = NF_IP_PRI_FIRST;		/* max hook priority */
+    hook.pf = PF_INET;                     /* IPv4 */
+    hook.priority = NF_IP_PRI_FIRST;		/* max hook priority */
     hook.hook = (nf_hookfn*) nf_fn;
-    hook = NF_IP_FORWARD;
+    hook.hooknum = NF_IP_FORWARD;
 
     MAIN_ERR_CHECK(nf_register_net_hook(&init_net, &hook) < 0, ALLOCATION, "nf_register_net_hook");
     return MAIN_SUCEESS;

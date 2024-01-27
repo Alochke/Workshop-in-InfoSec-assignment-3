@@ -10,9 +10,9 @@ static struct device* sysfs_device; // The sysfs device.
     The next enum is for the cleanup function in rule_table.c. Items represent the state of the rule_table initialization the module is currently at.
 */
 enum stage{
-    FIRST = 0,
-    DEVICE_INIT = 1,
-    ATTRIBUTE_INIT = 2
+    FIRST,
+    DEVICE_INIT,
+    ATTRIBUTE_INIT
 };
 
 /*
@@ -45,6 +45,8 @@ static void cleanup(enum stage stg)
 	// We use the enum- stage, defined in rule_table.c to choose action based on the state of the sysfs initialization the module is currently at. 
 	switch (stg)
 	{
+        case FIRST:
+            break;
         case ATTRIBUTE_INIT:
             device_remove_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr);
 	    case DEVICE_INIT:

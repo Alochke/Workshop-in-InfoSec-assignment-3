@@ -59,13 +59,14 @@ static void cleanup(enum stage stg)
     // We use the enum- stage, defined in logs.c to choose action based on the state of the sysfs initialization the module is currently at. 
     switch (stg)
     {
+        case FIRST:
+            break;
         case ATTRIBUTE_INIT:
             device_remove_file(sysfs_device, (const struct device_attribute *)&dev_attr_reset.attr);
         case SYSFS_DEVICE_INIT:
             device_destroy(sysfs_class, MKDEV(major_number, MAIN_LOG_MINOR));
         case DEV_DEVICE_INIT:
             device_destroy(sysfs_class, MKDEV(major_number, MAIN_FW_LOG_MINOR));
-        case FIRST:
     }
 }
 
