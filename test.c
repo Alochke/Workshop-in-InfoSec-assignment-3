@@ -4,8 +4,8 @@
 
 static int __init LKM_init(void)
 {
-    printk("%d" "\n", sizeof(rule_t * FW_MAX_RULES));
-    printk("%d", PAGE_SIZE);
+    printk("%d" "\n", sizeof(rule_t) * FW_MAX_RULES);
+    printk("%lu", PAGE_SIZE);
     return 0;
 }
 

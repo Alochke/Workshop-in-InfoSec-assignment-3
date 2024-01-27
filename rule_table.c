@@ -31,10 +31,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 {
     size_t i; // Iteration index.
 
-    for (i = 0; i < (sizeof());)
-    {
-        /* code */
-    }
+    for (i = 0; i < MAX_SIZE &&  );
     
 }
 
