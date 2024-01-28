@@ -35,9 +35,10 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
     for (i = 0; i < rules_num; i++)
     {
         ((rule_t*)buf)[i] = rule_table[i];
+        printk("hey\n");
     }
 
-    for (i = 0; i < sizeof(rule_t); i++)
+    for (i = 0; i < 1; i++)
     {
         printk("%c\n", ((char*) buf + i));
     }
@@ -65,9 +66,10 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
     for (i = 0; i < count / sizeof(rule_t); i++)
     {
         rule_table[i] = ((rule_t*)buf)[i];
+        printk("hey\n");
     }
 
-    for (i = 0; i < RULE_TABLE_SIZE; i++)
+    for (i = 0; i < 1; i++)
     {
         printk("%c\n", ((char*) buf + i));
     }
