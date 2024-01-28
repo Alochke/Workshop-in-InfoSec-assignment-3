@@ -68,7 +68,7 @@ static int __init fw_init(void)
 
     MAIN_INIT_ERR_CHECK(rule_table_init(), SYSFS_CLASS_INIT, "rule_table_init")
 
-    MAIN_INIT_ERR_CHECK(logs_init(), RULE_TABLE_INIT, "logs init")
+    // MAIN_INIT_ERR_CHECK(logs_init(), RULE_TABLE_INIT, "logs init")
 
     return MAIN_SUCEESS;
 }
