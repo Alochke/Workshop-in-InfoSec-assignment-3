@@ -16,13 +16,16 @@
     MODULE_AUTHOR("Alon Polsky");                                                       \
     MODULE_DESCRIPTION("HW3 solution for the course Workshop in Information Security.");\
 
-#define MAIN_ERR_CHECK(condition, state, function_name){\
-    if(condition){                                      \
-        cleanup(state);                                 \
-        printk(KERN_ERR function_name " has failed\n"); \
-        return MAIN_FAILURE;                            \
-    }                                                   \
+
+#define MAIN_ERR_CHECK(condition, extra_code, msg){\
+    if(condition){                                 \
+        extr_code                                  \
+        printk(KERN_ERR function_name);            \
+        return MAIN_FAILURE;                       \
+    }                                              \
 }
+
+#define MAIN_INIT_ERR_CHECK(condition, state, function_name) MAIN_ERR_CHECK(condition, cleanup(state);, function_name "has failed")
 
 extern int major_number;
 extern struct class* sysfs_class;

@@ -1,12 +1,18 @@
-#include <fcntl.h>
-#include <unistd.h>
+#include <stdio.h>
 
 
 int main()
 {
-    int idk = open("/sys/class/fw/rules/rules", O_RDWR);
+    char buf[4];
 
-    write(idk, "idk", 1);
+    FILE *fp = fopen("/sys/class/fw/rules/rules", "r+");
     
+    fprintf(fp, "lol");
+
+    fgets(buf, 4, fp);
+
+    printf("%d", fp);
+
+    fclose(fp);
     return 0;
 }

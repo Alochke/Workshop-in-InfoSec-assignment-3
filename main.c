@@ -59,16 +59,16 @@ static void cleanup(enum stage stg)
 */
 static int __init fw_init(void)
 {
-    MAIN_ERR_CHECK(hook_init(), FIRST, "hook_init")
+    MAIN_INIT_ERR_CHECK(hook_init(), FIRST, "hook_init")
 
     // Create char device.
-	MAIN_ERR_CHECK((major_number = register_chrdev(0, MAJOR_DEVICE, &fops)) < 0, HOOK_INIT, "register_chrdev")
+	MAIN_INIT_ERR_CHECK((major_number = register_chrdev(0, MAJOR_DEVICE, &fops)) < 0, HOOK_INIT, "register_chrdev")
 
-    MAIN_ERR_CHECK(IS_ERR(sysfs_class = class_create(THIS_MODULE, CLASS)), CHAR_DEV_INIT, "class_create")
+    MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_class = class_create(THIS_MODULE, CLASS)), CHAR_DEV_INIT, "class_create")
 
-    MAIN_ERR_CHECK(rule_table_init(), SYSFS_CLASS_INIT, "rule_table_init")
+    MAIN_INIT_ERR_CHECK(rule_table_init(), SYSFS_CLASS_INIT, "rule_table_init")
 
-    MAIN_ERR_CHECK(logs_init(), RULE_TABLE_INIT, "logs init")
+    MAIN_INIT_ERR_CHECK(logs_init(), RULE_TABLE_INIT, "logs init")
 
     return MAIN_SUCEESS;
 }

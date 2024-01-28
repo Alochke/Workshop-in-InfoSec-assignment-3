@@ -57,14 +57,14 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
 */
 int hook_init(void)
 {   
-    MAIN_ERR_CHECK((hook = kmalloc(sizeof(struct nf_hook_ops), GFP_KERNEL)) == NULL, FIRST, "kmalloc")
+    MAIN_INIT_ERR_CHECK((hook = kmalloc(sizeof(struct nf_hook_ops), GFP_KERNEL)) == NULL, FIRST, "kmalloc")
 
     (*hook).pf = PF_INET;                     /* IPv4 */
     (*hook).priority = NF_IP_PRI_FIRST;		/* max hook priority */
     (*hook).hook = (nf_hookfn*) nf_fn;
     (*hook).hooknum = NF_IP_FORWARD;
 
-    MAIN_ERR_CHECK(nf_register_net_hook(&init_net, hook) < 0, ALLOCATION, "nf_register_net_hook");
+    MAIN_INIT_ERR_CHECK(nf_register_net_hook(&init_net, hook) < 0, ALLOCATION, "nf_register_net_hook");
     return MAIN_SUCEESS;
 }
 

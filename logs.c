@@ -78,13 +78,13 @@ static void cleanup(enum stage stg)
 int logs_init(void)
 {
     // Create /dev device.
-	MAIN_ERR_CHECK(IS_ERR(dev_device = device_create(sysfs_class, NULL, MKDEV(major_number, MAIN_FW_LOG_MINOR), NULL, DEV_DEVICE)), FIRST, "device_create")
+	MAIN_INIT_ERR_CHECK(IS_ERR(dev_device = device_create(sysfs_class, NULL, MKDEV(major_number, MAIN_FW_LOG_MINOR), NULL, DEV_DEVICE)), FIRST, "device_create")
 
     // Create sysfs device.
-    MAIN_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, MAIN_LOG_MINOR), NULL, SYSFS_DEVICE)), DEV_DEVICE_INIT, "device_create")
+    MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, MAIN_LOG_MINOR), NULL, SYSFS_DEVICE)), DEV_DEVICE_INIT, "device_create")
 
     // Create sysfs file attributes.
-    MAIN_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_reset.attr), SYSFS_DEVICE_INIT, "device_create_file")
+    MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_reset.attr), SYSFS_DEVICE_INIT, "device_create_file")
 
     return MAIN_SUCEESS;
 }
