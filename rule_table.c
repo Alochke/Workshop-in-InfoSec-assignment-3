@@ -38,7 +38,7 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
     //     ((rule_t*)buf)[i] = rule_table[i];
     // }
     
-    return sizeof(rule_t) * rules_num;
+    return 0;
 }
 
 /*
