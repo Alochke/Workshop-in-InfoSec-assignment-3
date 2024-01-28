@@ -2,8 +2,8 @@
 
 MAIN_MODULE_SIGNATURE
 
-#define MAJOR_DEVICE "fw" // The name of the registered char device, all sysfs and dev devices will be minor instances of this char device.
-#define CLASS "fw" // The name of the sysfs class, all sysfs devices related to the module will be instances of this class.
+
+#define AUTO_MINOR 0 // When passed to register_chrdev makes it assign the registered char device a major number automatically.
 
 int major_number; // The major number of the char device.
 struct class* sysfs_class;
@@ -62,7 +62,7 @@ static int __init fw_init(void)
     MAIN_INIT_ERR_CHECK(hook_init(), FIRST, "hook_init")
 
     // Create char device.
-	MAIN_INIT_ERR_CHECK((major_number = register_chrdev(0, MAJOR_DEVICE, &fops)) < 0, HOOK_INIT, "register_chrdev")
+	MAIN_INIT_ERR_CHECK((major_number = register_chrdev(AUTO_MINOR, MAJOR_DEVICE, &fops)) < 0, HOOK_INIT, "register_chrdev")
 
     MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_class = class_create(THIS_MODULE, CLASS)), CHAR_DEV_INIT, "class_create")
 
