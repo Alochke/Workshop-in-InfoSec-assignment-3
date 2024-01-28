@@ -7,12 +7,12 @@ int main()
 
     FILE* file = fopen("/sys/class/fw/rules/rules", "r+");
 
-    fprintf(file, "idk");
+    // fprintf(file, "idk");
 
-    fgets(buf, 4, file);
+    // fgets(buf, 4, file);
 
-    printf("%s", buf);
+    // printf("%s", buf);
 
-    fclose(file);
+    // fclose(file);
     return 0;
 }
