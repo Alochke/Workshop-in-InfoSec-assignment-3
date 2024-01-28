@@ -7,7 +7,7 @@ int main()
 {
     char buf[4];
 
-    int fp = open("/sys/class/fw/rules/rules", O_RDWR);
+    int fd = open("/sys/class/fw/rules/rules", O_RDWR);
 
     write(fd, "lol", 4)
 
