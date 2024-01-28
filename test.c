@@ -1,21 +1,28 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include "fw.h"
 
 
 
 int main()
 {
-    char buf[4];
+    char buf1[sizeof(rule_t)];
+    char buf2[sizeof(rule_t)];
 
-    int file = open("/sys/class/fw/rules/rules", O_RDWR);
+    memset(buf1, 'a', sizeof(rule_t) - 1);
+    buf1[sizeof(rule_t) - 1] = 0;
+    memset(buf2, 'b', sizeof(rule_t) - 1);
+    buf2[sizeof(rule_t) - 1] = 0;
 
-    write(file, "idk", 1);
+    int file = fopen("/sys/class/fw/rules/rules", "r+");
 
-    // fgets(buf, 4, file);
+    fputs(buf1, sizeof(rule_t), file);
 
-    printf("%s", buf);
+    fgets(buf2, sizeof(rule_t), file);
 
-    close(file);
+    printf("%s\n", buf2);
+
+    fclose(file);
     return 0;
 }
