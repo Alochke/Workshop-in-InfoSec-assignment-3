@@ -36,6 +36,11 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
     {
         ((rule_t*)buf)[i] = rule_table[i];
     }
+
+    for (i = 0; i < RULE_TABLE_SIZE; i++)
+    {
+        printk("%c", buf + i);
+    }
     
     return 0;
 }
@@ -56,14 +61,17 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 
     // This also checks that we won't copy from adrress x + buf for  x > PAGE_SIZE because RULE_TABLE_SIZE < PAGE_SIZE.
     NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
-
-    printk("%d\n", count / sizeof(rule_t));
     
     for (i = 0; i < count / sizeof(rule_t); i++)
     {
         rule_table[i] = ((rule_t*)buf)[i];
     }
 
+    for (i = 0; i < RULE_TABLE_SIZE; i++)
+    {
+        printk("%c", buf + i);
+    }
+    
     rules_num = count / sizeof(rule_t);
 
     return count;
