@@ -36,24 +36,15 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
     for (i = 0; i < rules_num; i++)
     {
         ((rule_t*)buf)[i] = rule_table[i];
-        printk("hey\n");
     }
 
-    for (i = 0; i < 2; i++)
-    {
-        printk("%u\n", *(((char*)buf) + i));
-    }
-    
     return NUMBR_OF_BYTES_TRANSFERED;
 }
 
 /*
 	The implementation of store.
 
-    Trasnfers count bytes as they are from buf to an allocated kernel buffer pointed by rule_table and frees the buffer that wass pointed by rule_table previously,
-    if there was such.
-    Will not do any of this if count / sizeof(rule_t) > FW_MAX_RULES (meaning, too much data was provided.) or count % sizeof(rule_t) != 0 (meaning, the data was not sizeof(rule_t) aligned.),
-    which counts as an error.
+    Transfers count bytes from buf to rule_table, will error in case count > RULE_TABLE_SIZE.
 
     Returns: -1 on failure, count on success.
 */
@@ -61,18 +52,12 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 {
     size_t i; // For loop index.
 
-    // This also checks that we won't copy from adrress x + buf for  x > PAGE_SIZE because RULE_TABLE_SIZE < PAGE_SIZE.
-    NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
+    // The trinary operator is for maximal migratability, I know it's not mandatory and I could replace it with RULE_TABLE_SIZE for every x86 machine, including the fw vm.
+    NO_CLEANUP_ERR_CHECK(count > ((RULE_TABLE_SIZE < PAGE_SIZE) ? RULE_TABLE_SIZE : PAGE_SIZE), SIZE_ERR_MSG)
     
     for (i = 0; i < count / sizeof(rule_t); i++)
     {
         rule_table[i] = ((rule_t*)buf)[i];
-        printk("hey\n");
-    }
-
-    for (i = 0; i < 2; i++)
-    {
-        printk("%u\n", *(((char*)buf) + i));
     }
     
     rules_num = count / sizeof(rule_t);
@@ -118,7 +103,7 @@ int rule_table_init()
     //create sysfs file attributes.
 	MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
 
-    MAIN_INIT_ERR_CHECK((rule_table = kmalloc(RULE_TABLE_SIZE, GFP_KERNEL)) == NULL, RULE_TABLE_ALLOC, "kmalloc")
+    MAIN_INIT_ERR_CHECK((rule_table = kmalloc(RULE_TABLE_SIZE, GFP_KERNEL)) == NULL, ATTRIBUTE_INIT, "kmalloc")
 
     return MAIN_SUCEESS;
 }

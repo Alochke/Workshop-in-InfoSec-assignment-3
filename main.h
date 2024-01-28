@@ -33,9 +33,9 @@ extern int major_number;
 extern struct class* sysfs_class;
 
 enum main_minors{
-    MAIN_RULE_TABLE_MINOR = 0,
-    MAIN_FW_LOG_MINOR = 1,
-    MAIN_LOG_MINOR = 2
+    MAIN_RULE_TABLE_MINOR,
+    MAIN_FW_LOG_MINOR,
+    MAIN_LOG_MINOR
 };
 
 #endif
