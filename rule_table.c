@@ -74,7 +74,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 
     for (i = 0; i < temp; i++)
     {
-        rule_table[i] = *((rule_t*) (buf + sizeof(rule_t) * i));
+        rule_table[i] = ((rule_t*)buf)[i];
     }
 
     printk("NOTICE ME 4\n");
