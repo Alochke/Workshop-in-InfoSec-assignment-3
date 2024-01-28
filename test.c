@@ -11,7 +11,7 @@ int main()
 
     fgets(buf, 4, fp);
 
-    printf("%d", fp);
+    printf("%s", buf);
 
     fclose(fp);
     return 0;
