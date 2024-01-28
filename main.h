@@ -20,7 +20,7 @@
 #define MAIN_ERR_CHECK(condition, extra_code, msg){\
     if(condition){                                 \
         extra_code                                 \
-        printk(KERN_ERR msg);                      \
+        printk(KERN_ERR msg "\n");                 \
         return MAIN_FAILURE;                       \
     }                                              \
 }
