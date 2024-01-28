@@ -29,7 +29,9 @@ enum stage{
 */
 static ssize_t display(struct device *dev, struct device_attribute *attr, char *buf)
 {
-    for (size_t i = 0; i < rules_num; i++)
+    size_t i;
+
+    for (i = 0; i < rules_num; i++)
     {
         ((rule_t*)buf)[i] = rule_table[i];
     }
@@ -53,7 +55,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 
     NO_CLEANUP_ERR_CHECK((temp > FW_MAX_RULES) || (count % sizeof(rule_t) != 0), DATA_FORMAT_MSG)
     
-    MAIN_INIT_ERR_CHECK((rule_table = kmalloc(count, GFP_KERNEL)) == NULL, FAILED_KMALLOC_MSG)
+    NO_CLEANUP_ERR_CHECK((rule_table = kmalloc(count, GFP_KERNEL)) == NULL, FAILED_KMALLOC_MSG)
 
     if (rule_table != NULL)
     {
@@ -89,7 +91,7 @@ static void cleanup(enum stage stg)
         case RULE_TABLE_ALLOC:
             if (rule_table != NULL)
             {
-                kfree(RULE_TABLE);
+                kfree(rule_table);
             }
         case ATTRIBUTE_INIT:
             device_remove_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr);
