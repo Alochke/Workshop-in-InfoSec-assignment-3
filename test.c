@@ -7,7 +7,7 @@ int main()
 
     FILE* file = fopen("/sys/class/fw/rules/rules", "r+");
 
-    // fprintf(file, "idk");
+    fprintf(file, "idk");
 
     // fgets(buf, 4, file);
 
