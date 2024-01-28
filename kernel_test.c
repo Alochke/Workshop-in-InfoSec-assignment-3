@@ -2,7 +2,7 @@
 
 static int __init fw_init(void)
 {
-    printk(sizeof(rule_t));
+    printk("%d\n", sizeof(rule_t));
 }
 
 
