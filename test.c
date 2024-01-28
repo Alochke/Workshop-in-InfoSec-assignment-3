@@ -9,7 +9,7 @@ int main()
 
     int fd = open("/sys/class/fw/rules/rules", O_RDWR);
 
-    write(fd, "lol", 4)
+    write(fd, "lol", 4);
 
     close(fp);
     return 0;
