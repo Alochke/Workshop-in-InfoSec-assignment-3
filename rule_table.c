@@ -126,7 +126,7 @@ static void cleanup(enum stage stg)
 int rule_table_init()
 {
     //create sysfs device.
-    MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, MAIN_RULE_TABLE_MINOR), NULL, SYSFS_DEVICE)), FIRST, "device_create")
+    MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, 0), NULL, SYSFS_DEVICE)), FIRST, "device_create")
 
     //create sysfs file attributes.
 	MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
