@@ -11,6 +11,6 @@ int main()
 
     write(fd, "lol", 4);
 
-    close(fp);
+    close(fd);
     return 0;
 }
