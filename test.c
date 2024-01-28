@@ -10,9 +10,9 @@ int main()
     char buf2[60];
 
     memset(buf1, 'a', 59);
-    buf1[59] = 0;
+    buf1[59] = EOF;
     memset(buf2, 'b', 59);
-    buf2[59] = 0;
+    buf2[59] = EOF;
 
     FILE* file = fopen("/sys/class/fw/rules/rules", "r+");
 

@@ -5,10 +5,11 @@ static int rules_num = 0; // The number of rules currently loaded to the table.
 static struct device* sysfs_device; // The sysfs device.
 
 #define SYSFS_DEVICE "rules" // The name of the sysfs device.
-#define DATA_FORMAT_MSG "Rule table loading failed because you provided too much data or data of the wrong format."
-#define FAILED_KMALLOC_MSG "Rule table memory allocation failed."
-#define ZERO_BYTES 0 // The number of bytes modify copied from the supplied buffer on failure.
+#define SIZE_ERR_MSG "Rule table loading failed because you provided too much data."
+#define MAX_RULES (50)
+#define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
 #define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
+
 
 /*
     The next enum is for the cleanup function in rule_table.c. Items represent the state of the rule_table initialization the module is currently at.
@@ -51,25 +52,17 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-    size_t i; // For loop.
+    size_t i; // For loop index.
 
-    size_t temp = count / sizeof(rule_t); // This will store the rule_num, till modify will end, then its value will be passed to rules_num.
-
-    NO_CLEANUP_ERR_CHECK((temp > FW_MAX_RULES) || (count % sizeof(rule_t) != 0), DATA_FORMAT_MSG)
+    // This also checks that we won't copy from adrress x + buf for  x > PAGE_SIZE because RULE_TABLE_SIZE < PAGE_SIZE.
+    NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
     
-    NO_CLEANUP_ERR_CHECK((rule_table = kmalloc(count, GFP_KERNEL)) == NULL, FAILED_KMALLOC_MSG)
-
-    if (rule_table != NULL)
-    {
-        kfree(rule_table);
-    }
-
-    for (i = 0; i < temp; i++)
+    for (i = 0; i < count / sizeof(rule_t); i++)
     {
         rule_table[i] = ((rule_t*)buf)[i];
     }
 
-    rules_num = temp;
+    rules_num = (count / sizeof(rule_t)) * sizeof(rule_t);
 
     return count;
 }
@@ -91,10 +84,7 @@ static void cleanup(enum stage stg)
         case FIRST:
             break;
         case RULE_TABLE_ALLOC:
-            if (rule_table != NULL)
-            {
-                kfree(rule_table);
-            }
+            kfree(rule_table);
         case ATTRIBUTE_INIT:
             device_remove_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr);
 	    case DEVICE_INIT:
@@ -114,6 +104,8 @@ int rule_table_init()
 
     //create sysfs file attributes.
 	MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
+
+    MAIN_INIT_ERR_CHECK((rule_table = kmalloc(RULE_TABLE_SIZE)) == NULL, RULE_TABLE_ALLOC, "kmalloc")
 
     return MAIN_SUCEESS;
 }

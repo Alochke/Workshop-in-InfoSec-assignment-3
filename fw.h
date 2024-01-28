@@ -39,7 +39,6 @@ typedef enum {
 #define FW_IP_VERSION		(4)
 #define FW_PORT_ANY			(0)
 #define FW_PORT_ABOVE_1023	(1023)
-#define FW_MAX_RULES		(50)
 
 // device minor numbers, for your convenience
 typedef enum {
