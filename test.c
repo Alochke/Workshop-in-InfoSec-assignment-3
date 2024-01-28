@@ -1,6 +1,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 int main()
 {
@@ -12,7 +14,7 @@ int main()
     memset(buf2, 'b', 59);
     buf2[59] = 0;
 
-    int file = fopen("/sys/class/fw/rules/rules", "r+");
+    FILE* file = fopen("/sys/class/fw/rules/rules", "r+");
 
     fputs(buf1, 60, file);
 
