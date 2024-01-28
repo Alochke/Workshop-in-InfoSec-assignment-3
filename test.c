@@ -9,7 +9,6 @@ int main()
     
     fprintf(fp, "lol");
 
-
     printf("%s", buf);
 
     fclose(fp);
