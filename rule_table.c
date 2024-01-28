@@ -53,6 +53,8 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 {
     size_t i; // For loop.
 
+    printk("NOTICE ME 1\n");
+
     size_t temp = count / sizeof(rule_t); // This will store the rule_num, till modify will end, then its value will be passed to rules_num.
 
     printk("NOTICE ME 1\n");
