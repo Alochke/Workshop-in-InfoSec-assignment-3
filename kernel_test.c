@@ -3,6 +3,7 @@
 static int __init fw_init(void)
 {
     printk("%d\n", sizeof(rule_t));
+    return 0;
 }
 
 
