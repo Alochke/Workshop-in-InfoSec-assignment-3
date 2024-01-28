@@ -9,6 +9,7 @@ static struct device* sysfs_device; // The sysfs device.
 #define MAX_RULES (50)
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
 #define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
+#define NUMBR_OF_BYTES_TRANSFERED rules_num * sizeof(rule_t)
 
 
 /*
@@ -43,7 +44,7 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
         printk("%u\n", *(((char*)buf) + i));
     }
     
-    return 0;
+    return NUMBR_OF_BYTES_TRANSFERED;
 }
 
 /*
@@ -76,7 +77,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
     
     rules_num = count / sizeof(rule_t);
 
-    return count;
+    return NUMBR_OF_BYTES_TRANSFERED;
 }
 
 // Declares the attributes for the device.
