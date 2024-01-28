@@ -7,7 +7,7 @@ int main()
 
     FILE *fp = fopen("/sys/class/fw/rules/rules", "r+");
     
-    fprintf(fp, "lol");
+    fprintf(fp, &"lol");
 
 
     fclose(fp);
