@@ -33,10 +33,10 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 
     size_t i; // For loop.
 
-    for (i = 0; i < rules_num; i++)
-    {
-        ((rule_t*)buf)[i] = rule_table[i];
-    }
+    // for (i = 0; i < rules_num; i++)
+    // {
+    //     ((rule_t*)buf)[i] = rule_table[i];
+    // }
     
     return sizeof(rule_t) * rules_num;
 }
@@ -54,8 +54,6 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
     size_t i; // For loop.
-
-    printk("NOTICE ME 1\n");
 
     size_t temp = count / sizeof(rule_t); // This will store the rule_num, till modify will end, then its value will be passed to rules_num.
 
