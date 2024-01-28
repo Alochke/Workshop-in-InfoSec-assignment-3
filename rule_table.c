@@ -38,9 +38,9 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
         printk("hey\n");
     }
 
-    for (i = 0; i < 1; i++)
+    for (i = 0; i < 2; i++)
     {
-        printk("%hhd\n", ((char*) buf + i));
+        printk("%u\n", *(((char*)buf) + i));
     }
     
     return 0;
@@ -69,9 +69,9 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         printk("hey\n");
     }
 
-    for (i = 0; i < 1; i++)
+    for (i = 0; i < 2; i++)
     {
-        printk("%hhd\n", ((char*) buf) + i));
+        printk("%u\n", *(((char*)buf) + i));
     }
     
     rules_num = count / sizeof(rule_t);
