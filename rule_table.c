@@ -105,7 +105,7 @@ int rule_table_init()
     //create sysfs file attributes.
 	MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
 
-    MAIN_INIT_ERR_CHECK((rule_table = kmalloc(RULE_TABLE_SIZE)) == NULL, RULE_TABLE_ALLOC, "kmalloc")
+    MAIN_INIT_ERR_CHECK((rule_table = kmalloc(RULE_TABLE_SIZE, GFP_KERNEL)) == NULL, RULE_TABLE_ALLOC, "kmalloc")
 
     return MAIN_SUCEESS;
 }
