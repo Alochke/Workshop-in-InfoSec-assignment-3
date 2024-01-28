@@ -16,7 +16,7 @@ int main()
 
     FILE* file = fopen("/sys/class/fw/rules/rules", "r+");
 
-    fputs(buf1, 60, file);
+    fwrite(buf1, 60, 1, file);
 
     fgets(buf2, 60, file);
 
