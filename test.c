@@ -9,6 +9,8 @@ int main()
 
     int fd = open("/sys/class/fw/rules/rules", O_RDWR);
 
+    printf("%d\n", fd);
+
     write(fd, "lol", 4);
 
     close(fd);
