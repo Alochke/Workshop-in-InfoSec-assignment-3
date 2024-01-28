@@ -19,7 +19,7 @@
 
 #define MAIN_ERR_CHECK(condition, extra_code, msg){\
     if(condition){                                 \
-        extr_code                                  \
+        extra_code                                  \
         printk(KERN_ERR function_name);            \
         return MAIN_FAILURE;                       \
     }                                              \
