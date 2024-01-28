@@ -29,14 +29,14 @@ enum stage{
 */
 static ssize_t display(struct device *dev, struct device_attribute *attr, char *buf)
 {
-    // printk("NOTICE ME 1\n");
+    printk("NOTICE ME 1\n");
 
-    // size_t i; // For loop.
+    size_t i; // For loop.
 
-    // for (i = 0; i < rules_num; i++)
-    // {
-    //     ((rule_t*)buf)[i] = rule_table[i];
-    // }
+    for (i = 0; i < rules_num; i++)
+    {
+        ((rule_t*)buf)[i] = rule_table[i];
+    }
     
     return 0;
 }
