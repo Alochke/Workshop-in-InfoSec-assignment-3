@@ -19,8 +19,9 @@ int main()
     fwrite(buf1, 60, 1, file);
     fclose(file);
 
-    fgets(buf2, 60, file);
     file = fopen("/sys/class/fw/rules/rules", "r+");
+
+    fgets(buf2, 60, file);
 
     printf("%s\n", buf2);
 
