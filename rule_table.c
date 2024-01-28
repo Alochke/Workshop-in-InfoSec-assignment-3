@@ -29,7 +29,7 @@ enum stage{
 */
 static ssize_t display(struct device *dev, struct device_attribute *attr, char *buf)
 {
-    size_t i;
+    size_t i; // For loop.
 
     for (i = 0; i < rules_num; i++)
     {
@@ -51,6 +51,8 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
+    size_t i; // For loop.
+
     size_t temp = count / sizeof(rule_t); // This will store the rule_num, till modify will end, then its value will be passed to rules_num.
 
     NO_CLEANUP_ERR_CHECK((temp > FW_MAX_RULES) || (count % sizeof(rule_t) != 0), DATA_FORMAT_MSG)
