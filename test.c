@@ -24,7 +24,7 @@ int main()
 {
     char buf[4];
 
-    int file = open("/sys/class/fw/rules/rules", "r+");
+    int file = open("/sys/class/fw/rules/rules", O_RDWR);
 
     write(file, "idk", 1);
 
