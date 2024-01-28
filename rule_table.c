@@ -55,33 +55,33 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 
     size_t temp = count / sizeof(rule_t); // This will store the rule_num, till modify will end, then its value will be passed to rules_num.
 
-    printk("1\n");
+    printk("NOTICE ME 1\n");
 
     NO_CLEANUP_ERR_CHECK((temp > FW_MAX_RULES) || (count % sizeof(rule_t) != 0), DATA_FORMAT_MSG)
 
-    printk("2\n");
+    printk("NOTICE ME 2\n");
     
     NO_CLEANUP_ERR_CHECK((rule_table = kmalloc(count, GFP_KERNEL)) == NULL, FAILED_KMALLOC_MSG)
 
-    printk("3\n");
+    printk("NOTICE ME 3\n");
 
     if (rule_table != NULL)
     {
         kfree(rule_table);
     }
 
-    printk("4\n");
+    printk("NOTICE ME 4\n");
 
     for (i = 0; i < temp; i++)
     {
         rule_table[i] = *((rule_t*) (buf + sizeof(rule_t) * i));
     }
 
-    printk("4\n");
+    printk("NOTICE ME 4\n");
 
     rules_num = temp;
 
-    printk("5\n");
+    printk("NOTICE ME 5\n");
 
     return count;
 }
