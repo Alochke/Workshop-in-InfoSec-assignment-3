@@ -64,7 +64,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         rule_table[i] = ((rule_t*)buf)[i];
     }
 
-    rules_num = (count / sizeof(rule_t)) * sizeof(rule_t);
+    rules_num = count / sizeof(rule_t);
 
     return count;
 }
