@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
         MAIN_ERR_CHECK(strcmp(argv[FIRST_ARG], "load_rules"), printf("%s", MAIN_ARG_ERR_MSG);)
         
         fptr = fopen(argv[LAST_ARG], "r");
-        MAIN_ERR_CHECK(fptr == NULL, printf("%s\n", MAIN_FILE_OPEN_ERR_MSG);)
+        MAIN_ERR_CHECK(fptr == NULL, printf("%s", MAIN_FILE_OPEN_ERR_MSG);)
 
         MAIN_ERR_CHECK(list_init(lst), cleanup(FILE_OPENED); printf("%s", MAIN_MALLOC_ERR_MSG);)
         
