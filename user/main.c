@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
         fptr = fopen(argv[LAST_ARG], "r");
         MAIN_ERR_CHECK(fptr == NULL, printf("%s", MAIN_FILE_OPEN_ERR_MSG);)
 
-        MAIN_ERR_CHECK(list_init(lst), cleanup(FILE_OPENED); printf("%s", MAIN_MALLOC_ERR_MSG);)
+        MAIN_ERR_CHECK(list_init(&lst), cleanup(FILE_OPENED); printf("%s", MAIN_MALLOC_ERR_MSG);)
         
         MAIN_ERR_CHECK(rule_table_parser_list_lines(lst, fptr), cleanup(LIST_INIT);)
 

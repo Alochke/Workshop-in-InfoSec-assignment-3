@@ -3,7 +3,7 @@
 #include <string.h>
 
 int main() {
-    printf("%d", sizeof(long));
+    printf("%lu", 1LU << 32);
     
 
     return 0;

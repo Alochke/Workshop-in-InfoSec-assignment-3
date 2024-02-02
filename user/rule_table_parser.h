@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h> // For htol/htoc
 #include <linux/netfilter.h>
+#include <stdbool.h>
 #include "list.h"
 #include "fw.h"
 #include "main.h"

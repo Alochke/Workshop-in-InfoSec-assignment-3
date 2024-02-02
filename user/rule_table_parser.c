@@ -5,11 +5,19 @@
 #define DECIMAL_BASIS 10 // For strtol.
 #define MIN_BYTE_VAL 0
 #define MAX_BYTE_VAL 255
-#define NUMBER_OF_BYTES_IN_IP 4
+#define MAXIMAL_INDX_OF_BYTE_IN_ADDRESS 3
+#define BYTES_NUM_IN_ADDRESS 4
 #define MAX_MASK_LEN 32
 #define MIN_USHORT_VAL 0
 #define MAX_USHORST_VAL 65535
 #define ANY_SETTING 0
+#define DIRECTIONS_NUM 3 // The number of possible values for the direction member of a rule_t.
+#define PROTS_NUM 5 // The number of possible values for the prot member of a rulet_t.
+#define ACK_NUM 3 // The number of possible values for the ack member of a rulet_t.
+#define ACTIONS_NUM 4 // The number of possible non-file-terminating specifiers for the action of a rule in a rule table configuration file.
+#define END_ACTIONS_NUM 2 // The number of possible file-terminating specifiers for the action of a rule in a rule table configuration file.
+#define LAST_NODE_INDX(list) (list->size - 1)
+#define SIZE_PLUS_NULL(x) (strlen(x) + 1)
 
 /*
 	Parses FILE into a list where every node has a line of stream as it's token.
@@ -28,10 +36,11 @@ int rule_table_parser_list_lines(list *l, FILE *stream)
 
 	while ((nread = getline(&datapoint_line, &length, stream)) != EOF)
 	{
-		char *temp = (char *)malloc(sizeof(char) * nread);
+		char *temp = (char *)malloc(sizeof(char) * SIZE_PLUS_NULL(datapoint_line));
+		
 		MAIN_ERR_CHECK(temp == NULL, printf("%s", MAIN_MALLOC_ERR_MSG);)
 		
-		strncpy(temp, datapoint_line, nread);
+		strcpy(temp, datapoint_line);
 		MAIN_ERR_CHECK(list_insert_key(l, temp) == NULL, free(temp); printf("%s", MAIN_MALLOC_ERR_MSG);)
 	}
 	free(datapoint_line);
@@ -41,20 +50,20 @@ int rule_table_parser_list_lines(list *l, FILE *stream)
 /*
 	Serves as a factorization of the process of parsing a subnet out of a line of the rules file fed up to the kernel module.
 
-	@prev: The begging of the supposed-to-be subnet specification section of the currently loaded rule.
 	@ip: src_ip or a dst_ip taken out of the rule_t we're filling up.
 	@prefix_size: The prefix_size memmber corresponding to ip.
 	@prefix_mask: The prefix_mask member corresponding to ip
 	
 	Returns: 0 in case of success (which is equivalent to the subnet parsed having correct syntax.), else, 1.
 */
-int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* prefix_mask)
+int parse_subnet(unsigned int* ip, char* prefix_size, unsigned int* prefix_mask)
 {
 	// The code assumes the line was parsed beforehand using strtok till the beggining of the subnet part.
 
 	char* token; // Will be used to store the currently parsed token.
 	long temp_long; // Will be used to store values out of strtol.
 	char* saveptr; // Will be used to backtrack tokenization to the begginning of the address specification, we need this to distinguish between "any" and an actual subnet.
+	char* end; // Will be used to infer the end of a number within the token.
 
 	// Dealing with "any"
 	token = strtok(NULL, " ");
@@ -72,7 +81,7 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 	{
 		if (i == 0)
 		{
-			token = strtok_r(prev, ".", &saveptr);
+			token = strtok_r(token, ".", &saveptr);
 		}
 		else if (i < SUBNET_DOT_NUMBER)
 		{
@@ -87,15 +96,14 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 
 		MAIN_ERR_CHECK(token[0] == ' ',)
 
-		char* end;
 		temp_long = strtol(token, &end, DECIMAL_BASIS);
-		MAIN_ERR_CHECK(*end == '\0',)
+		MAIN_ERR_CHECK(end != &token[strlen(token)],) // From end == &token[strlen(token)] and token[0] != ' ' we can infer that the token is a number.
 
 		MAIN_ERR_CHECK(MIN_BYTE_VAL > temp_long,)
-		if (i < NUMBER_OF_BYTES_IN_IP)
+		if (i < BYTES_NUM_IN_ADDRESS)
 		{
 			MAIN_ERR_CHECK(MAX_BYTE_VAL < temp_long,)
-			((char*) ip)[NUMBER_OF_BYTES_IN_IP- i] = (char) temp_long;
+			((char*)ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - i] = (char)temp_long;
 		}
 		else
 		{
@@ -103,9 +111,9 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 			*prefix_size = (char) temp_long;
 		}
 	}
-	temp_long = ~(1LU << (MAX_MASK_LEN - *prefix_size));
+	temp_long = ~((1LU << (MAX_MASK_LEN - *prefix_size)) - 1);
 
-	*prefix_mask = htonl(temp_long);
+	*prefix_mask = temp_long;
 	
 	return EXIT_SUCCESS;
 }
@@ -127,15 +135,16 @@ int parse_port(unsigned short* port)
 		*port = 0;
 	else if(!strcmp(">1023", token))
 	{
-		*port = htons((short) FW_PORT_ABOVE_1023);
+		*port = FW_PORT_ABOVE_1023;
 	}
 	else
 	{
 		// The section should be a number.
 		char* end;
+		MAIN_ERR_CHECK(token[0] == ' ',)
 		long temp_long = strtol(token, &end, DECIMAL_BASIS);
-		MAIN_ERR_CHECK(*end == '\0' || MIN_BYTE_VAL > temp_long || temp_long > MAX_USHORST_VAL,);
-		*port = htons((short) temp_long);
+		MAIN_ERR_CHECK(end != &token[strlen(token)] || MIN_BYTE_VAL > temp_long || temp_long > MAX_USHORST_VAL,); // From end == &token[strlen(token)] and token[0] != ' ' we can infer that the token is a number.
+		*port = (short) temp_long;
 	}
 
 	return EXIT_SUCCESS;
@@ -185,12 +194,13 @@ int parse_member(void *member, char* keywords[], long values[], int len, char* d
 /*
 	Parses a line from the rules configuration file and feeds up the configuration specified in the line to rule.
 
-	@rule: The rule that the funcction fills up.
-	@char: The line that the function parses.
+	- rule (rule_t*): The rule that the funcction fills up.
+	- char (char*): The line that the function parses.
+	- last (last*): true iff line is the last line of the file parsed, used internally
 
 	Returns: 0 on success (which is equivalent to the line parsed having correct syntax.), 1 on failure.
 */
-int rule_table_parser_in_line(rule_t* rule, char* line){
+int rule_table_parser_in_line(rule_t* rule, char* line, bool last){
 	char* token;
 
 	// Parse rule name.
@@ -200,22 +210,28 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 	strcpy(rule->rule_name, token);
 
 	// Parse directions.
-	MAIN_ERR_CHECK(parse_member(&rule->direction, (char*[FW_DIRECTIONS_NUM]){"in", "out", "any"}, (long[FW_DIRECTIONS_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " ", LONG),);
+	MAIN_ERR_CHECK(parse_member(&rule->direction, (char*[DIRECTIONS_NUM]){"in", "out", "any"}, (long[DIRECTIONS_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, DIRECTIONS_NUM , " ", LONG),);
 	
 	// Parse subnets.
-	MAIN_ERR_CHECK(parse_subnet(token, &rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask),)
-	MAIN_ERR_CHECK(parse_subnet(token, &rule->dst_ip, &rule->dst_prefix_size, &rule->dst_prefix_mask),)
+	MAIN_ERR_CHECK(parse_subnet(&rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask),)
+	MAIN_ERR_CHECK(parse_subnet(&rule->dst_ip, &rule->dst_prefix_size, &rule->dst_prefix_mask),)
 
 	// Parse protocol.
-	MAIN_ERR_CHECK(parse_member(&rule->protocol, (char*[FW_PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"}, (long[FW_PROTS_NUM]){htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " ", CHAR),)
+	MAIN_ERR_CHECK(parse_member(&rule->protocol, (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"}, (long[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_OTHER, PROT_ANY}, PROTS_NUM, " ", CHAR),)
 
+	// Parse ports.
 	MAIN_ERR_CHECK(parse_port(&rule->src_port),)
 	MAIN_ERR_CHECK(parse_port(&rule->dst_port),)
 
 	// Parse ack.
-	MAIN_ERR_CHECK(parse_member(&rule->ack, (char*[FW_ACK_NUM]){"yes", "no", "any"}, (long[FW_ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
+	MAIN_ERR_CHECK(parse_member(&rule->ack, (char*[ACK_NUM]){"yes", "no", "any"}, (long[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}, ACK_NUM, " ", LONG),)
 
-	MAIN_ERR_CHECK(parse_member(&rule->action, (char*[FW_ACTIONS_NUM]){"accept, drop"}, (long[FW_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, "", CHAR),)
+	if (!last)
+	{
+		MAIN_ERR_CHECK(parse_member(&rule->action, (char*[ACTIONS_NUM]){"accept\r\n", "accept\n", "drop\r\n", "drop\n"}, (long[ACTIONS_NUM]){NF_ACCEPT, NF_ACCEPT, NF_DROP, NF_DROP}, ACTIONS_NUM, "", CHAR),)
+	}
+	else
+		MAIN_ERR_CHECK(parse_member(&rule->action, (char*[END_ACTIONS_NUM]){"accept", "drop"}, (long[END_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, ACTIONS_NUM, "", CHAR),)
 	
 	return EXIT_SUCCESS;
 }
@@ -231,12 +247,13 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 */
 int rule_table_parser_in_init(rule_t *table, list *l)
 {
-	MAIN_ERR_CHECK((table = malloc(sizeof(rule_t) * l->size)) == NULL, printf("%s", MAIN_FILE_FORMAT_ERR_MSG););
+	MAIN_ERR_CHECK((table = malloc(sizeof(rule_t) * l->size)) == NULL, printf("%s", MAIN_MALLOC_ERR_MSG););
 	
 	list_node *node = l->head;
 	for (size_t i = 0; i < l->size; i++)
 	{
-		MAIN_ERR_CHECK(rule_table_parser_in_line(&table[i], node->key), printf("%s", MAIN_FILE_FORMAT_ERR_MSG);)
+		MAIN_ERR_CHECK(rule_table_parser_in_line(&table[i], node->key, i == LAST_NODE_INDX(l)), printf("%s", MAIN_FILE_FORMAT_ERR_MSG);)
+		node = node->next;
 	}
 	
 	return EXIT_SUCCESS;

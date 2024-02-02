@@ -5,11 +5,11 @@
 
 	@l: The initalized list.
 */
-int list_init(list *l)
+int list_init(list **l)
 {
-	MAIN_ERR_CHECK((l = malloc(sizeof(list))) == NULL,)
-	l->head = NULL;
-	l->size = 0;
+	MAIN_ERR_CHECK((*l = malloc(sizeof(list))) == NULL,)
+	(*l)->head = NULL;
+	(*l)->size = 0;
 	return EXIT_SUCCESS;
 }
 
