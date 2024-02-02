@@ -1,4 +1,3 @@
-CC = gcc
 CFLAGS = -Wall
 
 SRC = list.c main.c rule_table_parser.c
@@ -8,10 +7,10 @@ EXECUTABLE = main
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
-	$(CC) $(CFLAGS) -o3 $@ $^
+	gcc $(CFLAGS) $^ -o3 $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o3 $@ $<
+	gcc $(CFLAGS) -c $<
 
 clean:
-	rm -f $(EXECUTABLE) $(OBJ)
+	rm $(EXECUTABLE) $(OBJ)
