@@ -231,7 +231,7 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 */
 int rule_table_parser_in_init(rule_t *table, list *l)
 {
-	MAIN_ERR_CHECK((table == malloc(sizeof(rule_t) * l->size)) == NULL, printf("%s", MAIN_FILE_FORMAT_ERR_MSG););
+	MAIN_ERR_CHECK((table = malloc(sizeof(rule_t) * l->size)) == NULL, printf("%s", MAIN_FILE_FORMAT_ERR_MSG););
 	
 	list_node *node = l->head;
 	for (size_t i = 0; i < l->size; i++)
