@@ -1,5 +1,5 @@
-#ifndef LINKEDLIST
-#define LINKEDLIST
+#ifndef LIST
+#define LIST
 #include <stdio.h>
 #include <stdlib.h>
 #include "main.h"
@@ -10,7 +10,7 @@ typedef struct list_node
 	struct list_node *next;
 } list_node;
 
-typedef struct
+typedef struct list
 {
 	unsigned int size;
 	list_node *head;
