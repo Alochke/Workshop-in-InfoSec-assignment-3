@@ -215,7 +215,7 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 	// Parse ack.
 	MAIN_ERR_CHECK(parse_member(&rule->ack, (char*[FW_ACK_NUM]){"yes", "no", "any"}, (long[FW_ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
 
-	MAIN_ERR_CHECK(parse_member(&rule_t->action, (char*[FW_ACTIONS_NUM]){"accept, drop"}, (long[FW_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, "", CHAR),)
+	MAIN_ERR_CHECK(parse_member(&rule->action, (char*[FW_ACTIONS_NUM]){"accept, drop"}, (long[FW_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, "", CHAR),)
 	
 	return EXIT_SUCCESS;
 }

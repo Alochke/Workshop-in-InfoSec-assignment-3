@@ -6,6 +6,7 @@
 #include "list.h"
 #include "fw.h"
 #include "main.h"
+#include "rule_table.h"
 
 #define rule_table_parser_list_lines_EXIT_FAILURE -1
 
