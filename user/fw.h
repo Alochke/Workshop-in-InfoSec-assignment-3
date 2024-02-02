@@ -30,7 +30,7 @@ typedef enum {
 #define FW_PORT_ANY			(0)
 #define FW_PORT_ABOVE_1023	1024 // The value of a port member in a rule_t in case the rule_t represents a rule where a matching port number is every port above 1023
 #define FW_DIRECTIONS_NUM 3 // The number of possible values for the direction member of a rule_t.
-#define FW_PROT_NUM 5 // The number of possible values for the prot member of a rulet_t.
+#define FW_PROTS_NUM 5 // The number of possible values for the prot member of a rulet_t.
 #define FW_ACK_NUM 3 // The number of possible values for the ack member of a rulet_t.
 #define FW_ACTIONS_NUM 2 // The number of possible values for the action member of a rulet_t.
 

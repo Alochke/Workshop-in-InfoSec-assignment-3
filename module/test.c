@@ -23,7 +23,7 @@ int main()
 
     fgets(buf2, 60, file);
 
-    printf("%s\n", buf2);
+    printf("%s", buf2);
 
     fclose(file);
     return 0;

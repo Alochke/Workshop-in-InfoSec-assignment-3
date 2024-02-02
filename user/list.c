@@ -1,23 +1,27 @@
-#include "linked_list.h"
+#include "list.h"
+
 /*
 	Initializes l.
 
 	@l: The initalized list.
 */
-void list_init(linked_list *l)
+int list_init(list *l)
 {
+	MAIN_ERR_CHECK((l = malloc(sizeof(list))) == NULL,)
 	l->head = NULL;
 	l->size = 0;
+	return EXIT_SUCCESS;
 }
+
 /*
 	Inserts node into l from the head-end of l.
 
 	@l: The list to which l will be inserted.
 	@node: The which will be inserted.
 
-	returns: A pointer with node's address.
+	returns: A pointer with node's address, or NULL if the initilization failed.
 */
-list_node *list_insert(linked_list *l, list_node *node)
+list_node *list_insert(list *l, list_node *node)
 {
 	node->next = l->head;
 	if (l->head != NULL)
@@ -29,15 +33,16 @@ list_node *list_insert(linked_list *l, list_node *node)
 	l->size++;
 	return node;
 }
+
 /*
-	Inserts to l a node that will be initalized with key as its key.
+	Inserts to l a node that will be initalized with key as its key, from the head-end.
 
 	@l: The list we'll insert the key to.
 	@key: This will be the key of the isnerted node.
 
-	returns: A pointer with the insrted node's address.
+	returns: A pointer with the insrted node's address, or NULL if the initilization failed.
 */
-list_node *list_insert_key(linked_list *l, char *key)
+list_node *list_insert_key(list *l, char *key)
 {
 	list_node *node = (list_node *)malloc(sizeof(list_node));
 	if (node == NULL)
@@ -48,13 +53,14 @@ list_node *list_insert_key(linked_list *l, char *key)
 
 	return list_insert(l, node);
 }
+
 /*
 	Removes p from l.
 
 	@l: p's list.
 	@p: The node we'll remove from l.
 */
-void list_delete(linked_list *l, list_node *p)
+void list_delete(list *l, list_node *p)
 {
 	if (p->prev != NULL)
 	{
@@ -68,12 +74,13 @@ void list_delete(linked_list *l, list_node *p)
 		(p->next)->prev = p->prev;
 	l->size--;
 }
+
 /*
 	Frees l and all of its nodes.
 
 	@l: The freed list.
 */
-void list_destroy(linked_list *l)
+void list_destroy(list *l)
 {
 	list_node *temp;
 	if(l==NULL)
@@ -87,13 +94,15 @@ void list_destroy(linked_list *l)
 		free(temp->key);
 		free(temp);
 	}
+	free(l);
 }
+
 /*
 	Reverses l.
 
 	@l: The reversed list.
 */
-void list_reverse(linked_list *l)
+void list_reverse(list *l)
 {
 	list_node *prev = NULL;
 	list_node *curr = l->head;
@@ -107,5 +116,3 @@ void list_reverse(linked_list *l)
 	}
 	l->head = prev;
 }
-
-

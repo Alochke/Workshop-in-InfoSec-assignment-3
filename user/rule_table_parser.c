@@ -1,45 +1,41 @@
 #include "rule_table_parser.h"
-#include <arpa/inet.h>
 
 #define SUBNET_SECTIONS_NUM 5
 #define SUBNET_DOT_NUMBER 3
-#define DECIMAL_BASIS 10 // For strtol
+#define DECIMAL_BASIS 10 // For strtol.
 #define MIN_BYTE_VAL 0
 #define MAX_BYTE_VAL 255
 #define NUMBER_OF_BYTES_IN_IP 4
 #define MAX_MASK_LEN 32
 #define MIN_USHORT_VAL 0
 #define MAX_USHORST_VAL 65535
-#define ANY_SETTING 0 
+#define ANY_SETTING 0
 
 /*
 	Parses FILE into a list where every node has a line of stream as it's token.
-	assumptions: stream wasn't read beforehand, l is empty.
+	Assumptions: stream wasn't read beforehand, l is empty.
 
 	@l: Will have all of stream's lines stored as the keys of nodes.
-	@stram: The address of the FILE will read the lines from.
+	@stream: The address of the FILE will read the lines from.
 
-	Returns: Amount of lines read on success, -1 upon Failure.
+	Returns: Amount of lines read on success, 1 upon Failure.
 */
-int rule_table_parser_in_line_linked_list(linked_list *l, FILE *stream)
+int rule_table_parser_list_lines(list *l, FILE *stream)
 {
     char *datapoint_line = NULL;
-    size_t lines_read = 0;
 	size_t length = 0;
 	int nread;
 
 	while ((nread = getline(&datapoint_line, &length, stream)) != EOF)
 	{
 		char *temp = (char *)malloc(sizeof(char) * nread);
-		MAIN_SIMPLE_ERR_CHECK(temp == NULL)
+		MAIN_ERR_CHECK(temp == NULL, printf("%s", MAIN_MALLOC_ERR_MSG);)
 		
 		strncpy(temp, datapoint_line, nread);
-		MAIN_ERR_CHECK(!list_insert_key(l, temp), free(temp))
-
-		lines_read++;
+		MAIN_ERR_CHECK(list_insert_key(l, temp) == NULL, free(temp); printf("%s", MAIN_MALLOC_ERR_MSG);)
 	}
 	free(datapoint_line);
-	return lines_read;
+	return EXIT_SUCCESS;
 }
 
 /*
@@ -62,7 +58,7 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 
 	// Dealing with "any"
 	token = strtok(NULL, " ");
-	MAIN_SIMPLE_ERR_CHECK(token == NULL)
+	MAIN_ERR_CHECK(token == NULL,)
 	if (!strcmp(token, "any"))
 	{
 		ip = ANY_SETTING;
@@ -87,23 +83,23 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 		else
 			token = strtok_r(NULL, NULL, &saveptr);
 		
-		MAIN_SIMPLE_ERR_CHECK(token == NULL)
+		MAIN_ERR_CHECK(token == NULL,)
 
-		MAIN_SIMPLE_ERR_CHECK(token[0] == " ")
+		MAIN_ERR_CHECK(token[0] == " ",)
 
 		char* end;
 		temp_long = strtol(token, &end, DECIMAL_BASIS);
-		MAIN_SIMPLE_ERR_CHECK(*end == '\0');
+		MAIN_ERR_CHECK(*end == '\0',)
 
-		MAIN_SIMPLE_ERR_CHECK(MIN_BYTE_VALUE > temp_long)
+		MAIN_ERR_CHECK(MIN_BYTE_VAL > temp_long,)
 		if (i < NUMBER_OF_BYTES_IN_IP)
 		{
-			MAIN_SIMPLE_ERR_CHECK(MAX_BYTE_VAL < temp_long)
+			MAIN_ERR_CHECK(MAX_BYTE_VAL < temp_long,)
 			((char*) ip)[NUMBER_OF_BYTES_IN_IP- i] = (char) temp_long;
 		}
 		else
 		{
-			MAIN_SIMPLE_ERR_CHECK(MAX_MASK_LEN < temp_long);
+			MAIN_ERR_CHECK(MAX_MASK_LEN < temp_long,);
 			*prefix_size = (char) temp_long;
 		}
 	}
@@ -125,8 +121,8 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 int parse_port(unsigned short* port)
 {
 	char* token;
-	token = strtok(NULL, " ")
-	MAIN_SIMPLE_ERR_CHECK(token == NULL)
+	token = strtok(NULL, " ");
+	MAIN_ERR_CHECK(token == NULL,)
 	if(!strcmp("any", token))
 		*port = 0;
 	else if(!strcmp(">1023", token))
@@ -137,13 +133,12 @@ int parse_port(unsigned short* port)
 	{
 		// The section should be a number.
 		char* end;
-		long temp_long = strtol(token, &end, DECIMAL_BASIS)
-		MAIN_SIMPLE_ERR_CHECK(*end == '\0');
-		MAIN_SIMPLE_ERR_CHECK(MIN_BYTE_VALUE > temp_long || temp_long > MAX_USHORST_VAL)
-		rule->src_port = htons((short) temp_long)
+		long temp_long = strtol(token, &end, DECIMAL_BASIS);
+		MAIN_ERR_CHECK(*end == '\0' || MIN_BYTE_VAL > temp_long || temp_long > MAX_USHORST_VAL,);
+		*port = htons((short) temp_long);
 	}
 
-	return EXIT_SUCCESS
+	return EXIT_SUCCESS;
 }
 
 /*
@@ -155,14 +150,14 @@ enum type{
 };
 
 /*
-	A refactorization of the proccess of filling parsing a token from a rule line and
-	filling the member field of the corresponding rule_t.
+	A refactorization of the procedure of parsing a token from a rule line and
+	giving the member field of the corresponding rule_t with the appropriate value.
 
 	@member: The filled member of the rule_t corresponding to the rule parsed.
 	@keywords: The keywords that can be found within the field being parsed, all should be NULL terminated strings.
 		s.t. keywords[i] means that member should be given values[i].
 	@values: The applicable values for member.
-	@delimeters: The delimeters we'll use to parse the relevant member.
+	@delimeters: The delimeters we'll use to parse the relevant member, concatenated within a string.
 	@t: Will be used to determine the type of member.
 
 	Returns: 0 on success (which is equivalent to the field parsed having correct syntax.), 1 on failure.
@@ -170,18 +165,18 @@ enum type{
 int parse_member(void *member, char* keywords[], void *values[], int len, char* delimiters, enum type t)
 {
 	char *token = strtok(NULL, delimiters);
-	MAIN_SIMPLE_ERR_CHECK(token == NULL)
-	for(int i = 0; i < len, i++)
+	MAIN_ERR_CHECK(token == NULL,)
+	for(int i = 0; i < len; i++)
 		if (!strcmp(keywords[i], token))
 		{
 			switch (t)
 			{
-			case CHAR:
-				(char*) 
-				break;
-			case 
+				case CHAR:
+					*((char*) member) = *((char*) values[i]);
+					break;
+				case LONG:
+					*((long*) member) = *((long*) values[i]);
 			}
-			*member = values[i];
 			return EXIT_SUCCESS;
 		}
 	return EXIT_FAILURE;
@@ -200,43 +195,49 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 
 	// Parse rule name.
 	token = strtok(line, " ");
-	MAIN_SIMPLE_ERR_CHECK(token == NULL)
-	MAIN_SIMPLE_ERR_CHECK(strlen(token) > 20)
+	MAIN_ERR_CHECK(token == NULL,)
+	MAIN_ERR_CHECK(strlen(token) > 20,)
 	strcpy(rule->rule_name, token);
 
 	// Parse directions.
-	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->direction,{"in", "out", "any"}, {DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " "));
+	MAIN_ERR_CHECK(parse_member(&rule->direction, {"in", "out", "any"}, {DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " ", LONG),);
 	
 	// Parse subnets.
-	MAIN_SIMPLE_ERR_CHECK(parse_subnet(token, &rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask))
-	MAIN_SIMPLE_ERR_CHECK(parse_subnet(token, &rule->dst_ip, &rule->dst_prefix_size, &rule->dst_prefix_mask))
+	MAIN_ERR_CHECK(parse_subnet(token, &rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask),)
+	MAIN_ERR_CHECK(parse_subnet(token, &rule->dst_ip, &rule->dst_prefix_size, &rule->dst_prefix_mask),)
 
 	// Parse protocol.
-	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->protocol, {"TCP", "UDP", "ICMP", "other", "any"}, {htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " "))
+	MAIN_ERR_CHECK(parse_member(&rule->protocol, {"TCP", "UDP", "ICMP", "other", "any"}, {htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " ", CHAR),)
 
-	MAIN_SIMPLE_ERR_CHECK(parse_port(&rule->src_port))
-	MAIN_SIMPLE_ERR_CHECK(parse_port(&rule->dst_port))
+	MAIN_ERR_CHECK(parse_port(&rule->src_port),)
+	MAIN_ERR_CHECK(parse_port(&rule->dst_port),)
 
 	// Parse ack.
-	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->ack, {"yes", "no", "any"}, {ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " "))
+	MAIN_ERR_CHECK(parse_member(&rule->ack, {"yes", "no", "any"}, {ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
 
-	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule_t->action, {"accept, drop"}, {NF_ACCEPT, NF_DROP}, ))
+	MAIN_ERR_CHECK(parse_member(&rule_t->action, {"accept, drop"}, {NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, NULL, CHAR),)
 	
-	// Parse action.
-	token = strtok(NULL, NULL);
-	MAIN_SIMPLE_ERR_CHECK(token == NULL)
-	if (!strcmp(token, "accept"))
-	{
-		rule->action = NF_ACCEPT;
-	}
-	else if(!strcmp(token, "drop"))
-	{
-		rule->ack = NF_DROP;
-	}
-	else
-		return EXIT_FAILURE
-	
-	return MAIN_SUCEESS
+	return EXIT_SUCCESS;
 }
 
+/*
+	Parses the rule table from the list l, which is assumed to have all lines of the rules file as the keys of its nodes.
 
+	Parameters:
+		- table (rule_t*): Pointing to the base of an array of rule_ts representing the rule table we're configuring.
+		- l (list*): A list which is assumed to have all lines of the rules file as the keys of its nodes.
+
+	Returns: 0 on success, else, returns 1.
+*/
+int rule_table_parser_in_init(rule_t *table, list *l)
+{
+	MAIN_ERR_CHECK((table == malloc(sizeof(rule_t) * l->size)) == NULL, printf("%s", MAIN_FILE_FORMAT_ERR_MSG););
+	
+	list_node *node = l->head;
+	for (size_t i = 0; i < l->size; i++)
+	{
+		MAIN_ERR_CHECK(rule_table_parser_in_line(&table[i], node->key), printf("%s", MAIN_FILE_FORMAT_ERR_MSG);)
+	}
+	
+	return EXIT_SUCCESS;
+}

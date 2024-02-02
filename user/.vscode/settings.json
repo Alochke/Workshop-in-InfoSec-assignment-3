@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "rule_table_parser.h": "c",
+        "list.h": "c"
+    }
+}
