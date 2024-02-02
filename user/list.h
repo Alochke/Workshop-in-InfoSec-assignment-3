@@ -15,6 +15,7 @@ typedef struct
 	unsigned int size;
 	list_node *head;
 } list;
+
 int list_init(list *);
 list_node *list_insert(list *, list_node *);
 list_node *list_insert_key(list *, char *);
