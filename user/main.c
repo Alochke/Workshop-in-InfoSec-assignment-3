@@ -60,6 +60,8 @@ int main(int argc, char* argv[])
         {
             /* code */
         }
+        else
+            printf("%s", MAIN_ARG_ERR_MSG);
     }
     else
     {
@@ -84,9 +86,9 @@ int main(int argc, char* argv[])
         fwrite(rule_table, sizeof(rule_t), lst->size, fptr);
         
         MAIN_ERR_CHECK(ferror(fptr), cleanup(FILE_OPENED); printf("%s", MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG);)
-    }
 
-    cleanup(FILE_OPENED);
+        cleanup(FILE_OPENED);
+    }
 
     return EXIT_SUCCESS;
 }
