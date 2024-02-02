@@ -7,7 +7,7 @@ EXECUTABLE = main
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
-	gcc $(CFLAGS) $^ -o3 $@
+	gcc $(CFLAGS) $^ -o $@
 
 %.o: %.c
 	gcc $(CFLAGS) -c $<
