@@ -162,7 +162,7 @@ enum type{
 
 	Returns: 0 on success (which is equivalent to the field parsed having correct syntax.), 1 on failure.
 */
-int parse_member(void *member, char* keywords[], void *values[], int len, char* delimiters, enum type t)
+int parse_member(void *member, char* keywords[], long values[], int len, char* delimiters, enum type t)
 {
 	char *token = strtok(NULL, delimiters);
 	MAIN_ERR_CHECK(token == NULL,)
@@ -172,10 +172,10 @@ int parse_member(void *member, char* keywords[], void *values[], int len, char* 
 			switch (t)
 			{
 				case CHAR:
-					*((char*) member) = *((char*) values[i]);
+					*((char*) member) = (char) values[i];
 					break;
 				case LONG:
-					*((long*) member) = *((long*) values[i]);
+					*((long*) member) = values[i];
 			}
 			return EXIT_SUCCESS;
 		}
@@ -200,22 +200,22 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 	strcpy(rule->rule_name, token);
 
 	// Parse directions.
-	MAIN_ERR_CHECK(parse_member(&rule->direction, (char*[FW_DIRECTIONS_NUM]){"in", "out", "any"}, (void*[FW_DIRECTIONS_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " ", LONG),);
+	MAIN_ERR_CHECK(parse_member(&rule->direction, (char*[FW_DIRECTIONS_NUM]){"in", "out", "any"}, (long[FW_DIRECTIONS_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " ", LONG),);
 	
 	// Parse subnets.
 	MAIN_ERR_CHECK(parse_subnet(token, &rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask),)
 	MAIN_ERR_CHECK(parse_subnet(token, &rule->dst_ip, &rule->dst_prefix_size, &rule->dst_prefix_mask),)
 
 	// Parse protocol.
-	MAIN_ERR_CHECK(parse_member(&rule->protocol, (char*[FW_PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"}, (void*[FW_PROTS_NUM]){htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " ", CHAR),)
+	MAIN_ERR_CHECK(parse_member(&rule->protocol, (char*[FW_PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"}, (long[FW_PROTS_NUM]){htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " ", CHAR),)
 
 	MAIN_ERR_CHECK(parse_port(&rule->src_port),)
 	MAIN_ERR_CHECK(parse_port(&rule->dst_port),)
 
 	// Parse ack.
-	MAIN_ERR_CHECK(parse_member(&rule->ack, (char*[FW_ACK_NUM]){"yes", "no", "any"}, (void*[FW_ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
+	MAIN_ERR_CHECK(parse_member(&rule->ack, (char*[FW_ACK_NUM]){"yes", "no", "any"}, (long[FW_ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
 
-	MAIN_ERR_CHECK(parse_member(&rule_t->action, (char*[FW_ACTIONS_NUM]){"accept, drop"}, (void*[FW_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, "", CHAR),)
+	MAIN_ERR_CHECK(parse_member(&rule_t->action, (char*[FW_ACTIONS_NUM]){"accept, drop"}, (long[FW_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, "", CHAR),)
 	
 	return EXIT_SUCCESS;
 }
