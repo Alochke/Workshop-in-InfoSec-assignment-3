@@ -81,11 +81,11 @@ int parse_subnet(char* prev, unsigned int* ip, char* prefix_size, unsigned int* 
 		else if(i == SUBNET_DOT_NUMBER)
 			token = strtok_r(NULL, "/", &saveptr);
 		else
-			token = strtok_r(NULL, NULL, &saveptr);
+			token = strtok_r(NULL, "", &saveptr);
 		
 		MAIN_ERR_CHECK(token == NULL,)
 
-		MAIN_ERR_CHECK(token[0] == " ",)
+		MAIN_ERR_CHECK(token[0] == ' ',)
 
 		char* end;
 		temp_long = strtol(token, &end, DECIMAL_BASIS);
@@ -200,22 +200,22 @@ int rule_table_parser_in_line(rule_t* rule, char* line){
 	strcpy(rule->rule_name, token);
 
 	// Parse directions.
-	MAIN_ERR_CHECK(parse_member(&rule->direction, {"in", "out", "any"}, {DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " ", LONG),);
+	MAIN_ERR_CHECK(parse_member(&rule->direction, (char*[FW_DIRECTIONS_NUM]){"in", "out", "any"}, (void*[FW_DIRECTIONS_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}, FW_DIRECTIONS_NUM , " ", LONG),);
 	
 	// Parse subnets.
 	MAIN_ERR_CHECK(parse_subnet(token, &rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask),)
 	MAIN_ERR_CHECK(parse_subnet(token, &rule->dst_ip, &rule->dst_prefix_size, &rule->dst_prefix_mask),)
 
 	// Parse protocol.
-	MAIN_ERR_CHECK(parse_member(&rule->protocol, {"TCP", "UDP", "ICMP", "other", "any"}, {htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " ", CHAR),)
+	MAIN_ERR_CHECK(parse_member(&rule->protocol, (char*[FW_PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"}, (void*[FW_PROTS_NUM]){htonl(PROT_TCP), htonl(PROT_UDP), htonl(PROT_ICMP), htonl(PROT_OTHER), htonl(PROT_ANY)}, FW_PROTS_NUM, " ", CHAR),)
 
 	MAIN_ERR_CHECK(parse_port(&rule->src_port),)
 	MAIN_ERR_CHECK(parse_port(&rule->dst_port),)
 
 	// Parse ack.
-	MAIN_ERR_CHECK(parse_member(&rule->ack, {"yes", "no", "any"}, {ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
+	MAIN_ERR_CHECK(parse_member(&rule->ack, (char*[FW_ACK_NUM]){"yes", "no", "any"}, (void*[FW_ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}, FW_ACK_NUM, " ", LONG),)
 
-	MAIN_ERR_CHECK(parse_member(&rule_t->action, {"accept, drop"}, {NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, NULL, CHAR),)
+	MAIN_ERR_CHECK(parse_member(&rule_t->action, (char*[FW_ACTIONS_NUM]){"accept, drop"}, (void*[FW_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}, FW_ACTIONS_NUM, "", CHAR),)
 	
 	return EXIT_SUCCESS;
 }

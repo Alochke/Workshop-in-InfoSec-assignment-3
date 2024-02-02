@@ -2,6 +2,7 @@
 #define RULE_TABLE_PARSER
 #include <unistd.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 #include "list.h"
 #include "fw.h"
 #include "main.h"
