@@ -2,11 +2,11 @@
 #define RULE_TABLE_PARSER
 #include <unistd.h>
 #include <stdlib.h>
-#include <arpa/inet.h>
+#include <arpa/inet.h> // For htol/htoc
+#include <linux/netfilter.h>
 #include "list.h"
 #include "fw.h"
 #include "main.h"
-#include "rule_table.h"
 
 #define rule_table_parser_list_lines_EXIT_FAILURE -1
 
