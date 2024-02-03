@@ -5,11 +5,16 @@
 #define NO_ARGS 1
 #define FIRST_ARG 1
 #define LAST_ARG 2
-#define RULE_TABLE_ATTRIBUTE "/sys/class/fw/rules/rules"
+#define RULE_TABLE_ATTRIBUTE "MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG"
+#define SYSCALL_FAIL_RETURN -1
 
 FILE *fptr; // This will be used in case we're loading rules from a file.
 list *lst; // We'll use this list to structure the data.
 rule_t *rule_table;
+int fd; // This fd will be of use to us when we'll write the rule configutation to RULE_TABLE_ATTRIBUTE,
+// I wanted to use a fd and not a FILE because I know on write sysfs expects the entire buffer to be passed during the first write,
+// and a library function can spread the writing as it sees fit.
+// Sources: https://docs.kernel.org/filesystems/sysfs.html
 
 /*
     The next enum is for the cleanup function in main.c. Items represent the state of the module initialization the module is currently at.
@@ -37,6 +42,8 @@ static void cleanup(enum stage stg)
         case MID_OPENING:
         case LIST_INIT:
             list_destroy(lst);
+            if(stg == MID_OPENING)
+                close(fd);
         case RULE_TABLE_INIT:
             free(rule_table);
     }
@@ -79,13 +86,11 @@ int main(int argc, char* argv[])
         MAIN_ERR_CHECK(rule_table_parser_in_init(rule_table, lst),)
 
         fclose(fptr);
-        fptr = fopen(RULE_TABLE_ATTRIBUTE, "w");
+        fd = open(RULE_TABLE_ATTRIBUTE, O_WRONLY);
 
-        MAIN_ERR_CHECK(fptr == NULL, cleanup(MID_OPENING); printf("%s", MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG);)
-
-        fwrite(rule_table, sizeof(rule_t), lst->size, fptr);
+        MAIN_ERR_CHECK(fd == SYSCALL_FAIL_RETURN, cleanup(MID_OPENING); printf("%s", MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG);)
         
-        MAIN_ERR_CHECK(ferror(fptr), cleanup(FILE_OPENED); printf("%s", MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG);)
+        MAIN_ERR_CHECK(write(fd, rule_table, (lst->size) * sizeof(rule_t)) == SYSCALL_FAIL_RETURN, cleanup(FILE_OPENED); printf("%s", MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG);)
 
         cleanup(FILE_OPENED);
     }

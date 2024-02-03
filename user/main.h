@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "list.h"
 #include "rule_table_parser.h"
 
