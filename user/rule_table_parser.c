@@ -16,6 +16,7 @@
 #define ACK_NUM 3 // The number of possible values for the ack member of a rulet_t.
 #define ACTIONS_NUM 4 // The number of possible non-file-terminating specifiers for the action of a rule in a rule table configuration file.
 #define END_ACTIONS_NUM 2 // The number of possible file-terminating specifiers for the action of a rule in a rule table configuration file.
+#define MAX_RULES 50 // Maximal amount of rules in a rule table.
 #define LAST_NODE_INDX(list) (list->size - 1)
 #define SIZE_PLUS_NULL(x) (strlen(x) + 1)
 
@@ -249,6 +250,8 @@ int rule_table_parser_in_init(rule_t *table, list *l)
 {
 	MAIN_ERR_CHECK((table = malloc(sizeof(rule_t) * l->size)) == NULL, printf("%s", MAIN_MALLOC_ERR_MSG););
 	
+	MAIN_ERR_CHECK(l->size > MAX_RULES, printf("%s", MAIN_FILE_FORMAT_ERR_MSG);)
+
 	list_node *node = l->head;
 	for (size_t i = 0; i < l->size; i++)
 	{
