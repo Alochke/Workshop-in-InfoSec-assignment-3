@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "list.h"
-#include "rule_table_parser.h"
+#include "rule_table.h"
 
 #define MAIN_ARG_ERR_MSG "Wrong arguments, you've entered.\nThe correct arguments are:\n•show_rules\n•load_rules <path_to_rules_file>\n•show_log\n•clear_log\n"
 #define MAIN_FILE_OPEN_ERR_MSG "Wrong file path, you've given. Or permissions for it, you lack.\n"

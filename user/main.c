@@ -5,7 +5,7 @@
 #define NO_ARGS 1
 #define FIRST_ARG 1
 #define LAST_ARG 2
-#define RULE_TABLE_ATTRIBUTE "/sys/class/fw/rules/rules"
+#define RULE_TABLE_ATTRIBUTE "idk"
 #define SYSCALL_FAIL_RETURN -1
 
 FILE *fptr; // This will be used in case we're loading rules from a file.
@@ -79,20 +79,20 @@ int main(int argc, char* argv[])
 
         MAIN_ERR_CHECK(list_init(&lst), cleanup(FILE_OPENED); printf("%s", MAIN_MALLOC_ERR_MSG);)
         
-        MAIN_ERR_CHECK(rule_table_parser_list_lines(lst, fptr), cleanup(LIST_INIT);)
+        MAIN_ERR_CHECK(rule_table_list_lines(lst, fptr), cleanup(LIST_INIT);)
 
         list_reverse(lst);
 
-        MAIN_ERR_CHECK(rule_table_parser_in_init(rule_table, lst),)
+        MAIN_ERR_CHECK(rule_table_in_init(&rule_table, lst),)
 
         fclose(fptr);
         fd = open(RULE_TABLE_ATTRIBUTE, O_WRONLY);
 
         MAIN_ERR_CHECK(fd == SYSCALL_FAIL_RETURN, cleanup(MID_OPENING); printf("%s", MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG);)
         
-        MAIN_ERR_CHECK(write(fd, rule_table, (lst->size) * sizeof(rule_t)) == SYSCALL_FAIL_RETURN, cleanup(FILE_OPENED); printf("%s", MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG);)
+        MAIN_ERR_CHECK(write(fd, rule_table, (lst->size) * sizeof(rule_t)) == SYSCALL_FAIL_RETURN, cleanup(MID_OPENING); printf("%s", MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG);)
 
-        cleanup(FILE_OPENED);
+        cleanup(MID_OPENING);
     }
 
     return EXIT_SUCCESS;
