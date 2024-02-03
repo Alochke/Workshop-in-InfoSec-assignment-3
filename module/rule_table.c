@@ -62,8 +62,8 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         rule_table[i].src_prefix_mask = htonl(((rule_t*)buf)[i].src_prefix_mask);
         rule_table[i].dst_ip = htonl(((rule_t*)buf)[i].dst_ip);
         rule_table[i].dst_prefix_mask = htonl(((rule_t*)buf)[i].dst_prefix_mask);
-        rule_table[i].src_port = htos(((rule_t*)buf)[i].src_port);
-        rule_table[i].dst_port = htos(((rule_t*)buf)[i].dst_port);
+        rule_table[i].src_port = htons(((rule_t*)buf)[i].src_port);
+        rule_table[i].dst_port = htons(((rule_t*)buf)[i].dst_port);
     }
     
     rules_num = count / sizeof(rule_t);
