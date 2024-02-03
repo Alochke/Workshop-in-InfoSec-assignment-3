@@ -5,7 +5,7 @@
 #define NO_ARGS 1
 #define FIRST_ARG 1
 #define LAST_ARG 2
-#define RULE_TABLE_ATTRIBUTE "idk"
+#define RULE_TABLE_ATTRIBUTE "/sys/class/fw/rules/rules"
 #define SYSCALL_FAIL_RETURN -1
 
 FILE *fptr; // This will be used in case we're loading rules from a file.
