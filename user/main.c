@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         MAIN_ERR_CHECK(rule_table_parser_in_init(rule_table, lst),)
 
         fclose(fptr);
-        fptr = fopen(RULE_TABLE_ATTRIBUTE, "r");
+        fptr = fopen(RULE_TABLE_ATTRIBUTE, "w");
 
         MAIN_ERR_CHECK(fptr == NULL, cleanup(MID_OPENING); printf("%s", MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG);)
 

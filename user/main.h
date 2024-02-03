@@ -11,7 +11,7 @@
 #define MAIN_MALLOC_ERR_MSG "Failed, is the allocation.\n"
 #define MAIN_FILE_FORMAT_ERR_MSG "Wrong format, the file you've given is in.\n"
 #define MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG "Failed openning /sys/class/fw/rules/rules.\n"
-#define MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG "Failed writing to ./sys/class/fw/rules/rules\n"
+#define MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG "Writing to ./sys/class/fw/rules/rules, the program failed.\n"
 
 #define MAIN_ERR_CHECK(condition, extra_code){  \
     if(condition){                              \
