@@ -46,18 +46,24 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 
     Transfers count bytes from buf to rule_table, will error in case count > RULE_TABLE_SIZE.
 
-    Returns: -1 on failure, count on success.
+    Returns: -1 on failure, (count / sizeof(rule_t)) on success.
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
     size_t i; // For loop index.
 
-    // The trinary operator is for maximal migratability, I know it's not mandatory and I could replace it with RULE_TABLE_SIZE for every x86 machine, including the fw vm.
-    NO_CLEANUP_ERR_CHECK(count > ((RULE_TABLE_SIZE < PAGE_SIZE) ? RULE_TABLE_SIZE : PAGE_SIZE), SIZE_ERR_MSG)
+    // This is fine because RULE_TABLE_SIZE < PAGE_SIZE.
+    NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
     
-    for (i = 0; i < count / sizeof(rule_t); i++)
+    for(i = 0; i < count / sizeof(rule_t); i++)
     {
         rule_table[i] = ((rule_t*)buf)[i];
+        rule_table[i].src_ip = htonl(((rule_t*)buf)[i].src_ip);
+        rule_table[i].src_prefix_mask = htonl(((rule_t*)buf)[i].src_prefix_mask);
+        rule_table[i].dst_ip = htonl(((rule_t*)buf)[i].dst_ip);
+        rule_table[i].dst_prefix_mask = htonl(((rule_t*)buf)[i].dst_prefix_mask);
+        rule_table[i].src_port = htos(((rule_t*)buf)[i].src_port);
+        rule_table[i].dst_port = htos(((rule_t*)buf)[i].dst_port);
     }
     
     rules_num = count / sizeof(rule_t);

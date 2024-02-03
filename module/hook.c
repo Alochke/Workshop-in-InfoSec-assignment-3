@@ -56,7 +56,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     Returns: 0 on MAIN_SUCEESS and -1 in case of failure.
 */
 int hook_init(void)
-{   
+{
     MAIN_INIT_ERR_CHECK((hook = kmalloc(sizeof(struct nf_hook_ops), GFP_KERNEL)) == NULL, FIRST, "kmalloc")
 
     (*hook).pf = PF_INET;                     /* IPv4 */

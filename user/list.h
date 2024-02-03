@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define LIST_LAST_NODE_INDX(list) (list->size - 1)
+
 typedef struct list_node
 {
 	char *key;

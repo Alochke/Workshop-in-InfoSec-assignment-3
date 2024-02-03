@@ -3,11 +3,11 @@
 /*
 	Initializes l.
 
-	@l: The initalized list.
+	- l (list**): The initalized list.
 */
 int list_init(list **l)
 {
-	MAIN_ERR_CHECK((*l = malloc(sizeof(list))) == NULL,)
+	MAIN_SIMPLE_ERR_CHECK((*l = malloc(sizeof(list))) == NULL)
 	(*l)->head = NULL;
 	(*l)->size = 0;
 	return EXIT_SUCCESS;
@@ -16,8 +16,8 @@ int list_init(list **l)
 /*
 	Inserts node into l from the head-end of l.
 
-	@l: The list to which l will be inserted.
-	@node: The which will be inserted.
+	- l (list*): The list to which l will be inserted.
+	- node (node*): The which will be inserted.
 
 	returns: A pointer with node's address, or NULL if the initilization failed.
 */
@@ -37,8 +37,8 @@ list_node *list_insert(list *l, list_node *node)
 /*
 	Inserts to l a node that will be initalized with key as its key, from the head-end.
 
-	@l: The list we'll insert the key to.
-	@key: This will be the key of the isnerted node.
+	- l (list*): The list we'll insert the key to.
+	- key (char*): This will be the key of the isnerted node.
 
 	returns: A pointer with the insrted node's address, or NULL if the initilization failed.
 */
@@ -57,8 +57,8 @@ list_node *list_insert_key(list *l, char *key)
 /*
 	Removes p from l.
 
-	@l: p's list.
-	@p: The node we'll remove from l.
+	- l (list*): p's list.
+	- p (list_node*): The node we'll remove from l.
 */
 void list_delete(list *l, list_node *p)
 {
@@ -78,7 +78,7 @@ void list_delete(list *l, list_node *p)
 /*
 	Frees l and all of its nodes.
 
-	@l: The freed list.
+	- l (list*): The freed list.
 */
 void list_destroy(list *l)
 {
@@ -100,7 +100,7 @@ void list_destroy(list *l)
 /*
 	Reverses l.
 
-	@l: The reversed list.
+	- l (list*): The reversed list.
 */
 void list_reverse(list *l)
 {
