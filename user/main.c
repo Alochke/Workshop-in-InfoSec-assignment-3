@@ -51,7 +51,7 @@ static void cleanup(enum stage stg)
 
 int main(int argc, char* argv[])
 {
-    MAIN_ERR_CHECK(argc > MAX_ARGC || argc == NO_ARGS, printf("%s", MAIN_ARG_ERR_MSG);)
+    MAIN_ERR_CHECK(argc > MAX_ARGC || argc <= NO_ARGS, printf("%s", MAIN_ARG_ERR_MSG);)
     
     if (argc == ARGC_FOR_NO_RULE_LOADING)
     {
