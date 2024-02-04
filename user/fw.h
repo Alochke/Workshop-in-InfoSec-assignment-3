@@ -27,7 +27,6 @@ typedef enum {
 // auxiliary values, for your convenience
 #define FW_IP_VERSION		(4)
 #define FW_PORT_ANY			(0)
-#define FW_PORT_ABOVE_1023	1024 // The value of a port member in a rule_t in case the rule_t represents a rule where a matching port number is every port above 1023
 
 // device minor numbers, for your convenience
 typedef enum {

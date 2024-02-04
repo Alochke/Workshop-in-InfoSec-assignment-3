@@ -5,7 +5,7 @@
 #define NO_ARGS 1
 #define FIRST_ARG 1
 #define LAST_ARG 2
-#define RULE_TABLE_ATTRIBUTE "/sys/class/fw/rules/rules"
+#define RULE_TABLE_ATTRIBUTE "idk"
 #define SYSCALL_FAIL_RETURN -1
 #define ERR_CHECK_INIT(condition, state) MAIN_ERR_CHECK(condition, cleanup(state);)
 #define ERR_CHECK_INIT_MSG(condition, state, msg) MAIN_ERR_CHECK(condition, cleanup(state); printf("%s\n", msg);)

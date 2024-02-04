@@ -343,7 +343,7 @@ void deseralize_field(char **field, unsigned int member, char* keywords[], unsig
 		}
 	}
 	// Default value.
-	field[len - 1] = keywords[len - 1];
+	*field = keywords[len - 1];
 }
 
 int rule_table_out_print(FILE* fptr)
