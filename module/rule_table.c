@@ -1,12 +1,13 @@
 #include "rule_table.h"
 
 static rule_t* rule_table = NULL; // A pointer to the table.
-static char rules_num = 0; // The number of rules currently loaded to the table.
+static unsigned char rules_num = 0; // The number of rules currently loaded to the table.
 static struct device* sysfs_device; // The sysfs device.
 
 #define SYSFS_DEVICE "rules" // The name of the sysfs device.
 #define SIZE_ERR_MSG "Rule table loading failed because you provided too much data."
 #define MAX_RULES (50)
+#define RULE_TABLE_DISPLAY_OFFSET 1
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
 #define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
 #define NUMBR_OF_BYTES_TRANSFERED rules_num * sizeof(rule_t)
@@ -25,26 +26,39 @@ enum stage{
 /*
 	The implementation of show.
 
-    Copies rules_num * sizeof(rule_t) from rule_table to buf.
+    Changes the first byte of buf to rule_num, and then writes the rule table to buf[1],
+    while changing the ip and port fields to host-endianness.
     
-    Returns: sizeof(rule_t) * rules_num, which is the amount of bytes copied from the user space program to buf.
+    Returns: ((sizeof(rule_t) * rules_num) + 1), which is the amount of bytes copied to buf.
 */
 static ssize_t display(struct device *dev, struct device_attribute *attr, char *buf)
 {
-    size_t i; // For loop.
+    size_t i; // For loop index.
+
+    buf[0] = rules_num;
+    printk("%d\n", rules_num);
 
     for (i = 0; i < rules_num; i++)
     {
-        ((rule_t*)buf)[i] = rule_table[i];
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i] = rule_table[i];
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_ip = ntohl(rule_table[i].src_ip);
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_ip = ntohl(rule_table[i].dst_ip);
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_port = (_u8) ntohs(rule_table[i].src_port);
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_port = (_u8) ntohs(rule_table[i].dst_port);
+        printk("%d\n", ntohl(rule_table[i].src_ip));
+        printk("%d\n", ntohl(rule_table[i].dst_ip));
+        printk("%d\n",  ntohs(rule_table[i].src_port));
+        printk("%d\n", ntohs(rule_table[i].dst_port));
     }
 
-    return NUMBR_OF_BYTES_TRANSFERED;
+    return NUMBR_OF_BYTES_TRANSFERED + RULE_TABLE_DISPLAY_OFFSET;
 }
 
 /*
 	The implementation of store.
 
-    Transfers count bytes from buf to rule_table, will error in case count > RULE_TABLE_SIZE.
+    Transfers count / sizeof(rule_t) rule_ts from buf to the rule_table while changing their ip, prefix_mask and port fields to network-endianness.
+    Will error in case count > RULE_TABLE_SIZE.
 
     Returns: -1 on failure, (count / sizeof(rule_t)) on success.
 */
