@@ -64,7 +64,10 @@ int main(int argc, char* argv[])
     {
         if (!strcmp(argv[FIRST_ARG], "show_rules"))
         {
-            /* code */
+            fptr = fopen(RULE_TABLE_ATTRIBUTE, "r");
+            ERR_CHECK_INIT_MSG(fptr == NULL, FIRST, MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG)
+            ERR_CHECK_INIT(rule_table_out_print(fptr), FILE_OPENED);
+            fclose(fptr);
         }
         else if (!strcmp(argv[FIRST_ARG], "show_log"))
         {

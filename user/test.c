@@ -3,7 +3,12 @@
 #include <string.h>
 
 int main() {
-    printf("%lu", sizepf);
+    char b = 2;
+    unsigned char a = (char)255;
+    char c = 3;
+
+    long d = (long) a;
+    printf("%d",'\0');
     
 
     return 0;
