@@ -43,8 +43,8 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i] = rule_table[i];
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_ip = ntohl(rule_table[i].src_ip);
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_ip = ntohl(rule_table[i].dst_ip);
-        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_port = (_u8) ntohs(rule_table[i].src_port);
-        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_port = (_u8) ntohs(rule_table[i].dst_port);
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_port = (__u8) ntohs(rule_table[i].src_port);
+        ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_port = (__u8) ntohs(rule_table[i].dst_port);
         printk("%d\n", ntohl(rule_table[i].src_ip));
         printk("%d\n", ntohl(rule_table[i].dst_ip));
         printk("%d\n",  ntohs(rule_table[i].src_port));
