@@ -45,10 +45,6 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_ip = ntohl(rule_table[i].dst_ip);
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_port = (__u8) ntohs(rule_table[i].src_port);
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].dst_port = (__u8) ntohs(rule_table[i].dst_port);
-        printk("%d\n", ntohl(rule_table[i].src_ip));
-        printk("%d\n", ntohl(rule_table[i].dst_ip));
-        printk("%d\n",  ntohs(rule_table[i].src_port));
-        printk("%d\n", ntohs(rule_table[i].dst_port));
     }
 
     return NUMBR_OF_BYTES_TRANSFERED + RULE_TABLE_DISPLAY_OFFSET;
@@ -76,8 +72,8 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         rule_table[i].src_prefix_mask = htonl(((rule_t*)buf)[i].src_prefix_mask);
         rule_table[i].dst_ip = htonl(((rule_t*)buf)[i].dst_ip);
         rule_table[i].dst_prefix_mask = htonl(((rule_t*)buf)[i].dst_prefix_mask);
-        rule_table[i].src_port = htons(((rule_t*)buf)[i].src_port);
-        rule_table[i].dst_port = htons(((rule_t*)buf)[i].dst_port);
+        rule_table[i].src_port = (__u8) htons(((rule_t*)buf)[i].src_port);
+        rule_table[i].dst_port = (__u8) htons(((rule_t*)buf)[i].dst_port);
     }
     
     rules_num = count / sizeof(rule_t);
