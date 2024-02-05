@@ -117,6 +117,8 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM, INT)
             || 
             check_correct(((rule_t*)buf)[i].ack, ACK_VALS, ACK_NUM, INT)
+            ||
+            check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
         )
         {
             return MAIN_FAILURE;
