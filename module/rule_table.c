@@ -77,7 +77,7 @@ enum type{
 
     Returns: 0 if member is correct, else, return -1.
 */
-static inline int check_correct(unsigned int member, unsigned int values[], unsigned int len, enum type t)
+static int check_correct(unsigned int member, unsigned int values[], unsigned int len, enum type t)
 {
     for (size_t i = 0; i < len; i++)
     {
