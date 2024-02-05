@@ -24,7 +24,7 @@
 #define ANY_STR "any"
 #define ABOVE_1023_STR ">1023"
 #define SIZE_PLUS_NULL(x) (strlen(x) + 1)
-#define MASK_FROM_SIZE(mask_size) (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
+#define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1)) : 0)
 #define DIRECTION_STRS (char*[DIRECTION_NUM]){"in", "out", "any"} // The direction specifications that can appear in a rule table configuration file.
 #define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
 #define PROT_STRS (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"} // The protocol specifications that can appear in a rule table configuration file.

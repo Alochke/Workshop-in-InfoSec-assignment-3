@@ -3,13 +3,9 @@
 #include <string.h>
 
 int main() {
-    char idk[3];
+    int a = 1;
 
-    idk[0] = ' ';
-    idk[1] = '\0';
-    idk[2] = 'a';
-
-    printf("%d", 1 == 1);
+    printf("%d\n", a << 32);
     
     
     
