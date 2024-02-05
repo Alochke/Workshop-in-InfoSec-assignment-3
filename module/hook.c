@@ -47,34 +47,22 @@ static void cleanup(enum stage stg)
     }
 }
 
-/*
-    Checks for coruption of the rule_t member- member.
-
-    Parameters:
-    - member (long): The member of the rule_t we check for corruption.
-    - values (long): The list of possible values for member.
-    - len (unsigned int): The length of values.
-*/
-int check_coruption(long member, long values[], unsigned int len)
-{
-    for (size_t i = 0; i < len; i++)
-    {
-        if (member == values[i])
-        {
-            return MAIN_SUCEESS;
-        }
-    }
-    return MAIN_FAILURE;
-}
-
 /* 
     The packet handling procedure.
+
+    Checks if a packet is tcp or udp or icmp, other types of transport protocols are accepted,
+    The tcp, udp and icmp packets are checked against a match for every rules domain from the top of the table to the bottom.
+    When a match is found the hook accepts or drops the packet, according to the rule's verdict,
+    If no match was found, a tcp/udp/icmp packet is dropped.
+
+    Returns: 1 on acceptance, 0 when dropping.
 */
 static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_ops *state)
 {
     /*
         First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary, I added this
-        because I have seen it in the article I added a link to below. I need skb to be unempty for the checks to work so this won't damage anything.
+        because I have seen it in the article I added a link to below.
+        I need skb to be unempty for the checks to work so this won't damage anything.
         https://infosecwriteups.com/linux-kernel-communication-part-1-netfilter-hooks-15c07a5a5c4e
     */
     if (!skb)
