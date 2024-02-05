@@ -64,7 +64,7 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 enum type{
     INT,
     CHAR
-}
+};
 
 /*
     This function is a refactorization of the procedure of checking if a member of a rule_t is correct.
@@ -77,7 +77,7 @@ enum type{
 
     Returns: 0 if member is correct, else, return -1.
 */
-static int check_correct(unsigned int member, unsigned int values[], unsigned int len, enum type t)
+static inline int check_correct(unsigned int member, unsigned int values[], unsigned int len, enum type t)
 {
     for (size_t i = 0; i < len; i++)
     {
