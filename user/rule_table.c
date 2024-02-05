@@ -16,7 +16,6 @@
 #define ACTIONS_NUM 4 // The number of possible non-file-terminating specifiers for the action of a rule in a rule table configuration file.
 #define END_ACTIONS_NUM 2 // The number of possible file-terminating specifiers for the action of a rule in a rule table configuration file.
 #define SUBNET_SECTIONS_NUM 5 // The number of decimal numbers within a subnet specification.
-#define PORT_STRS_NUM 2 // The number of strings that can specify a port value in a rule_t.
 #define MAX_RULES 50 // Maximal amount of rules in a rule table.
 #define MAX_RULE_NAME_LEN 20
 #define MAX_SUBNET_LEN 18
@@ -301,6 +300,27 @@ void  deseralize_subnet(char* subnet, unsigned int ip, unsigned char prefix_size
 }
 
 /*
+	Deseralizes member, which represents a set of ports that a rule applies to, into prot.
+
+	Parameters:
+		- port (char*): The str that will store member deseralized.
+		- member (unsigned short): The seralized value that specifies the set of ports that the deseralized rule_t applies to.
+*/
+void deseralize_port(char* port, unsigned short member)
+{
+	switch(member)
+	{
+		case ANY_SETTING:
+			strcpy(port, ANY_STR);
+			return;
+		case ABOVE_1023:
+			strcpy(port, ABOVE_1023_STR);
+			return;
+	}
+	snprintf(port, MAX_PORT_LEN, "%hu", member);
+}
+
+/*
 	Deseralizes the member- member of the deseralized rule_t, and points the pointer pointed by field to the deseralized data.
 	Decides the correct value by the next assumption,
 	keyword[i] is the correct value for *field iff values[i] == member.
@@ -311,31 +331,14 @@ void  deseralize_subnet(char* subnet, unsigned int ip, unsigned char prefix_size
 	- values ((unsigned int)[]): An array of the possible values of member.
 	- int (size_t): The length of keywords and values.
 */
-int deseralize_field(char **field, unsigned int member, char* keywords[], unsigned int values[], size_t len)
+void deseralize_field(char **field, unsigned int member, char* keywords[], unsigned int values[], size_t len)
 {
 	for (size_t i = 0; i < len; i++)
 	{
 		if (values[i] == member)
 		{
 			*field = keywords[i];
-			return EXIT_SUCCESS;
 		}
-	}
-	return EXIT_FAILURE;
-}
-
-/*
-	Deseralizes member, which represents a set of ports that a rule applies to, into prot.
-
-	Parameters:
-		- port (char*): The str that will store member deseralized.
-		- member (unsigned short): The seralized value that specifies the set of ports that the deseralized rule_t applies to.
-*/
-void deseralize_port(char* port, unsigned short member)
-{
-	if (deseralize_field(&port, member, (char*[PORT_STRS_NUM]){ANY_STR, ABOVE_1023_STR}, (unsigned int[PORT_STRS_NUM]){ANY_SETTING, ABOVE_1023}, PORT_STRS_NUM))
-	{
-		snprintf(port, MAX_PORT_LEN, "%hu", member);
 	}
 }
 
