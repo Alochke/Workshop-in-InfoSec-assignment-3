@@ -60,6 +60,17 @@ static void cleanup(enum stage stg)
 static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_ops *state)
 {
     /*
+        The parameters we'll import from skb.
+    */
+    char* interface;
+    __be32 src_ip, dst_ip;
+    __u8 protocol;
+    __be16 src_port, dst_port;
+    ack_t ack;
+
+    int i; // For loop index.
+    
+    /*
         First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary, I added this
         because I have seen it in the article I added a link to below.
         I need skb to be unempty for the checks to work so this won't damage anything.
@@ -70,16 +81,15 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
         return NF_ACCEPT;
     }
     
-    char* interface = skb->dev->name;
-    __be32 src_ip = ip_hdr(skb)->saddr;
-    __be32 dst_ip = ip_hdr(skb)->daddr;
-    __u8 protocol = ip_hdr(skb)->protocol;
-    __be16 src_port, dst_port;
-    ack_t ack;
+    interface = skb->dev->name;
+    src_ip = ip_hdr(skb)->saddr;
+    dst_ip = ip_hdr(skb)->daddr;
+    protocol = ip_hdr(skb)->protocol;
+    
 
     if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
     {
-        rturn NF_ACCEPT;
+        return NF_ACCEPT;
     }
 
     if (protocol == PROT_TCP)
@@ -94,7 +104,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
         dst_port = udp_hdr(skb)->dest;
     }
 
-    for(int i = 0; i < rule_table_rules_num; i++)
+    for(i = 0; i < rule_table_rules_num; i++)
     {
         if (
             (CHECK_DIRECTION(DIRECTION_IN, IN_STR) || CHECK_DIRECTION(DIRECTION_OUT, OUT_STR))
