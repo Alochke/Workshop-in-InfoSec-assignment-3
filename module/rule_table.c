@@ -11,6 +11,14 @@ static struct device* sysfs_device; // The sysfs device.
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
 #define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
 #define NUMBR_OF_BYTES_TRANSFERED rule_table_rules_num * sizeof(rule_t)
+#define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
+#define DIRECTION_NUM 3 // The number of possible values for the direction member of a rule_t.
+#define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
+#define ACK_NUM 3 // The number of possible values for the ack member of a rulet_t.
+#define ACTION_VALS (unsigned int[END_ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t.
+#define ACTIONS_NUM 2 // The number of possible vlues for the action member of a rule_t.
+#define MAX_MASK_LEN 32
+#define MASK_FROM_SIZE(mask_size) (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
 
 /*
@@ -50,6 +58,43 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 }
 
 /*
+    We'll use that enum in check_correct.
+    It represents the type of member we're checking in a function call.
+*/
+enum type{
+    INT,
+    CHAR
+}
+
+/*
+    This function is a refactorization of the procedure of checking if a member of a rule_t is correct.
+
+    Parameters:
+        - member (unsigned int): The member whose correctness is checked.
+        - values (unsigned int[]): The correct values for member.
+        - len (unsigned int): The length of values.
+        - t (enum type): An enum's member that represents the type of the member we're checking for correctness.
+
+    Returns: 0 if member is correct, else, return -1.
+*/
+static inline int check_correct(unsigned int member, unsigned int values[], unsigned int len, enum type t)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        switch (t)
+        {
+            case INT:
+                if(*((unsigned int*)member) == values[i])
+                    return MAIN_SUCEESS;
+            case CHAR:
+                if(*((unsigned char*)member) == (unsigned char) values[i])
+                    return MAIN_SUCEESS;
+        }
+    }
+    return MAIN_FAILURE;
+}
+
+/*
 	The implementation of store.
 
     Transfers count / sizeof(rule_t) rule_ts from buf to the rule_table while changing their ip, prefix_mask and port fields to network-endianness.
@@ -59,10 +104,28 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-    size_t i; // For loop index.
+    size_t i, j; // For loop index.
 
     // This is fine because RULE_TABLE_SIZE < PAGE_SIZE.
     NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
+
+    //Checking the given values are correct.
+    for(i = 0; i < count / sizeof(rule_t); i++)
+    {
+        if (check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM, INT)
+        || 
+        check_correct(((rule_t*)buf)[i].ack, ACK_VALS, ACK_NUM, INT)
+        ||
+        check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
+        ||
+        (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE((rule_t*)buf[i].src_prefix_size))
+        ||
+        (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE((rule_t*)buf[i].dst_prefix_size))
+        )
+        {
+            return MAIN_FAILURE;
+        }
+    }
     
     for(i = 0; i < count / sizeof(rule_t); i++)
     {
