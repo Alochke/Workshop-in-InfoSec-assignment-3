@@ -47,30 +47,24 @@ static void cleanup(enum stage stg)
     }
 }
 
-enum type{
-    BE32,
-    U8
-}
-
 /*
+    Checks for coruption of the rule_t member- member.
 
+    Parameters:
+    - member (long): The member of the rule_t we check for corruption.
+    - values (long): The list of possible values for member.
+    - len (unsigned int): The length of values.
 */
-int check_coruption(__be32 member, __be32 values[], int len, enum type)
+int check_coruption(long member, long values[], unsigned int len)
 {
     for (size_t i = 0; i < len; i++)
     {
-        switch (t)
+        if (member == values[i])
         {
-            case BE32:
-                if (member == values[i])
-                {
-                    return MAIN_SUCEESS;
-                }
-                break;
-            default:
-                break;
+            return MAIN_SUCEESS;
         }
     }
+    return MAIN_FAILURE;
 }
 
 /* 

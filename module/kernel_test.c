@@ -3,7 +3,7 @@
 static int __init fw_init(void)
 {
     __u8 idk = 255;
-    printk("%d\n", (__be32) idk);
+    printk("%d\n", (long) idk);
     return 0;
 }
 
