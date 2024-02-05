@@ -11,12 +11,12 @@ static struct device* sysfs_device; // The sysfs device.
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
 #define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
 #define NUMBR_OF_BYTES_TRANSFERED rule_table_rules_num * sizeof(rule_t)
-#define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
 #define DIRECTION_NUM 3 // The number of possible values for the direction member of a rule_t.
-#define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
+#define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
 #define ACK_NUM 3 // The number of possible values for the ack member of a rulet_t.
-#define ACTION_VALS (unsigned int[END_ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t.
+#define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
 #define ACTIONS_NUM 2 // The number of possible vlues for the action member of a rule_t.
+#define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t.
 #define MAX_MASK_LEN 32
 #define MASK_FROM_SIZE(mask_size) (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
