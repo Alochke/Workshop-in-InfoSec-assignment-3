@@ -91,7 +91,7 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 	{
 		*ip = ANY_SETTING;
 		*prefix_mask = ANY_SETTING;
-		*prefix_mask = ANY_SETTING;
+		*prefix_size = ANY_SETTING;
 		return EXIT_SUCCESS;
 	}
 
