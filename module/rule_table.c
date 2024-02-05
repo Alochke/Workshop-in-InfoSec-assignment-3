@@ -1,7 +1,7 @@
 #include "rule_table.h"
 
 static rule_t* rule_table = NULL; // A pointer to the table.
-static unsigned char rules_num = 0; // The number of rules currently loaded to the table.
+static unsigned char rule_table_rule_num = 0; // The number of rules currently loaded to the table.
 static struct device* sysfs_device; // The sysfs device.
 
 #define SYSFS_DEVICE "rules" // The name of the sysfs device.
@@ -10,7 +10,7 @@ static struct device* sysfs_device; // The sysfs device.
 #define RULE_TABLE_DISPLAY_OFFSET 1
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
 #define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
-#define NUMBR_OF_BYTES_TRANSFERED rules_num * sizeof(rule_t)
+#define NUMBR_OF_BYTES_TRANSFERED rule_table_rule_num * sizeof(rule_t)
 
 
 /*
@@ -29,15 +29,15 @@ enum stage{
     Changes the first byte of buf to rule_num, and then writes the rule table to buf[1],
     while changing the ip and port fields to host-endianness.
     
-    Returns: ((sizeof(rule_t) * rules_num) + 1), which is the amount of bytes copied to buf.
+    Returns: ((sizeof(rule_t) * rule_table_rule_num) + 1), which is the amount of bytes copied to buf.
 */
 static ssize_t display(struct device *dev, struct device_attribute *attr, char *buf)
 {
     size_t i; // For loop index.
 
-    buf[0] = rules_num;
+    buf[0] = rule_table_rule_num;
 
-    for (i = 0; i < rules_num; i++)
+    for (i = 0; i < rule_table_rule_num; i++)
     {
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i] = rule_table[i];
         ((rule_t*) (buf + RULE_TABLE_DISPLAY_OFFSET))[i].src_ip = ntohl(rule_table[i].src_ip);
@@ -75,7 +75,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         rule_table[i].dst_port = (__be16) htons(((rule_t*)buf)[i].dst_port);
     }
     
-    rules_num = count / sizeof(rule_t);
+    rule_table_rule_num = count / sizeof(rule_t);
 
     return NUMBR_OF_BYTES_TRANSFERED;
 }

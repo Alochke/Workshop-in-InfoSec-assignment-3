@@ -5,6 +5,7 @@
 #include <linux/slab.h>     /* For kmaloc and kfree. */
 #include <linux/netfilter.h>/* Next two includes are for the Netfilter API */
 #include <linux/netfilter_ipv4.h>
+#include <linux/string.h>
 #include "main.h"
 #include "rule_table.h"
 #include "logs.h"

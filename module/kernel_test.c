@@ -2,7 +2,8 @@
 
 static int __init fw_init(void)
 {
-    printk("%d\n", sizeof(rule_t));
+    __u8 idk = 256
+    printk("%d\n", (__be32) idk);
     return 0;
 }
 

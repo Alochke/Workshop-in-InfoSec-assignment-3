@@ -9,11 +9,8 @@ int main() {
     idk[1] = '\0';
     idk[2] = 'a';
 
-    while (1)
-    {
-        char* b = strtok(idk, " ");
-        printf("%p", b);
-    }
+    printf("%d", 1 == 1);
+    
     
     
 

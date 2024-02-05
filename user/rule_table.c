@@ -87,7 +87,7 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 	// Dealing with "any"
 	token = strtok(NULL, " ");
 	MAIN_SIMPLE_ERR_CHECK(token == NULL)
-	if (!strcmp(token, "any"))
+	if (strcmp(token, "any") == SRTCMP_OF_EQ)
 	{
 		*ip = ANY_SETTING;
 		*prefix_mask = ANY_SETTING;
@@ -148,7 +148,7 @@ int parse_port(unsigned short* port)
 	char* token;
 	token = strtok(NULL, " ");
 	MAIN_SIMPLE_ERR_CHECK(token == NULL)
-	if(!strcmp(ANY_STR, token))
+	if(strcmp(ANY_STR, token) == SRTCMP_OF_EQ)
 		*port = ANY_SETTING;
 	else if(!strcmp(ABOVE_1023_STR, token))
 	{
@@ -195,7 +195,7 @@ int parse_member(void *member, char* keywords[], unsigned int values[], int len,
 	char *token = strtok(NULL, delimiters);
 	MAIN_SIMPLE_ERR_CHECK(token == NULL)
 	for(int i = 0; i < len; i++)
-		if (!strcmp(keywords[i], token))
+		if (strcmp(keywords[i], token) == SRTCMP_OF_EQ)
 		{
 			switch (t)
 			{

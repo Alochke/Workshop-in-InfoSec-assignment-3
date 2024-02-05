@@ -15,6 +15,7 @@
 #define MAIN_FILE_FORMAT_ERR_MSG "Wrong format, the file you've given is in."
 #define MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG "Failed openning /sys/class/fw/rules/rules."
 #define MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG "Writing to ./sys/class/fw/rules/rules, the program failed."
+#define SRTCMP_OF_EQ 0
 
 #define MAIN_ERR_CHECK(condition, extra_code){  \
     if(condition){                              \

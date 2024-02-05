@@ -62,18 +62,18 @@ int main(int argc, char* argv[])
     
     if (argc == ARGC_FOR_NO_RULE_LOADING)
     {
-        if (!strcmp(argv[FIRST_ARG], "show_rules"))
+        if (strcmp(argv[FIRST_ARG], "show_rules") == SRTCMP_OF_EQ)
         {
             fptr = fopen(RULE_TABLE_ATTRIBUTE, "r");
             ERR_CHECK_INIT_MSG(fptr == NULL, FIRST, MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG)
             ERR_CHECK_INIT(rule_table_out_print(fptr), FILE_OPENED);
             fclose(fptr);
         }
-        else if (!strcmp(argv[FIRST_ARG], "show_log"))
+        else if (strcmp(argv[FIRST_ARG], "show_log") == SRTCMP_OF_EQ)
         {
             /* code */
         }
-        else if (!strcmp(argv[FIRST_ARG], "clear_log"))
+        else if (strcmp(argv[FIRST_ARG], "clear_log") == SRTCMP_OF_EQ)
         {
             /* code */
         }
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        ERR_CHECK_INIT_MSG(strcmp(argv[FIRST_ARG], "load_rules"), FIRST, MAIN_ARG_ERR_MSG)
+        ERR_CHECK_INIT_MSG(strcmp(argv[FIRST_ARG], "load_rules") != SRTCMP_OF_EQ, FIRST, MAIN_ARG_ERR_MSG)
         
         fptr = fopen(argv[LAST_ARG], "r");
         ERR_CHECK_INIT_MSG(fptr == NULL, FIRST, MAIN_FILE_OPEN_ERR_MSG)
