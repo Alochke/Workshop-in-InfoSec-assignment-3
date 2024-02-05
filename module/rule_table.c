@@ -85,10 +85,10 @@ static inline int check_correct(unsigned int member, unsigned int values[], unsi
         switch (t)
         {
             case INT:
-                if(*((unsigned int*)member) == values[i])
+                if(member == values[i])
                     return MAIN_SUCEESS;
             case CHAR:
-                if(*((unsigned char*)member) == (unsigned char) values[i])
+                if((unsigned char)member == (unsigned char) values[i])
                     return MAIN_SUCEESS;
         }
     }
@@ -113,8 +113,19 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
     //Checking the given values are correct.
     for(i = 0; i < count / sizeof(rule_t); i++)
     {
-        if (check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM, INT))
+        if (
+            check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM, INT)
+            || 
+            check_correct(((rule_t*)buf)[i].ack, ACK_VALS, ACK_NUM, INT)
+            ||
+            check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
+            ||
+            (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
+            ||
+            (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size))    
+        )
         {
+            printk(((rule_t*)buf)[i].direction);
             return MAIN_FAILURE;
         }
     }
