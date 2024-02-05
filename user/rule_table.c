@@ -303,7 +303,7 @@ void  deseralize_subnet(char* subnet, unsigned int ip, unsigned char prefix_size
 	Deseralizes member, which represents a set of ports that a rule applies to, into prot.
 
 	Parameters:
-		- prot (char*): The str that will store member deseralized.
+		- port (char*): The str that will store member deseralized.
 		- member (unsigned short): The seralized value that specifies the set of ports that the deseralized rule_t applies to.
 */
 void deseralize_port(char* port, unsigned short member)
