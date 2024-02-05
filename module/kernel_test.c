@@ -2,7 +2,7 @@
 
 static int __init fw_init(void)
 {
-    __u8 idk = 256
+    __u8 idk = 255;
     printk("%d\n", (__be32) idk);
     return 0;
 }
