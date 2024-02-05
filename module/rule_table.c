@@ -126,7 +126,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         )
         {
             printk("%d\n", MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size));
-            printk("%d\n", ((rule_t*)buf)[i].src_prefix_mask)
+            printk("%d\n", ((rule_t*)buf)[i].src_prefix_mask);
             return MAIN_FAILURE;
         }
     }
