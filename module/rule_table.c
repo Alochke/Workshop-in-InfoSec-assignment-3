@@ -18,7 +18,7 @@ static struct device* sysfs_device; // The sysfs device.
 #define ACTIONS_NUM 2 // The number of possible vlues for the action member of a rule_t.
 #define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t.
 #define MAX_MASK_LEN 32
-#define MASK_FROM_SIZE(mask_size) (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
+#define MASK_FROM_SIZE(mask_size) ((unsigned int) ~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
 
 /*
@@ -121,6 +121,8 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
             ||
             (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
+            ||
+            (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size)) 
         )
         {
             return MAIN_FAILURE;
