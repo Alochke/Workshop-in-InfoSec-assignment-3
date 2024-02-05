@@ -125,7 +125,6 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size))    
         )
         {
-            printk(((rule_t*)buf)[i].direction);
             return MAIN_FAILURE;
         }
     }
