@@ -105,7 +105,7 @@ static inline int check_correct(unsigned int member, unsigned int values[], unsi
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-    size_t i, j; // For loop index.
+    size_t i; // For loop index.
 
     // This is fine because RULE_TABLE_SIZE < PAGE_SIZE.
     NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
@@ -119,9 +119,9 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
         ||
         check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
         ||
-        (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE((rule_t*)buf[i].src_prefix_size))
+        (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
         ||
-        (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE((rule_t*)buf[i].dst_prefix_size))
+        (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size))
         )
         {
             return MAIN_FAILURE;
