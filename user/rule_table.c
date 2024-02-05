@@ -24,16 +24,17 @@
 #define ANY_STR "any"
 #define ABOVE_1023_STR ">1023"
 #define SIZE_PLUS_NULL(x) (strlen(x) + 1)
-#define DIRECTION_STRS (char*[DIRECTION_NUM]){"in", "out", "any"}
-#define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY}
-#define PROT_STRS (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"}
-#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_OTHER, PROT_ANY}
-#define ACK_STRS (char*[ACK_NUM]){"yes", "no", "any"}
-#define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY}
-#define ACTION_STRS (char*[ACTIONS_NUM]){"accept\r\n", "accept\n", "drop\r\n", "drop\n"}
-#define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_ACCEPT, NF_DROP, NF_DROP}
-#define END_ACTION_STRS (char*[END_ACTIONS_NUM]){"accept", "drop"}
-#define END_ACTION_VALS (unsigned int[END_ACTIONS_NUM]){NF_ACCEPT, NF_DROP}
+#define MASK_FROM_SIZE(mask_size) (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
+#define DIRECTION_STRS (char*[DIRECTION_NUM]){"in", "out", "any"} // The direction specifications that can appear in a rule table configuration file.
+#define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
+#define PROT_STRS (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"} // The protocol specifications that can appear in a rule table configuration file.
+#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_OTHER, PROT_ANY} // The legal values of a protocol member of a rule_t.
+#define ACK_STRS (char*[ACK_NUM]){"yes", "no", "any"} // The ack relevent ack configuration that can appear in a rule table configuration file.
+#define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
+#define ACTION_STRS (char*[ACTIONS_NUM]){"accept\r\n", "accept\n", "drop\r\n", "drop\n"} // The possible strings for an accepetion/dropping verdict configuration within a rule table configuration file that doesn't appear at the end of the file.
+#define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_ACCEPT, NF_DROP, NF_DROP} // The possible values of the action member of a rule_t, respectively to the string that appear in ACTION_STRS.
+#define END_ACTION_STRS (char*[END_ACTIONS_NUM]){"accept", "drop"} // The possible strings for an accepetion/dropping verdict configuration within a rule table configuration file that appear at the end of the file.
+#define END_ACTION_VALS (unsigned int[END_ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t, respectively to the string that appear in END_ACTION_STRS.
 
 /*
 	Parses FILE into a list where every node has a line of stream as it's key.
@@ -79,7 +80,7 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 	// The code assumes the line was parsed beforehand using strtok till the beggining of the subnet part.
 
 	char* token; // Will be used to store the currently parsed token.
-	long temp_long; // Will be used to store values out of strtol.
+	unsigned int temp_int; // Will be used to store values out of strtol.
 	char* saveptr; // Will be used to backtrack tokenization to the begginning of the address specification, we need this to distinguish between "any" and an actual subnet.
 	char* end; // Will be used to infer the end of a number within the token.
 
@@ -88,9 +89,9 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 	MAIN_SIMPLE_ERR_CHECK(token == NULL)
 	if (!strcmp(token, "any"))
 	{
-		ip = ANY_SETTING;
-		prefix_mask = ANY_SETTING;
-		prefix_mask = ANY_SETTING;
+		*ip = ANY_SETTING;
+		*prefix_mask = ANY_SETTING;
+		*prefix_mask = ANY_SETTING;
 		return EXIT_SUCCESS;
 	}
 
@@ -114,24 +115,22 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 
 		MAIN_SIMPLE_ERR_CHECK(token[0] == ' ' || token[0] == '+' || token[0] == '-')
 
-		temp_long = strtol(token, &end, DECIMAL_BASIS);
+		temp_int = strtol(token, &end, DECIMAL_BASIS);
 		MAIN_SIMPLE_ERR_CHECK(end != &token[strlen(token)]) // From end == &token[strlen(token)] and (token[0] != ' ' && token[0] != '-' && token[0] != '+') we can infer that the token is a number without a sign specification.
 
-		MAIN_SIMPLE_ERR_CHECK(MIN_BYTE_VAL > temp_long)
 		if (i <= MAXIMAL_INDX_OF_BYTE_IN_ADDRESS)
 		{
-			MAIN_SIMPLE_ERR_CHECK(MAX_BYTE_VAL < temp_long)
-			((char*)ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - i] = (char)temp_long; // We're parsing the ip by bytes, so we must write it by bytes.
+			MAIN_SIMPLE_ERR_CHECK(MAX_BYTE_VAL < temp_int)
+			((char*)ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - i] = (char)temp_int; // We're parsing the ip by bytes, so we must write it by bytes.
 		}
 		else
 		{
-			MAIN_SIMPLE_ERR_CHECK(MAX_MASK_LEN < temp_long);
-			*prefix_size = (unsigned char) temp_long;
+			MAIN_SIMPLE_ERR_CHECK(MAX_MASK_LEN < temp_int);
+			*prefix_size = (unsigned char) temp_int;
 		}
 	}
-	temp_long = ~((1LU << (MAX_MASK_LEN - *prefix_size)) - 1);
 
-	*prefix_mask = temp_long;
+	*prefix_mask = MASK_FROM_SIZE(*prefix_size);
 	
 	return EXIT_SUCCESS;
 }
@@ -160,8 +159,8 @@ int parse_port(unsigned short* port)
 		// The section should be a number.
 		char* end;
 		MAIN_SIMPLE_ERR_CHECK(token[0] == ' ' || token[0] == '+' || token[0] == '-')
-		long temp_long = strtol(token, &end, DECIMAL_BASIS);
-		MAIN_SIMPLE_ERR_CHECK(end != &token[strlen(token)] || MIN_USHORT_VAL > temp_long || temp_long > MAX_USHORST_VAL); // From end == &token[strlen(token)] and (token[0] != ' ' && token[0] != '-' && token[0] != '+') we can infer that the token is a number without a sign specification.
+		unsigned int temp_long = strtol(token, &end, DECIMAL_BASIS);
+		MAIN_SIMPLE_ERR_CHECK(end != &token[strlen(token)] || temp_long > MAX_USHORST_VAL); // From end == &token[strlen(token)] and (token[0] != ' ' && token[0] != '-' && token[0] != '+') we can infer that the token is a number without a sign specification.
 		*port = (unsigned short) temp_long;
 	}
 
@@ -173,7 +172,7 @@ int parse_port(unsigned short* port)
 */
 enum type{
 	CHAR,
-	LONG
+	INT
 };
 
 /*
@@ -186,7 +185,7 @@ enum type{
 		s.t. keywords[i] means that member should be given values[i].
 	- values (unsigned int[]): The applicable values for member.
 	- len (int): The lnegth of values values and keywords.
-	- delimeters (int): The delimeters we'll use to parse the relevant member, concatenated within a string.
+	- delimeters (char*): The delimeters we'll use to parse the relevant member, concatenated within a string.
 	- t (enum type): Will be used to determine the type of member.
 
 	Returns: 0 on success (which is equivalent to the field parsed having correct syntax.), 1 on failure.
@@ -203,8 +202,8 @@ int parse_member(void *member, char* keywords[], unsigned int values[], int len,
 				case CHAR:
 					*((unsigned char*) member) = (unsigned char) values[i];
 					break;
-				case LONG:
-					*((long*) member) = values[i];
+				case INT:
+					*((unsigned int*) member) = values[i];
 			}
 			return EXIT_SUCCESS;
 		}
@@ -231,7 +230,7 @@ int rule_table_in_line(rule_t* rule, char* line, bool last){
 	strncpy(rule->rule_name, token, MAX_RULE_NAME_LEN);
 
 	// Parse directions.
-	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->direction, DIRECTION_STRS, DIRECTION_VALS, DIRECTION_NUM , " ", LONG));
+	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->direction, DIRECTION_STRS, DIRECTION_VALS, DIRECTION_NUM , " ", INT));
 	
 	// Parse subnets.
 	MAIN_SIMPLE_ERR_CHECK(parse_subnet(&rule->src_ip, &rule->src_prefix_size, &rule->src_prefix_mask))
@@ -245,7 +244,7 @@ int rule_table_in_line(rule_t* rule, char* line, bool last){
 	MAIN_SIMPLE_ERR_CHECK(parse_port(&rule->dst_port))
 
 	// Parse ack.
-	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->ack, ACK_STRS, ACK_VALS, ACK_NUM, " ", LONG))
+	MAIN_SIMPLE_ERR_CHECK(parse_member(&rule->ack, ACK_STRS, ACK_VALS, ACK_NUM, " ", INT))
 
 	if (!last)
 	{

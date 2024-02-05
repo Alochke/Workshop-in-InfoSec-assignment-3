@@ -3,12 +3,18 @@
 #include <string.h>
 
 int main() {
-    char b = 2;
-    unsigned char a = (char)255;
-    char c = 3;
+    char idk[3];
 
-    long d = (long) a;
-    printf("%d",'\0');
+    idk[0] = ' ';
+    idk[1] = '\0';
+    idk[2] = 'a';
+
+    while (1)
+    {
+        char* b = strtok(idk, " ");
+        printf("%p", b);
+    }
+    
     
 
     return 0;
