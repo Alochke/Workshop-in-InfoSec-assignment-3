@@ -1,6 +1,6 @@
 #include "rule_table.h"
 
-static rule_t* rule_table = NULL; // A pointer to the table.
+rule_t* rule_table = NULL; // A pointer to the table.
 static unsigned char rule_table_rule_num = 0; // The number of rules currently loaded to the table.
 static struct device* sysfs_device; // The sysfs device.
 
