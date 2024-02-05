@@ -79,7 +79,8 @@ enum type{
 */
 static inline int check_correct(unsigned int member, unsigned int values[], unsigned int len, enum type t)
 {
-    for (size_t i = 0; i < len; i++)
+    size_t i; // for loop index.
+    for (i = 0; i < len; i++)
     {
         switch (t)
         {
