@@ -11,7 +11,8 @@ int main() {
     int fd = open("/sys/class/fw/rules/rules", O_WRONLY);
     char buf[7 * sizeof(rule_t)];
 
-    fread(buf, sizeof(rule_t), 7, fptr);
+    int a = fread(buf, sizeof(rule_t), 7, fptr);
+    printf("%d\n", a);
     write(fd, buf, sizeof(rule_t) * 7);
 
     close(fd);
