@@ -115,9 +115,9 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
     for(i = 0; i < count / sizeof(rule_t); i++)
     {
         printk("%d\n", i);
-        printk("%d"\n, MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size));
+        printk("%d\n", MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size));
         printk("%d\n", ((rule_t*)buf)[i].dst_prefix_mask);
-        printk("%d"\n, MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size));
+        printk("%d\n", MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size));
         printk("%d\n", ((rule_t*)buf)[i].src_prefix_mask);
         NO_CLEANUP_ERR_CHECK(
             check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM, INT)
