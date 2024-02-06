@@ -75,11 +75,8 @@ static inline int check_correct(unsigned int member, unsigned int values[], unsi
     size_t i; // for loop index.
     for (i = 0; i < len; i++)
     {
-        switch (t)
-        {
-            if(member == values[i])
-                    return MAIN_SUCEESS;
-        }
+        if(member == values[i])
+            return MAIN_SUCEESS;
     }
     return MAIN_FAILURE;
 }
