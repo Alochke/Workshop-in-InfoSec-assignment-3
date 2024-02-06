@@ -12,7 +12,7 @@ int main() {
     char buf[7 * sizeof(rule_t)];
 
     int a = fread(buf, sizeof(rule_t), 7, fptr);
-    printf("%d\n", fd);
+    printf("%p\n", fptr);
     write(fd, buf, sizeof(rule_t) * 7);
 
     close(fd);
