@@ -19,7 +19,7 @@ static struct device* sysfs_device; // The sysfs device.
 #define ACTIONS_NUM 2 // The number of possible vlues for the action member of a rule_t.
 #define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t.
 #define MAX_MASK_LEN 32
-#define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? (~((1LU << (MAX_MASK_LEN - (mask_size))) - 1)) : 0)
+#define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? 0 : ~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
 
 /*
