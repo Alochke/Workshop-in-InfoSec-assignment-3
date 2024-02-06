@@ -17,8 +17,7 @@ typedef enum {
 	PROT_ICMP	= 1,
 	PROT_TCP	= 6,
 	PROT_UDP	= 17,
-	PROT_OTHER 	= 255,
-	PROT_ANY	= 143,
+	PROT_ANY	= 143
 } fw_prot_t;
 
 

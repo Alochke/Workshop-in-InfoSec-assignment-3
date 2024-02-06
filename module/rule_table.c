@@ -18,6 +18,8 @@ static struct device* sysfs_device; // The sysfs device.
 #define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
 #define ACTIONS_NUM 2 // The number of possible vlues for the action member of a rule_t.
 #define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a rule_t.
+#define PROTS_NUM 4 // The number of possible values for the prot member of a rulet_t.
+#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_ANY} // The legal values of a protocol member of a rule_t.
 #define MAX_MASK_LEN 32
 #define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? 0 : ~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
@@ -120,6 +122,8 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             check_correct(((rule_t*)buf)[i].ack, ACK_VALS, ACK_NUM, INT)
             ||
             check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
+            ||
+            check_correct(((rule_t*)buf)[i].action, PROT_VALS, PROTS_NUM, INT)
             ||
             (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
             ||

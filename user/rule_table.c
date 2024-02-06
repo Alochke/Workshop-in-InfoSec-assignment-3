@@ -11,7 +11,7 @@
 #define ANY_SETTING 0 // The value we'll fill into ips, masks, ports and mask lengths in case their set within the address space was defined by any.
 #define ABOVE_1023	1024 // The value of a port member in a rule_t in case the rule_t represents a rule where a matching port number is every port above 1023
 #define DIRECTION_NUM 3 // The number of possible values for the direction member of a rule_t.
-#define PROTS_NUM 5 // The number of possible values for the prot member of a rulet_t.
+#define PROTS_NUM 4 // The number of possible values for the prot member of a rulet_t.
 #define ACK_NUM 3 // The number of possible values for the ack member of a rulet_t.
 #define ACTIONS_NUM 4 // The number of possible non-file-terminating specifiers for the action of a rule in a rule table configuration file.
 #define END_ACTIONS_NUM 2 // The number of possible file-terminating specifiers for the action of a rule in a rule table configuration file.
@@ -28,7 +28,7 @@
 #define DIRECTION_STRS (char*[DIRECTION_NUM]){"in", "out", "any"} // The direction specifications that can appear in a rule table configuration file.
 #define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
 #define PROT_STRS (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"} // The protocol specifications that can appear in a rule table configuration file.
-#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_OTHER, PROT_ANY} // The legal values of a protocol member of a rule_t.
+#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_ANY} // The legal values of a protocol member of a rule_t.
 #define ACK_STRS (char*[ACK_NUM]){"yes", "no", "any"} // The ack relevent ack configuration that can appear in a rule table configuration file.
 #define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
 #define ACTION_STRS (char*[ACTIONS_NUM]){"accept\r\n", "accept\n", "drop\r\n", "drop\n"} // The possible strings for an accepetion/dropping verdict configuration within a rule table configuration file that doesn't appear at the end of the file.
