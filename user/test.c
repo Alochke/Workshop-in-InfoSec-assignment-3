@@ -7,16 +7,20 @@
 
 
 int main() {
-    FILE* fptr = fopen("idk", "r");
-    int fd = open("/sys/class/fw/rules/rules", O_WRONLY);
+    int fd1 = open("idk", O_RDONLY);
+    int fd2 = open("/sys/class/fw/rules/rules", O_WRONLY);
     char buf[7 * sizeof(rule_t)];
+    int a = 0;
 
-    int a = fread(buf, sizeof(rule_t), 7, fptr);
-    printf("%p\n", fptr);
-    write(fd, buf, sizeof(rule_t) * 7);
 
-    close(fd);
-    fclose(fptr);
+    while (a < sizeof(rule_t) * 7)
+    {
+        read(fd1, buf + a, sizeof(rule_t) - a);
+    }
+    write(fd2, buf, sizeof(rule_t) * 7);
+
+    close(fd1);
+    close(fd2);
 
     return 0;
 }
