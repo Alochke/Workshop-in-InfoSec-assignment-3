@@ -7,7 +7,7 @@
 
 
 int main() {
-    int fd1 = open("idk", O_RDONLY);
+    int fd1 = open("idk.bak", O_RDONLY);
     int fd2 = open("/sys/class/fw/rules/rules", O_WRONLY);
     char buf[7 * sizeof(rule_t)];
     int a = 0;
