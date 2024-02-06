@@ -16,7 +16,6 @@ int main() {
     while (a < sizeof(rule_t) * 7)
     {
         a += read(fd1, buf + a, 7 * sizeof(rule_t) - a);
-        printf("%d\n", a);
     }
     write(fd2, buf, sizeof(rule_t) * 7);
 
