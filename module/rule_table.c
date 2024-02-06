@@ -123,7 +123,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             ||
             check_correct(((rule_t*)buf)[i].action, ACTION_VALS, ACTIONS_NUM, INT)
             ||
-            check_correct(((rule_t*)buf)[i].action, PROT_VALS, PROTS_NUM, INT)
+            check_correct(((rule_t*)buf)[i].protocol, PROT_VALS, PROTS_NUM, INT)
             ||
             (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
             ||
