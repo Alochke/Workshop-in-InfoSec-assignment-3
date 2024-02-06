@@ -7,7 +7,7 @@
 
 
 int main() {
-    FILE* fptr = fopen("fd1", "w");
+    FILE* fptr = fopen("idk", "w");
     int fd = open("/sys/class/fw/rules/rules", O_WRONLY);
     char buf[7 * sizeof(rule_t)];
 
