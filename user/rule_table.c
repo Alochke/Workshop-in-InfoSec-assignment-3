@@ -27,7 +27,7 @@
 #define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? 0 : ~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 #define DIRECTION_STRS (char*[DIRECTION_NUM]){"in", "out", "any"} // The direction specifications that can appear in a rule table configuration file.
 #define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
-#define PROT_STRS (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "other", "any"} // The protocol specifications that can appear in a rule table configuration file.
+#define PROT_STRS (char*[PROTS_NUM]){"TCP", "UDP", "ICMP", "any"} // The protocol specifications that can appear in a rule table configuration file.
 #define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_ANY} // The legal values of a protocol member of a rule_t.
 #define ACK_STRS (char*[ACK_NUM]){"yes", "no", "any"} // The ack relevent ack configuration that can appear in a rule table configuration file.
 #define ACK_VALS (unsigned int[ACK_NUM]){ACK_YES, ACK_NO, ACK_ANY} // The possible values of an ack member of a rule_t.
