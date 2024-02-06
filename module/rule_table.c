@@ -5,7 +5,8 @@ unsigned char rule_table_rules_num = 0; // The number of rules currently loaded 
 static struct device* sysfs_device; // The sysfs device.
 
 #define SYSFS_DEVICE "rules" // The name of the sysfs device.
-#define SIZE_ERR_MSG "Rule table loading failed because you provided too much data."
+#define SIZE_ERR_MSG "Failed is the rule table loading, because too much data you provided."
+#define FORMAT_ERR_MSG "Failed is the rule table loading, because data of the wrong format you provided"
 #define MAX_RULES (50)
 #define RULE_TABLE_DISPLAY_OFFSET 1
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
@@ -107,13 +108,13 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 {
     size_t i; // For loop index.
 
-    // This is fine because RULE_TABLE_SIZE < PAGE_SIZE.
+    // This is sufficient count checking because RULE_TABLE_SIZE < PAGE_SIZE.
     NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
 
     //Checking the given values are correct.
     for(i = 0; i < count / sizeof(rule_t); i++)
     {
-        if (
+        NO_CLEANUP_ERR_CHECK(
             check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM, INT)
             || 
             check_correct(((rule_t*)buf)[i].ack, ACK_VALS, ACK_NUM, INT)
@@ -122,11 +123,9 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             ||
             (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
             ||
-            (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size)) 
+            (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size)),
+            FORMAT_ERR_MSG 
         )
-        {
-            return MAIN_FAILURE;
-        }
     }
     
     for(i = 0; i < count / sizeof(rule_t); i++)

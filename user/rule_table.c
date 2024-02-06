@@ -66,7 +66,7 @@ int rule_table_list_lines(list *l, FILE *stream)
 }
 
 /*
-	Serves as a refactorization of the process of parsing a subnet out of a line of the rules file fed up to the kernel module.
+	Serves as a refactorization of the procedure of parsing a subnet out of a line of the rules file fed up to the kernel module.
 
 	Parameters:
 	- ip (unsigned int*): src_ip or a dst_ip taken out of the rule_t we're filling up.
@@ -81,7 +81,7 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 
 	char* token; // Will be used to store the currently parsed token.
 	unsigned int temp_int; // Will be used to store values out of strtol.
-	char* saveptr; // Will be used to backtrack tokenization to the begginning of the address specification, we need this to distinguish between "any" and an actual subnet.
+	char* saveptr; // Will be used to backtrack tokenization to the begginning of the subnet specification, we need this to distinguish between "any" and an actual subnet syntax.
 	char* end; // Will be used to infer the end of a number within the token.
 
 	// Dealing with "any"
