@@ -5,12 +5,12 @@
 void put(struct klist_node*);
 void list_destroy(struct klist*, struct klist_iter*);
 
-typedef struct{
+struct{
     struct klist_node node;
     struct log_row_t* log;
 }log_node;
 
 static inline log_row_t* node_to_log(struct klist_node *knode)
 {
-    return ((log_node*)knode)->log;
+    return container_of(knode, log_node, node)->log;
 }
