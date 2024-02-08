@@ -12,5 +12,4 @@ struct{
 
 static inline struct log_row_t* node_to_log(struct klist_node *knode)
 {
-    return container_of(knode, log_node, node)->log;
-}
+    return ((log_node*)knode)->log;
