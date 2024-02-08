@@ -1,7 +1,7 @@
 obj-m += firewall.o
 
 # Object files needed for linkage of the module.
-firewall-objs := hook.o logs.o rule_table.o main.o
+firewall-objs := hook.o logs.o rule_table.o main.o list.o
 # firewall-objs := kernel_test.o
 
 all:
