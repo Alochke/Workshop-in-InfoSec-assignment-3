@@ -3,7 +3,7 @@
 #include "fw.h"
 
 void put(struct klist_node*);
-void list_destroy(struct klist*, struct klist_iter*)
+void list_destroy(struct klist*, struct klist_iter*);
 
 typedef struct{
     struct klist_node node;
