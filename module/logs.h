@@ -1,7 +1,7 @@
 #ifndef LOGS
 #define LOGS
 
-#include <linux/kernel> // The include is for kernel work.
+#include <linux/kernel.h>   /* We're doing kernel work. */
 #include <linux/slab.h> // The include is for kmalloc.
 #include <linux/timekeeping.h> // For time stamping the logs.
 #include "fw.h"
