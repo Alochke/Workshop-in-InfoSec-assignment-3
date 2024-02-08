@@ -51,9 +51,12 @@ static void cleanup(enum stage stg)
     The packet handling procedure.
 
     Checks if a packet is tcp or udp or icmp, other types of transport protocols are accepted,
-    The tcp, udp and icmp packets are checked against a match for every rules domain from the top of the table to the bottom.
+    The tcp, udp and icmp packets are checked against a match for every rules domain from the top of the loaded rule table to the bottom.
     When a match is found the hook accepts or drops the packet, according to the rule's verdict,
     If no match was found, a tcp/udp/icmp packet is dropped.
+
+    In any case, as long as the provided sk_buff is not null, the hooks actions, the reason for them and the packet's data is logged in the logs by filling a log_row_t and adding it
+    to the list data structure that is under the logs interface.
 
     Returns: 1 on acceptance, 0 when dropping.
 */
@@ -86,9 +89,9 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     dst_ip = ip_hdr(skb)->daddr;
     protocol = ip_hdr(skb)->protocol;
     
-
     if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
     {
+        logs_update(PROT_OTHER, NF_ACCEPT, src_ip, dst_ip, PROT_ANY, PROT_ANY, REASON_NO_MATCHING_RULE);
         return NF_ACCEPT;
     }
 
@@ -102,6 +105,12 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     {
         src_port = udp_hdr(skb)->source;
         dst_port = udp_hdr(skb)->dest;
+    }
+    else
+    {
+        // protocol must be ICMOP.
+        src_port = PROT_ANY;
+        dst_port = PROT_ANY;
     }
 
     for(i = 0; i < rule_table_rules_num; i++)
@@ -128,10 +137,12 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
             ((protocol != PROT_TCP) || ((rule_table[i].ack & ACK_NO) && !ack) || ((rule_table[i].ack & ACK_YES) && ack))
         )  
         {
+            logs_update(protocol, rule_table[i].action, src_ip, dst_ip, src_port, dst_port, i);
             return rule_table[i].action;
         }
     }
 
+    logs_update(protocol, NF_DROP, src_ip, dst_ip, src_port, dst_port, REASON_NO_MATCHING_RULE);
     return NF_DROP;
 }
 

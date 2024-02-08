@@ -1,11 +1,68 @@
 #include "logs.h"
+#include "list.h"
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
 
 static struct device* dev_device = NULL;
 static struct device* sysfs_device = NULL;
+static struct klist* log_list;
+static struct klist_iter* iter;
 
+
+/*
+    Logs packet with the given parameters in the logs.
+
+    Parameters:
+    - protocol: The transport protocol number of the packet.
+    - action: The action the hook has taken about the paket, will be one of NF_ACCEPT, NF_DROP.
+    - src_ip: The source ip of the packet.
+    - dst_ip: The destination ip of the packet.
+    - src_port: The source port of the packet, will be zero for every packet which is not TCP/UDP.
+    - dst_port: The destination port  of the packet, will be zero for every packet which is not TCP/UDP.
+    - reason: The reason for action.
+*/
+void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
+{
+    for (klist_iter_init(list, iter); klist_next(iter)->n_node != list->k_list;)
+    {
+        log_row_t* log_row = node_to_log(iter->i_cur);
+        if (
+            log_row->protocol == protocol
+            &&
+            log_row->action == action
+            &&
+            log_row->src_ip == src_ip
+            &&
+            log_row->dst_ip == dst_ip
+            &&
+            log_row->src_port == src_port
+            &&
+            log_row->dst_port == dst_port
+            &&
+            log_row->reason ==  reason_t
+        )
+        {
+            log_row->count += 1;
+            log_row->timestamp = ktime_get_resolution_ns();
+            klist_iter_exit(iter);
+            return;
+        }
+    }
+    klist_iter_exit(iter);
+    log_node* node = kmalloc(GFP_KERNEL, sizeof(log_node));
+    rule_t* log_row = &node->log;
+    log_row->timestamp = ktime_get_resolution_ns();
+    log_row->protocol = protocol;
+    log_row->action = action;
+    log_row->src_ip = src_ip;
+    log_row->dst_ip = dst_ip;
+    log_row->src_port = src_port;
+    log_row->dst_port = dst_port;
+    log_row->reason = reason;
+    log_row->count = 1;
+    klist_add_tail(node->node, log_list);
+}
 
 /*
     The next enum is for the cleanup function in logs.c. Items represent the state of the logs initialization the module is currently at.
@@ -14,7 +71,9 @@ enum stage{
     FIRST,
     DEV_DEVICE_INIT,
     SYSFS_DEVICE_INIT,
-    ATTRIBUTE_INIT
+    ATTRIBUTE_INIT,
+    ITER_INIT,
+    LIST_INIT
 };
 
 /*
@@ -48,7 +107,6 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
 // Declares the attributes for the sysfs device
 static DEVICE_ATTR(reset, 0200, NULL, modify);
 
-
 /*
 	Cleans the logs part of the module.
 
@@ -62,6 +120,11 @@ static void cleanup(enum stage stg)
     {
         case FIRST:
             break;
+        case LIST_INIT:
+            list_destroy(log_list, iter);
+            kfree(log_list);
+        case ITER_INIT:
+            kfree(iter);
         case ATTRIBUTE_INIT:
             device_remove_file(sysfs_device, (const struct device_attribute *)&dev_attr_reset.attr);
         case SYSFS_DEVICE_INIT:
@@ -87,6 +150,10 @@ int logs_init(void)
     // Create sysfs file attributes.
     MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_reset.attr), SYSFS_DEVICE_INIT, "device_create_file")
 
+    MAIN_INIT_ERR_CHECK((iter = kmalloc(sizeof(klist_iter), GFP_KERNEL)) == NULL, ATTRIBUTE_INIT, "kmalloc")
+
+    MAIN_INIT_ERR_CHECK((log_list = kmalloc(sizeof(klist) ,GFP_KERNEL)) == NULL, ITER_INIT, "kmalloc")
+
     return MAIN_SUCEESS;
 }
 
@@ -96,5 +163,5 @@ int logs_init(void)
 */
 void logs_destroy()
 {
-    cleanup(ATTRIBUTE_INIT);
+    cleanup(LIST_INIT);
 }
