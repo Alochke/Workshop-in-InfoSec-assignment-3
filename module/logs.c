@@ -3,6 +3,11 @@
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
+#define VOID_ERR_CHECK(condition, function) {       \
+    if(condition)                                   \
+        printk(KERN_ERR function " has failed\n");  \
+        return;                                     \
+}
 
 static struct device* dev_device = NULL;
 static struct device* sysfs_device = NULL;
@@ -50,8 +55,9 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
         }
     }
     klist_iter_exit(iter);
-    log_node* node = kmalloc(GFP_KERNEL, sizeof(log_node));
-    rule_t* log_row = &node->log;
+    VOID_ERR_CHECK((log_node* node = kmalloc(GFP_KERNEL, sizeof(log_node))) == NULL, "kmalloc");
+    VOID_ERR_CHECK((node->log = kmalloc(GFP_KERNEL, sizeof(log_row_t))) == NULL, "kmalloc");
+    rule_t* log_row = node->log;
     log_row->timestamp = ktime_get_resolution_ns();
     log_row->protocol = protocol;
     log_row->action = action;
