@@ -10,7 +10,7 @@ typedef struct{
     struct log_row_t* log;
 }log_node;
 
-static inline log_row_t* node_to_log(klist_node *node)
+static inline log_row_t* node_to_log(struct klist_node *node)
 {
     return ((log_node*)node)->log;
 }
