@@ -30,7 +30,7 @@ static struct klist_iter* iter;
 void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
     struct log_node* node;
-    for (klist_iter_init(log_list, iter); klist_next(iter)->n_node != list->k_list;)
+    for (klist_iter_init(log_list, iter); klist_next(iter)->n_node != log_list->k_list;)
     {
         struct log_row_t *log_row = node_to_log(iter->i_cur);
         if (
