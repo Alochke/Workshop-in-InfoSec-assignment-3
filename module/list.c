@@ -29,9 +29,7 @@ void list_get(struct klist_node* node)
     - iter: A pointer to the iter we'll use to iterate over list, it will be klist_iter from list.c in parctice.
 */
 void list_destroy(struct klist *list, struct klist_iter *iter)
-{
-`   *list_head node;
-    
+{   
     for (klist_iter_init(list, iter); &klist_next(iter)->n_node != &list->k_list; klist_del(iter->i_cur))
     klist_iter_exit(iter);
 }
