@@ -32,7 +32,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     log_node* node;
     for (klist_iter_init(log_list, iter); &klist_next(iter)->n_node != &log_list->k_list;)
     {
-        log_row_t* log_row = (log_row_t*)node_to_log(iter->i_cur);
+        log_row_t* log_row = node_to_log(iter->i_cur);
         if (
             log_row->protocol == protocol
             &&
