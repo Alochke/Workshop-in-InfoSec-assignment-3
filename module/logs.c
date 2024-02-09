@@ -60,7 +60,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
         }
     }
     klist_iter_exit(iter);
-    VOID_ERR_CHECK((node = kmalloc(sizeof(struct log_node), GFP_KERNEL)) == NULL,, "kmalloc");
+    VOID_ERR_CHECK((node = kmalloc(sizeof(log_node), GFP_KERNEL)) == NULL,, "kmalloc");
     klist_add_tail(&node->node, log_list);
     VOID_ERR_CHECK(node->log == NULL, klist_del(node->node),); // Checking if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handling properly.
     log_row = (log_row_t*)node->log;
