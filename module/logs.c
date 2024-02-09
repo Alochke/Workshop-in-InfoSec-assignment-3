@@ -73,6 +73,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     // log_row->dst_port = dst_port;
     // log_row->reason = reason;
     // log_row->count = ONE_PACKET_COUNTED;
+    printk("%d\n", sizeof(log_node));
 }
 
 /*
