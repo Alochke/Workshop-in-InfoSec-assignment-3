@@ -7,7 +7,7 @@ void list_destroy(struct klist*, struct klist_iter*);
 
 typedef struct{
     struct klist_node node;
-    log_row_t* log;
+    struct log_row_t* log;
 }log_node;
 
 static inline log_row_t* node_to_log(struct klist_node *knode)
