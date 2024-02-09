@@ -170,5 +170,5 @@ int hook_init(void)
 */
 void hook_destroy(void)
 {
-    cleanup(ALLOCATION);
+    cleanup(HOOK_INIT);
 }
