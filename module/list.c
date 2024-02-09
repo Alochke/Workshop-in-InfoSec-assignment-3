@@ -1,4 +1,4 @@
-#include "list.c"
+#include "list.h"
 
 /*
     The get method of the klist, will be useful for log_node-related memory management.
