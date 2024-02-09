@@ -1,20 +1,23 @@
 #include "list.c"
 
 /*
-    The put method of the klist, will be useful for its deallocation.
+    The get method of the klist, will be useful for log_node-related memory management.
 */
 void put(struct klist_node* node)
 {
-    
+    ((log_node*)node)->log = NULL;
+    ((log_node*)node)->log = kmalloc(GFP_KERNEL, sizeof(log_row_t));
 }
 
 /*
-    The put method of the klist, will be useful for its deallocation.
+    The put method of the klist, will be useful for its log_node-related memory management.
 */
 void get(struct klist_node* node)
 {
-    ((log_node*)node)->log = NULL;
-    ((log_node*)node)->log = kmalloc(GFP_KERNEL, sizeof(log_row_t));
+    if (((log_node*)node)->log != NULL)
+    {
+        kfree(((log_node*)node)->log != NULL)
+    }
 }
 
 /*
