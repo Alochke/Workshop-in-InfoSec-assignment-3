@@ -6,6 +6,7 @@
 #include <linux/timekeeping.h> // For time stamping the logs.
 #include "fw.h"
 #include "main.h"
+#inlude "list.h"
 
 int logs_init(void);
 void logs_destroy(void);
