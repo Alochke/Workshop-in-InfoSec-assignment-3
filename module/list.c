@@ -3,7 +3,7 @@
 /*
     The get method of the klist, will be useful for log_node-related memory management.
 */
-void put(struct klist_node* node)
+void list_put(struct klist_node* node)
 {
     ((log_node*)node)->log = NULL;
     ((log_node*)node)->log = kmalloc(GFP_KERNEL, sizeof(log_row_t));
@@ -12,7 +12,7 @@ void put(struct klist_node* node)
 /*
     The put method of the klist, will be useful for its log_node-related memory management.
 */
-void get(struct klist_node* node)
+void list_get(struct klist_node* node)
 {
     if (((log_node*)node)->log != NULL)
     {
