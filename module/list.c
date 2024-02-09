@@ -17,7 +17,7 @@ void list_put(struct klist_node* node)
 void list_get(struct klist_node* node)
 {
     ((log_node*)node)->log = NULL;
-    ((log_node*)node)->log = kmalloc(GFP_KERNEL, sizeof(log_row_t));
+    ((log_node*)node)->log = kmalloc(sizeof(log_row_t), GFP_KERNEL);
 }
 
 /*
