@@ -15,6 +15,9 @@ typedef struct{
     struct log_row_t* log;
 }log_node;
 
+/*
+    Returns a pointer to the log_row_t that is also a member fo the log_node that klist is a member of.
+*/
 static inline log_row_t* node_to_log(struct klist_node *knode)
 {
     return (log_row_t*)(((log_node*)knode)->log);

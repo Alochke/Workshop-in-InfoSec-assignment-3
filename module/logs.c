@@ -3,11 +3,14 @@
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
-#define VOID_ERR_CHECK(condition, function) {       \
-    if(condition)                                   \
-        printk(KERN_ERR function " has failed\n");  \
-        return;                                     \
+#define VOID_ERR_CHECK(condition, extra_code, function) {   \
+    if(condition)                                           \
+    {                                                       \
+        printk(KERN_ERR function " has failed\n");          \
+        return;                                             \
+    }                                                       \
 }
+#define ONE_PACKET_COUNTED 1
 
 static struct device* dev_device = NULL;
 static struct device* sysfs_device = NULL;
@@ -24,14 +27,14 @@ static struct klist_iter* iter;
     - src_ip: The source ip of the packet.
     - dst_ip: The destination ip of the packet.
     - src_port: The source port of the packet, will be zero for every packet which is not TCP/UDP.
-    - dst_port: The destination port  of the packet, will be zero for every packet which is not TCP/UDP.
+    - dst_port: The destination port of the packet, will be zero for every packet which is not TCP/UDP.
     - reason: The reason for action.
 */
 void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
     log_node* node;
     log_row_t* log_row;
-    for (klist_iter_init(log_list, iter); &klist_next(iter)->n_node != &log_list->k_list;)
+    for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
     {
         log_row = node_to_log(iter->i_cur);
         if (
@@ -50,16 +53,16 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
             log_row->reason ==  reason
         )
         {
-            log_row->count += 1;
+            log_row->count += ONE_PACKET_COUNTED;
             log_row->timestamp = ktime_get_resolution_ns();
             klist_iter_exit(iter);
             return;
         }
     }
     klist_iter_exit(iter);
-    VOID_ERR_CHECK((node = kmalloc(GFP_KERNEL, sizeof(log_node))) == NULL, "kmalloc");
+    VOID_ERR_CHECK((node = kmalloc(GFP_KERNEL, sizeof(log_node))) == NULL,, "kmalloc");
     klist_add_tail(&node->node, log_list);
-    VOID_ERR_CHECK(node->log == NULL, "kmalloc");
+    VOID_ERR_CHECK(node->log == NULL, klist_del(node->node), "kmalloc"); // Checking if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handling properly.
     log_row = (log_row_t*)node->log;
     log_row->timestamp = ktime_get_resolution_ns();
     log_row->protocol = protocol;
@@ -69,7 +72,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     log_row->src_port = src_port;
     log_row->dst_port = dst_port;
     log_row->reason = reason;
-    log_row->count = 1;
+    log_row->count = ONE_PACKET_COUNTED;
 }
 
 /*
