@@ -59,7 +59,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     VOID_ERR_CHECK((node = kmalloc(GFP_KERNEL, sizeof(log_node))) == NULL, "kmalloc");
     klist_add_tail(&node->node, log_list);
     VOID_ERR_CHECK(node->log == NULL, "kmalloc");
-    rule_t* log_row = node->log;
+    rule_t* log_row = (rule_t*)node->log;
     log_row->timestamp = ktime_get_resolution_ns();
     log_row->protocol = protocol;
     log_row->action = action;
