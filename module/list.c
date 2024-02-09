@@ -7,7 +7,6 @@ void list_put(struct klist_node* node)
 {
     if (((log_node*)node)->log != NULL)
     {
-        printk("Notice Me senpai!!!!!!!!!!!!!!!\n");
         kfree(((log_node*)node)->log);
     }
 }
@@ -30,6 +29,13 @@ void list_get(struct klist_node* node)
 */
 void list_destroy(struct klist *list, struct klist_iter *iter)
 {   
-    for (klist_iter_init(list, iter); &klist_next(iter)->n_node != &list->k_list; klist_del(iter->i_cur))
+    for (klist_iter_init(list, iter); &klist_next(iter)->n_node != &list->k_list; )
+    {
+        printk("%p", iter->i_cur);
+        if (iter->i_cur != NULL)
+        {
+            klist_del(iter->i_cur);
+        }
+    }
     klist_iter_exit(iter);
 }
