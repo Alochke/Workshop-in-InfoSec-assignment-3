@@ -30,9 +30,10 @@ static struct klist_iter* iter;
 void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
     log_node* node;
+    rule_t* log_row;
     for (klist_iter_init(log_list, iter); &klist_next(iter)->n_node != &log_list->k_list;)
     {
-        log_row_t* log_row = node_to_log(iter->i_cur);
+        log_row = node_to_log(iter->i_cur);
         if (
             log_row->protocol == protocol
             &&
@@ -59,7 +60,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     VOID_ERR_CHECK((node = kmalloc(GFP_KERNEL, sizeof(log_node))) == NULL, "kmalloc");
     klist_add_tail(&node->node, log_list);
     VOID_ERR_CHECK(node->log == NULL, "kmalloc");
-    rule_t* log_row = (rule_t*)node->log;
+    log_row = (rule_t*)node->log;
     log_row->timestamp = ktime_get_resolution_ns();
     log_row->protocol = protocol;
     log_row->action = action;
