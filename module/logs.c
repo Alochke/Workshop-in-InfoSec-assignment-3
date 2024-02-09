@@ -158,9 +158,9 @@ int logs_init(void)
     // Create sysfs file attributes.
     MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_reset.attr), SYSFS_DEVICE_INIT, "device_create_file")
 
-    MAIN_INIT_ERR_CHECK((iter = kmalloc(sizeof(klist_iter), GFP_KERNEL)) == NULL, ATTRIBUTE_INIT, "kmalloc")
+    MAIN_INIT_ERR_CHECK((iter = kmalloc(sizeof(struct klist_iter), GFP_KERNEL)) == NULL, ATTRIBUTE_INIT, "kmalloc")
 
-    MAIN_INIT_ERR_CHECK((log_list = kmalloc(sizeof(klist) ,GFP_KERNEL)) == NULL, ITER_INIT, "kmalloc")
+    MAIN_INIT_ERR_CHECK((log_list = kmalloc(sizeof(struct klist) ,GFP_KERNEL)) == NULL, ITER_INIT, "kmalloc")
 
     klist_init(log_list, list_get, list_put);
 
