@@ -7,7 +7,7 @@ void list_put(struct klist_node* node)
 {
     if (((log_node*)node)->log != NULL)
     {
-        printk("Notice Me senpai!!!!!!!!!!!!!!!\n")
+        printk("Notice Me senpai!!!!!!!!!!!!!!!\n");
         kfree(((log_node*)node)->log);
     }
 }
