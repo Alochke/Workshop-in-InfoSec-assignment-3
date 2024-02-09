@@ -16,7 +16,7 @@ void get(struct klist_node* node)
 {
     if (((log_node*)node)->log != NULL)
     {
-        kfree(((log_node*)node)->log != NULL)
+        kfree(((log_node*)node)->log)
     }
 }
 
