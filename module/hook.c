@@ -62,87 +62,87 @@ static void cleanup(enum stage stg)
 */
 static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_ops *state)
 {
-    /*
-        The parameters we'll import from skb.
-    */
-    char* interface;
-    __be32 src_ip, dst_ip;
-    __u8 protocol;
-    __be16 src_port, dst_port;
-    ack_t ack;
+    // /*
+    //     The parameters we'll import from skb.
+    // */
+    // char* interface;
+    // __be32 src_ip, dst_ip;
+    // __u8 protocol;
+    // __be16 src_port, dst_port;
+    // ack_t ack;
 
-    int i; // For loop index.
+    // int i; // For loop index.
     
-    /*
-        First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary, I added this
-        because I have seen it in the article I added a link to below.
-        I need skb to be unempty for the checks to work so this won't damage anything anyways.
-        https://infosecwriteups.com/linux-kernel-communication-part-1-netfilter-hooks-15c07a5a5c4e
-    */
-    if (!skb)
-    {
-        return NF_ACCEPT;
-    }
+    // /*
+    //     First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary, I added this
+    //     because I have seen it in the article I added a link to below.
+    //     I need skb to be unempty for the checks to work so this won't damage anything anyways.
+    //     https://infosecwriteups.com/linux-kernel-communication-part-1-netfilter-hooks-15c07a5a5c4e
+    // */
+    // if (!skb)
+    // {
+    //     return NF_ACCEPT;
+    // }
     
-    interface = skb->dev->name;
-    src_ip = ip_hdr(skb)->saddr;
-    dst_ip = ip_hdr(skb)->daddr;
-    protocol = ip_hdr(skb)->protocol;
+    // interface = skb->dev->name;
+    // src_ip = ip_hdr(skb)->saddr;
+    // dst_ip = ip_hdr(skb)->daddr;
+    // protocol = ip_hdr(skb)->protocol;
     
-    if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
-    {
-        logs_update(PROT_OTHER, NF_ACCEPT, src_ip, dst_ip, PROT_ANY, PROT_ANY, REASON_NO_MATCHING_RULE);
-        return NF_ACCEPT;
-    }
+    // if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
+    // {
+    //     logs_update(PROT_OTHER, NF_ACCEPT, src_ip, dst_ip, PROT_ANY, PROT_ANY, REASON_NO_MATCHING_RULE);
+    //     return NF_ACCEPT;
+    // }
 
-    if (protocol == PROT_TCP)
-    {
-        src_port = tcp_hdr(skb)->source;
-        dst_port = tcp_hdr(skb)->dest;
-        ack = (ack_t) tcp_hdr(skb)->ack;
-    }
-    else if (protocol == PROT_UDP)
-    {
-        src_port = udp_hdr(skb)->source;
-        dst_port = udp_hdr(skb)->dest;
-    }
-    else
-    {
-        // protocol must be ICMOP.
-        src_port = PROT_ANY;
-        dst_port = PROT_ANY;
-    }
+    // if (protocol == PROT_TCP)
+    // {
+    //     src_port = tcp_hdr(skb)->source;
+    //     dst_port = tcp_hdr(skb)->dest;
+    //     ack = (ack_t) tcp_hdr(skb)->ack;
+    // }
+    // else if (protocol == PROT_UDP)
+    // {
+    //     src_port = udp_hdr(skb)->source;
+    //     dst_port = udp_hdr(skb)->dest;
+    // }
+    // else
+    // {
+    //     // protocol must be ICMOP.
+    //     src_port = PROT_ANY;
+    //     dst_port = PROT_ANY;
+    // }
 
-    for(i = 0; i < rule_table_rules_num; i++)
-    {
-        if (
-            (CHECK_DIRECTION(DIRECTION_IN, IN_STR) || CHECK_DIRECTION(DIRECTION_OUT, OUT_STR))
-            &&
-            CHECK_IP(rule_table[i].src_ip, src_ip, rule_table[i].src_prefix_mask)
-            &&
-            CHECK_IP(rule_table[i].dst_ip, dst_ip, rule_table[i].dst_prefix_mask)
-            &&
-            (
-                (protocol == PROT_ICMP)
-                ||
-                (
-                    CHECK_PORT(rule_table[i].src_port, src_port)
-                    &&
-                    CHECK_PORT(rule_table[i].dst_port, dst_port)
-                )
-            )
-            &&
-            ((rule_table[i].protocol == PROT_ANY) || (rule_table[i].protocol == protocol))
-            &&
-            ((protocol != PROT_TCP) || ((rule_table[i].ack & ACK_NO) && !ack) || ((rule_table[i].ack & ACK_YES) && ack))
-        )  
-        {
-            logs_update(protocol, rule_table[i].action, src_ip, dst_ip, src_port, dst_port, i);
-            return rule_table[i].action;
-        }
-    }
+    // for(i = 0; i < rule_table_rules_num; i++)
+    // {
+    //     if (
+    //         (CHECK_DIRECTION(DIRECTION_IN, IN_STR) || CHECK_DIRECTION(DIRECTION_OUT, OUT_STR))
+    //         &&
+    //         CHECK_IP(rule_table[i].src_ip, src_ip, rule_table[i].src_prefix_mask)
+    //         &&
+    //         CHECK_IP(rule_table[i].dst_ip, dst_ip, rule_table[i].dst_prefix_mask)
+    //         &&
+    //         (
+    //             (protocol == PROT_ICMP)
+    //             ||
+    //             (
+    //                 CHECK_PORT(rule_table[i].src_port, src_port)
+    //                 &&
+    //                 CHECK_PORT(rule_table[i].dst_port, dst_port)
+    //             )
+    //         )
+    //         &&
+    //         ((rule_table[i].protocol == PROT_ANY) || (rule_table[i].protocol == protocol))
+    //         &&
+    //         ((protocol != PROT_TCP) || ((rule_table[i].ack & ACK_NO) && !ack) || ((rule_table[i].ack & ACK_YES) && ack))
+    //     )  
+    //     {
+    //         logs_update(protocol, rule_table[i].action, src_ip, dst_ip, src_port, dst_port, i);
+    //         return rule_table[i].action;
+    //     }
+    // }
 
-    logs_update(protocol, NF_DROP, src_ip, dst_ip, src_port, dst_port, REASON_NO_MATCHING_RULE);
+    // logs_update(protocol, NF_DROP, src_ip, dst_ip, src_port, dst_port, REASON_NO_MATCHING_RULE);
     return NF_DROP;
 }
 
