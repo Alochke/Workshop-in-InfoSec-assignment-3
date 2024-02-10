@@ -144,8 +144,7 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
             num_copied += sizeof(rule_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), sizeof(rule_t));
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_ip), LVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->src_ip)), sizeof(__be32));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_ip), LVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->dst_ip)), sizeof(__be32));
-            copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), LVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(__be16));
-            copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), LVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(__be16));
+
         }
         klist_iter_exit(iter);
     }
