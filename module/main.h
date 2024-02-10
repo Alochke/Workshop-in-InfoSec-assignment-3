@@ -29,7 +29,7 @@
 
 #define MAIN_INIT_ERR_CHECK(condition, state, function_name) MAIN_ERR_CHECK(condition, cleanup(state);, function_name "has failed")
 
-#define MAIN_SIMPLE_ERR_CHECK(condition, extra_code, msg) MAIN_ERR_CHECK(condition,, msg)
+#define MAIN_SIMPLE_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
 
 extern int major_number;
 extern struct class* sysfs_class;
