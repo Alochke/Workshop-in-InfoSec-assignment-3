@@ -10,7 +10,6 @@ static struct device* sysfs_device; // The sysfs device.
 #define MAX_RULES (50)
 #define RULE_TABLE_DISPLAY_OFFSET 1
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
-#define NO_CLEANUP_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
 #define NUMBR_OF_BYTES_TRANSFERED rule_table_rules_num * sizeof(rule_t)
 #define DIRECTION_NUM 3 // The number of possible values for the direction member of a rule_t.
 #define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
@@ -94,12 +93,12 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
     size_t i; // For loop index.
 
     // This is sufficient input size checking because RULE_TABLE_SIZE < PAGE_SIZE.
-    NO_CLEANUP_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
+    MAIN_SIMPLE_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)
 
     //Checking the given values are correct.
     for(i = 0; i < count / sizeof(rule_t); i++)
     {
-        NO_CLEANUP_ERR_CHECK(
+        MAIN_SIMPLE_ERR_CHECK(
             check_correct(((rule_t*)buf)[i].direction, DIRECTION_VALS, DIRECTION_NUM)
             || 
             check_correct(((rule_t*)buf)[i].ack, ACK_VALS, ACK_NUM)

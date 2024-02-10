@@ -3,6 +3,10 @@
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
+#define SIZE_ERR_MSG "The logs, were not transferred, because was too small, is the buffer you've provided."
+#define WRONG_ADDRESS_ERR_MSG "Failed is the logs transferring, because of illegal addresses is the buffer you've provided."
+#define ONE_COUNTED 1
+
 #define VOID_ERR_CHECK(condition, extra_code, function) {   \
     if(condition)                                           \
     {                                                       \
@@ -10,12 +14,12 @@
         return;                                             \
     }                                                       \
 }
-#define ONE_PACKET_COUNTED 1
 
 static struct device* dev_device = NULL;
 static struct device* sysfs_device = NULL;
 static struct klist* log_list;
 static struct klist_iter* iter;
+static unsigned int row_num = 0; // The number of rows in the logs.
 
 
 /*
@@ -32,8 +36,8 @@ static struct klist_iter* iter;
 */
 void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
-    log_node* node;
-    log_row_t* log_row;
+    log_node* node; // If a new row has to be added to the logs, we'll use that pointer to point to it.
+    log_row_t* log_row; // Will point to the log_row_t the function points to at a given point in time.
     for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
     {
         log_row = node_to_log(iter->i_cur);
@@ -53,7 +57,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
             log_row->reason ==  reason
         )
         {
-            log_row->count += ONE_PACKET_COUNTED;
+            log_row->count += ONE_COUNTED;
             log_row->timestamp = ktime_get_resolution_ns();
             klist_iter_exit(iter);
             return;
@@ -62,7 +66,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     klist_iter_exit(iter);
     VOID_ERR_CHECK((node = kmalloc(sizeof(log_node), GFP_KERNEL)) == NULL,, "kmalloc");
     klist_add_tail(&node->node, log_list);
-    VOID_ERR_CHECK(node->log == NULL, klist_del(node->node),); // Checking if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handling properly.
+    VOID_ERR_CHECK(node->log == NULL, klist_del(node->node), "kmalloc"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
     log_row = (log_row_t*)node->log;
     log_row->timestamp = ktime_get_resolution_ns();
     log_row->protocol = protocol;
@@ -72,7 +76,8 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     log_row->src_port = src_port;
     log_row->dst_port = dst_port;
     log_row->reason = reason;
-    log_row->count = ONE_PACKET_COUNTED;
+    log_row->count = ONE_COUNTED;
+    row_num += ONE_COUNTED;
 }
 
 /*
@@ -105,14 +110,43 @@ int logs_open(struct inode *_inode, struct file *_file)
     return MAIN_SUCEESS;
 }
 
-/*
-    The read implementation of the dev/ devices of the driver.
 
-    Returns: number of bytes read.
+
+/*
+    The read implementation of the dev/ device of the driver.
+
+    If length == sizeof(unsigned int) then we write row_num to it,
+    else,
+    The function checks if length < sizeof(rule_t) * row_num, where length is the size of the buffer,
+    and if that's the case then it prints "The logs, were not transferred, because was too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
+    and returns -1, which will be the value of errno after the syscall in the calling process,
+    If length != sizeof(unsigned int) and (length >= sizeof(rule_t) * row_num) then the function goes thraugh the log_list linked-list and for every node it copies its rule_t to the buffer.
+    
+    Of course the function writes every byte to the user space cautiously, by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL.
+
+    Returns: number of bytes written into the buffer.
 */
 ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
 {
-    return 0;
+    size_t num_copied = 0; // Number of bytes copied to the buffer.
+    if (length == sizeof(unsigned int))
+    {
+        num_copied = sizeof(unsigned int) - copy_to_user(buff, &row_num, sizeof(unsigned int)), BUFF_FLUSH(buf, num_copied,)
+    }
+    else
+    {
+        MAIN_SIMPLE_ERR_CHECK(length < sizeof(rule_t) * row_num, SIZE_ERR_MSG);
+        for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
+        {
+            num_copied += sizeof(rule_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), size_t(rule_t));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, src_ip), &ntohl(node_to_log(iter->i_cur)->src_ip), sizeof(__be32));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, dst_ip), &ntohl(node_to_log(iter->i_cur)->dst_ip), sizeof(__be32));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), &ntohs(node_to_log(iter->i_cur)->src_port), sizeof(__be16));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), &ntohs(node_to_log(iter->i_cur)->dst_port), sizeof(__be16));
+        }
+        klist_iter_exit(iter);
+    }
+    return num_copied;
 }
 
 // Declares the attributes for the sysfs device

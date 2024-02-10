@@ -4,6 +4,7 @@
 #include <linux/kernel.h>   /* We're doing kernel work. */
 #include <linux/slab.h> // The include is for kmalloc.
 #include <linux/timekeeping.h> // For time stamping the logs.
+#include <linux/uaccess.h> // For copy_to_user.
 #include "fw.h"
 #include "main.h"
 #include "list.h"
