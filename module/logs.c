@@ -134,7 +134,7 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
     size_t num_copied = 0; // Number of bytes copied to the buffer.
     if (length == sizeof(unsigned int))
     {
-        num_copied = sizeof(unsigned int) - copy_to_user(buff, &row_num, sizeof(unsigned int))
+        num_copied = sizeof(unsigned int) - copy_to_user(buff, &row_num, sizeof(unsigned int));
     }
     else
     {
