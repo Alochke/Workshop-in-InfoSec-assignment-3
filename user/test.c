@@ -1,26 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include "fw.h"
-
-
-int main() {
-    int fd1 = open("idk", O_RDONLY);
-    int fd2 = open("/sys/class/fw/rules/rules", O_WRONLY);
-    char buf[7 * sizeof(rule_t)];
-    int a = 0;
-
-
-    while (a < sizeof(rule_t) * 7)
-    {
-        a += read(fd1, buf + a, 7 * sizeof(rule_t) - a);
-    }
-    write(fd2, buf, sizeof(rule_t) * 7);
-
-    close(fd1);
-    close(fd2);
-
-    return 0;
+#include<stdio.h>
+int main(){
+   char a[20] = "Names", b[20]="amount to be paid";
+   char a1[20] = "Bhanu", b1[20]="Hari",c1[20]="Lucky",d1[20]="Puppy";
+   int a2=200,b2=400,c2=250,d2=460;
+   printf("%2s %2s\n", a, b);
+   printf("%5s %5d\n", a1,a2);
+   printf("%2s %2d\n", b1,b2);
+   printf("%5s %5d\n", c1, c2);
+   printf("%2s %2d\n", d1, d2);
+   return 0;
 }

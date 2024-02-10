@@ -41,8 +41,8 @@
 	Assumptions: stream wasn't read beforehand, l is empty.
 
 	Parameters:
-	- l (list*): Adrress of the list that will have all of stream's file lines stored as the keys of nodes.
-	- stream (FILE*): The address of the FILE will read the lines from.
+	- l: Adrress of the list that will have all of stream's file lines stored as the keys of nodes.
+	- stream: The address of the FILE will read the lines from.
 
 	Returns: 0 on success, 1 upon Failure.
 */
@@ -260,8 +260,8 @@ int rule_table_in_line(rule_t* rule, char* line, bool last){
 	Parses the rule table from the list l, which is assumed to have all lines of the rules file as the keys of its nodes.
 
 	Parameters:
-		- table (rule_t**): Pointing to the pointer from main.c that will point to base of an array of rule_ts representing the rule table we're configuring.
-		- l (list*): A list which is assumed to have all lines of the rules file as the keys of its nodes.
+		- table: Pointing to the pointer from main.c that will point to base of an array of rule_ts representing the rule table we're configuring.
+		- l: A list which is assumed to have all lines of the rules file as the keys of its nodes.
 
 	Returns: 0 on success, else, returns 1.
 */
@@ -285,9 +285,9 @@ int rule_table_in_init(rule_t **table, list *l)
 	Deseralizes the subnet given into to the subnet specification syntax.
 
 	Parameters:		
-		- subnet (char*): The string that we'll store the subnet specification syntax in.
-		- ip (unsigned int): The ip that specifies the subnet as an unsigned int.
-		- prefix_size (unsigned char): The size of the subnet mask.
+		- subnet: The string that we'll store the subnet specification syntax in.
+		- ip: The ip that specifies the subnet as an unsigned int.
+		- prefix_size: The size of the subnet mask.
 */
 void  deseralize_subnet(char* subnet, unsigned int ip, unsigned char prefix_size)
 {
@@ -303,8 +303,8 @@ void  deseralize_subnet(char* subnet, unsigned int ip, unsigned char prefix_size
 	Deseralizes member, which represents a set of ports that a rule applies to, into prot.
 
 	Parameters:
-		- port (char*): The str that will store member deseralized.
-		- member (unsigned short): The seralized value that specifies the set of ports that the deseralized rule_t applies to.
+		- port: A pointer to the string that will store member deseralized.
+		- member: The seralized value that specifies the set of ports that the deseralized rule_t applies to.
 */
 void deseralize_port(char* port, unsigned short member)
 {
@@ -325,11 +325,11 @@ void deseralize_port(char* port, unsigned short member)
 	Decides the correct value by the next assumption,
 	keyword[i] is the correct value for *field iff values[i] == member.
 
-	- field (char**): The pointer it points to will point to the deseralized data after the function is run.
-	- member (unsigned int): The member of the rule_t to deseralize.
-	- keywords ((char*)[]): An array of applicable values for *field.
-	- values ((unsigned int)[]): An array of the possible values of member.
-	- int (size_t): The length of keywords and values.
+	- field: The pointer it points to will point to the deseralized data after the function is run.
+	- member: The member of the rule_t to deseralize.
+	- keywords: An array of applicable values for *field.
+	- values: An array of the possible values of member.
+	- int: The length of keywords and values.
 */
 void deseralize_field(char **field, unsigned int member, char* keywords[], unsigned int values[], size_t len)
 {
@@ -342,6 +342,15 @@ void deseralize_field(char **field, unsigned int member, char* keywords[], unsig
 	}
 }
 
+/*
+	Prints rule table.
+	Will print "Failed, the program an allocation." instead in case the alloation of a buffer to read to has failed.
+
+	fptr: A pointer to the FILE you get by openning "/sys/class/fw/rules/rules", we assume it was not read from or writen to previously to the function run-time,
+		and that it has read premissions.
+
+	Returns: 0 on success, 1 on failure.
+*/
 int rule_table_out_print(FILE* fptr)
 {
 	size_t rules_num = getc(fptr);

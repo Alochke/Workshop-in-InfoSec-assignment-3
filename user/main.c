@@ -2,13 +2,13 @@
 
 #define MAX_ARGC 3
 #define ARGC_FOR_NO_RULE_LOADING 2
-#define NO_ARGS 1
+#define MIN_ARGC 2
 #define FIRST_ARG 1
 #define LAST_ARG 2
 #define RULE_TABLE_ATTRIBUTE "/sys/class/fw/rules/rules"
-#define SYSCALL_FAIL_RETURN -1
+#define LOGS_READ_DEV "/dev/fw_log"
 #define ERR_CHECK_INIT(condition, state) MAIN_ERR_CHECK(condition, cleanup(state);)
-#define ERR_CHECK_INIT_MSG(condition, state, msg) MAIN_ERR_CHECK(condition, cleanup(state); printf("%s\n", msg);)
+#define ERR_CHECK_INIT_MSG(condition, state, msg) MAIN_ERR_CHECK(condition, cleanup(state); fprintf(stderr ,"%s\n", msg);)
 
 FILE *fptr; // This will be used in case we're loading rules from a file.
 list *lst; // We'll use this list to structure the data.
@@ -44,6 +44,7 @@ static void cleanup(enum stage stg)
         case FIRST:
             break;
         case MID_OPENING:
+            close(fd);
         case RULE_TABLE_INIT:
             free(rule_table);
         case POST_LIST_INIT:
@@ -58,7 +59,7 @@ static void cleanup(enum stage stg)
 
 int main(int argc, char* argv[])
 {
-    ERR_CHECK_INIT_MSG(argc > MAX_ARGC || argc <= NO_ARGS, FIRST, MAIN_ARG_ERR_MSG)
+    ERR_CHECK_INIT_MSG(argc > MAX_ARGC || argc < MIN_ARGC, FIRST, MAIN_ARG_ERR_MSG)
     
     if (argc == ARGC_FOR_NO_RULE_LOADING)
     {
@@ -66,12 +67,15 @@ int main(int argc, char* argv[])
         {
             fptr = fopen(RULE_TABLE_ATTRIBUTE, "r");
             ERR_CHECK_INIT_MSG(fptr == NULL, FIRST, MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG)
-            ERR_CHECK_INIT(rule_table_out_print(fptr), FILE_OPENED);
+            rule_table_out_print(fptr);
             fclose(fptr);
         }
         else if (strcmp(argv[FIRST_ARG], "show_log") == SRTCMP_OF_EQ)
         {
-            /* code */
+            fd = open(LOGS_READ_DEV, O_RDONLY);
+            ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, FIRST, MAIN_SHOW_LOGS_FILE_OPEN)
+            read_logs(fd);
+            close(fd);
         }
         else if (strcmp(argv[FIRST_ARG], "clear_log") == SRTCMP_OF_EQ)
         {
@@ -79,7 +83,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            printf("%s", MAIN_ARG_ERR_MSG);
+            fprintf(stderr, "%s\n", MAIN_ARG_ERR_MSG);
             return EXIT_FAILURE;
         }
     }
@@ -102,9 +106,9 @@ int main(int argc, char* argv[])
 
         fd = open(RULE_TABLE_ATTRIBUTE, O_WRONLY);
 
-        ERR_CHECK_INIT_MSG(fd == SYSCALL_FAIL_RETURN, POST_LIST_INIT, MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG)
+        ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, RULE_TABLE_INIT, MAIN_RULE_TABLE_OPENNING_ATTRIBUTE_ERR_MSG)
         
-        ERR_CHECK_INIT_MSG(write(fd, rule_table, (lst->size) * sizeof(rule_t)) == SYSCALL_FAIL_RETURN, MID_OPENING, MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG)
+        ERR_CHECK_INIT_MSG(write(fd, rule_table, (lst->size) * sizeof(rule_t)) == MAIN_SYSCALL_FAIL_RETURN, MID_OPENING, MAIN_RULE_TABLE_WRITING_ATTRIBUTE_ERR_MSG)
 
         cleanup(MID_OPENING);
     }

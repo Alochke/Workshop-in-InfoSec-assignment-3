@@ -3,7 +3,7 @@
 /*
 	Initializes l.
 
-	- l (list**): The initalized list.
+	- l: The initalized list.
 */
 int list_init(list **l)
 {
@@ -16,8 +16,8 @@ int list_init(list **l)
 /*
 	Inserts node into l from the head-end of l.
 
-	- l (list*): The list to which l will be inserted.
-	- node (node*): The which will be inserted.
+	- l: The list to which l will be inserted.
+	- node: The which will be inserted.
 
 	returns: A pointer with node's address, or NULL if the initilization failed.
 */

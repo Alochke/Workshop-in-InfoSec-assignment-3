@@ -41,6 +41,8 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
 {
     log_node* node; // If a new row has to be added to the logs, we'll use that pointer to point to it.
     log_row_t* log_row; // Will point to the log_row_t the function points to at a given point in time.
+    struct timeval ktv; // This will be used to get the current time.
+    do_gettimeofday(&ktv);
     for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
     {
         log_row = node_to_log(iter->i_cur);
@@ -61,7 +63,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
         )
         {
             log_row->count += ONE_COUNTED;
-            log_row->timestamp = ktime_get_resolution_ns();
+            log_row->timestamp = ktv->tv_sec;
             klist_iter_exit(iter);
             return;
         }
@@ -71,7 +73,7 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
     klist_add_tail(&node->node, log_list);
     VOID_ERR_CHECK(node->log == NULL, klist_del(node->node), "kmalloc"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
     log_row = (log_row_t*)node->log;
-    log_row->timestamp = ktime_get_resolution_ns();
+    log_row->timestamp = ktv->tv_sec;
     log_row->protocol = protocol;
     log_row->action = action;
     log_row->src_ip = src_ip;
