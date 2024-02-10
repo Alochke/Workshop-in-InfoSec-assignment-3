@@ -6,7 +6,7 @@ static struct device* sysfs_device; // The sysfs device.
 
 #define SYSFS_DEVICE "rules" // The name of the sysfs device.
 #define SIZE_ERR_MSG "Failed is the rule table loading, because too much data you provided."
-#define FORMAT_ERR_MSG "Failed is the rule table loading, because data of the wrong format you provided"
+#define FORMAT_ERR_MSG "Failed is the rule table loading, because data of the wrong format, you provided."
 #define MAX_RULES (50)
 #define RULE_TABLE_DISPLAY_OFFSET 1
 #define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)

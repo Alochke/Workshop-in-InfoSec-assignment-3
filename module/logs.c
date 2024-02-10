@@ -3,7 +3,7 @@
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
-#define SIZE_ERR_MSG "The logs, were not transferred, because was too small, is the buffer you've provided."
+#define SIZE_ERR_MSG "The logs, were not transferred, because too small, is the buffer you've provided."
 #define WRONG_ADDRESS_ERR_MSG "Failed is the logs transferring, because of illegal addresses is the buffer you've provided."
 #define ONE_COUNTED 1
 
@@ -121,35 +121,52 @@ int logs_open(struct inode *_inode, struct file *_file)
     If length == sizeof(unsigned int) then we write row_num to it,
     else,
     The function checks if length < sizeof(rule_t) * row_num, where length is the size of the buffer,
-    and if that's the case then it prints "The logs, were not transferred, because was too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
-    and returns -1, which will be the value of errno after the syscall in the calling process,
+    and if that's the case then it prints "The logs, were not transferred, because too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
+    and returns -1.
     If length != sizeof(unsigned int) and (length >= sizeof(rule_t) * row_num) then the function goes thraugh the log_list linked-list and for every node it copies its rule_t to the buffer.
     
-    Of course the function writes every byte to the user space cautiously, by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL.
+    Of course the function writes every byte to the user space cautiously, by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL,
+    If one of the addresses didn't follow this, then "Failed is the logs transferring, because of illegal addresses is the buffer you've provided." will be writen to the to the kernel logs that can be seen by the dmesg shell command
+    and the function returns -1.
 
-    Returns: number of bytes written into the buffer.
+    Thus, partial writes are possible on error.
+
+    Returns: Number of bytes written into the buffer on success, and -1 on error.
 */
 ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
 {
     size_t num_copied = 0; // Number of bytes copied to the buffer.
+    size_t copy_curr = 0; // Number of bytes copied in a given iteration of going thraugh the log_list list.
     if (length == sizeof(unsigned int))
     {
         num_copied = sizeof(unsigned int) - copy_to_user(buff, &row_num, sizeof(unsigned int));
+        if (num_copied < sizeof(unsigned int))
+        {
+            num_copied = MAIN_FAILURE;
+            printk(KERN_ERR WRONG_ADDRESS_ERR_MSG "\n");
+        }
     }
     else
     {
         MAIN_SIMPLE_ERR_CHECK(length < sizeof(rule_t) * row_num, SIZE_ERR_MSG);
         for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
         {
-            num_copied += sizeof(rule_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), sizeof(rule_t));
+            copy_curr = sizeof(rule_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), sizeof(rule_t));
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_ip), LVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->src_ip)), sizeof(__be32));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_ip), LVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->dst_ip)), sizeof(__be32));
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), LVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(unsigned char));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), LVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(unsigned char));
+            num_copied += copy_curr;
+            if (copy_curr < sizeof(rule_t))
+            {
+                num_copied = MAIN_FAILURE;
+                printk(KERN_ERR WRONG_ADDRESS_ERR_MSG "\n");
+                break;
+            }
         }
         klist_iter_exit(iter);
     }
-    return num_copied;
+    return num_copied;     
 }
 
 // Declares the attributes for the sysfs device
