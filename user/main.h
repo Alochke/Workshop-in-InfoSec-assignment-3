@@ -16,7 +16,7 @@
 #define MAIN_RULE_TABLE_WRITE_ATTRIBUTE_ERR_MSG "Writing to /sys/class/fw/rules/rules, the program has failed."
 #define MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG "Reading from /sys/class/fw/rules/rules, the program has failed."
 #define MAIN_SHOW_LOGS_FILE_OPEN_ERR_MSG "Openning /dev/fw_log, the program has failed."
-#define MAIN_READ_LOGS_ERR_MSG "To read from /dev/fw_log, the program has failed."
+#define MAIN_READ_LOGS_ERR_MSG "Occoured, an error, when from /dev/fw_log- the program read."
 #define MAIN_LOCALTIME_R_ERR_MSG "Has failed, the function localtime_r."
 #define SRTCMP_OF_EQ 0
 #define MAIN_SYSCALL_FAIL_RETURN -1
