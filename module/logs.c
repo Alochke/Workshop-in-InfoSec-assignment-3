@@ -150,17 +150,16 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
     }
     else
     {
-        printk("%d\n", row_num);
-        MAIN_SIMPLE_ERR_CHECK(length < sizeof(rule_t) * row_num, SIZE_ERR_MSG);
+        MAIN_SIMPLE_ERR_CHECK(length < sizeof(log_row_t) * row_num, SIZE_ERR_MSG);
         for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
         {
-            copy_curr = sizeof(rule_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), sizeof(rule_t));
-            copy_to_user(buff + num_copied + offsetof(log_row_t, src_ip), LVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->src_ip)), sizeof(__be32));
+            copy_curr = sizeof(log_row_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), sizeof(rule_t));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, src_ip), ntohl(node_to_log(iter->i_cur)->src_ip)), sizeof(__be32);
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_ip), LVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->dst_ip)), sizeof(__be32));
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), LVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(unsigned char));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), LVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(unsigned char));
             num_copied += copy_curr;
-            if (copy_curr < sizeof(rule_t))
+            if (copy_curr < sizeof(log_row_t))
             {
                 num_copied = MAIN_FAILURE;
                 printk(KERN_ERR WRONG_ADDRESS_ERR_MSG "\n");
