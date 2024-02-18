@@ -54,8 +54,8 @@ int read_logs(int fd)
     {
         char timestamp[MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED], src_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], dst_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], src_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], dst_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], count[MAX_COUNT_LEN + MAIN_NULL_INCLUDED];
         char *protocol, *action, *reason;
-        time_t walltime = rows[i].timestamp;
         fprintf(stderr, "check check\n");
+        time_t walltime = rows[i].timestamp;
         struct tm tm_instance;
         MAIN_MSG_ERR_CHECK(localtime_r(&walltime, &tm_instance) == NULL, free(rows), MAIN_LOCALTIME_R_ERR_MSG)
         snprintf(timestamp, MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED, "%02d/%02d/%d %02d:%02d:%02d", tm_instance.tm_mday, tm_instance.tm_mon + TM_MON_OFFSET, tm_instance.tm_year + TM_YEAR_OFFSET, tm_instance.tm_hour, tm_instance.tm_min, tm_instance.tm_sec);
