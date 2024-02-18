@@ -60,7 +60,7 @@ static void cleanup(enum stage stg)
 
     Returns: 1 on acceptance, 0 when dropping.
 */
-static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_ops *state)
+static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_state *state)
 {
     /*
         The parameters we'll import from skb.
@@ -88,7 +88,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     src_ip = ip_hdr(skb)->saddr;
     dst_ip = ip_hdr(skb)->daddr;
     protocol = ip_hdr(skb)->protocol;
-    printk("%s\n", state->dev->name);
+    printk("%s\n", state->out->name);
     
     if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
     {
