@@ -5,7 +5,7 @@
 #define SRTCMP_OF_EQ 0
 #define CHECK_DIRECTION(VAL, STR) ((rule_table[i].direction & VAL) && (SRTCMP_OF_EQ == strcmp(interface, STR))) // Checks if the direction of a packet is in the domain of enforcement of a rule, used in nf_fn.
 #define CHECK_IP(rule_ip, packet_ip, mask) ((rule_ip & mask) == (packet_ip & mask)) // Checks if packet_ip is a member of the subnet defined by rule_ip/mask.
-#define CHECK_PORT(rule_port, packet_port) ((rule_port == FW_PORT_ANY) || ((rule_port == (unsigned short)htons(FW_PORT_ABOVE_1023)) && (packet_port > 1023)) || (rule_port == packet_port))
+#define CHECK_PORT(rule_port, packet_port) ((rule_port == FW_PORT_ANY) || (rule_port == packet_port) || ((rule_port == (unsigned short)htons(FW_PORT_ABOVE_1023)) && (ntohs(packet_port) > 1023)))
 /* 
     The next part is kind of disgusting, sorry.
     I wrote it only because I found out that the only way to use this MACROS is to undef __kernel__ so we can get the macros from linux/netfilter_ipv4.h...
