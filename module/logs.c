@@ -16,7 +16,7 @@
 }
 
 #define RVAL_UINT_TO_POINTER(x) (unsigned int[1]){x}
-#define RVAL_UCHAR_TO_POINTER(x) (unsigned char[1]){x}
+#define RVAL_UCHAR_TO_POINTER(x) (unsigned short[1]){x}
 
 static struct device* dev_device = NULL;
 static struct device* sysfs_device = NULL;
@@ -156,8 +156,8 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
             copy_curr = sizeof(log_row_t) - copy_to_user(buff + num_copied, node_to_log(iter->i_cur), sizeof(log_row_t));
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_ip), RVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->src_ip)), sizeof(__be32));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_ip), RVAL_UINT_TO_POINTER(ntohl(node_to_log(iter->i_cur)->dst_ip)), sizeof(__be32));
-            copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(unsigned char));
-            copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(unsigned char));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(unsigned short));
+            copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(unsigned short));
             num_copied += copy_curr;
             if (copy_curr < sizeof(log_row_t))
             {
