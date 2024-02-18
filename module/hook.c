@@ -74,8 +74,8 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     int i; // For loop index.
     
     /*
-        First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary, I added this
-        because I have seen it in the article I added a link to below.
+        First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary,
+        I added this because I have seen it in the article I added a link to below.
         I need skb to be unempty for the checks to work so this won't damage anything anyways.
         https://infosecwriteups.com/linux-kernel-communication-part-1-netfilter-hooks-15c07a5a5c4e
     */
@@ -108,7 +108,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     }
     else
     {
-        // protocol must be ICMOP.
+        // protocol must be ICMP.
         src_port = FW_PORT_ANY;
         dst_port = FW_PORT_ANY;
     }

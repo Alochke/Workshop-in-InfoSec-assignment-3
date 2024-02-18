@@ -122,13 +122,13 @@ int logs_open(struct inode *_inode, struct file *_file)
 
     If length == sizeof(unsigned int) then we write row_num to it,
     else,
-    The function checks if length < sizeof(log_row_t) * row_num, where length is the size of the buffer,
+    The function checks if length < sizeof(log_row_t) * row_num, where length the size of the given buffer in bytes,
     and if that's the case then it prints "Were not transferred, the logs. Because too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
     and returns -1.
     If length != sizeof(unsigned int) and (length >= sizeof(log_row_t) * row_num) then the function goes thraugh the log_list linked-list and for every node it copies its log_row_t to the buffer.
     
     Of course the function writes every byte to the user space cautiously, by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL,
-    If one of the addresses didn't follow this, then "Failed is the logs transferring, because of illegal addresses is the buffer you've provided." will be writen to the to the kernel logs that can be seen by the dmesg shell command
+    If one of the addresses didn't follow this, then "Failed is the logs transferring, because of illegal addresses is the buffer you've provided." will be written to the to the kernel logs that can be seen by the dmesg shell command
     and the function returns -1.
 
     Thus, partial writes are possible on error.
