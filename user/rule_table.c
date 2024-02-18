@@ -4,7 +4,6 @@
 #define DECIMAL_BASIS 10 // For strtol.
 #define MIN_BYTE_VAL 0
 #define MAX_BYTE_VAL 255
-#define MAXIMAL_INDX_OF_BYTE_IN_ADDRESS 3
 #define MAX_MASK_LEN 32
 #define MIN_USHORT_VAL 0
 #define MAX_USHORST_VAL 65535
@@ -20,7 +19,6 @@
 #define MAX_RULE_NAME_LEN 20
 #define MAX_SUBNET_LEN 18
 #define MAX_PORT_LEN 5
-#define NULL_INCLUDED 1 // Used to signify the reason we're adding one to a string that will store deserialized rule_t members.
 #define ANY_STR "any"
 #define ABOVE_1023_STR ">1023"
 #define SIZE_PLUS_NULL(x) (strlen(x) + 1)
@@ -118,10 +116,10 @@ int parse_subnet(unsigned int* ip, unsigned char *prefix_size, unsigned int *pre
 		temp_int = strtol(token, &end, DECIMAL_BASIS);
 		MAIN_SIMPLE_ERR_CHECK(end != &token[strlen(token)]) // From end == &token[strlen(token)] and (token[0] != ' ' && token[0] != '-' && token[0] != '+') we can infer that the token is a number without a sign specification.
 
-		if (i <= MAXIMAL_INDX_OF_BYTE_IN_ADDRESS)
+		if (i <= MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS)
 		{
 			MAIN_SIMPLE_ERR_CHECK(MAX_BYTE_VAL < temp_int)
-			((char*)ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - i] = (char)temp_int; // We're parsing the ip by bytes, so we must write it by bytes.
+			((char*)ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - i] = (char)temp_int; // We're parsing the ip by bytes, so we must write it by bytes.
 		}
 		else
 		{
@@ -296,7 +294,7 @@ void  deseralize_subnet(char* subnet, unsigned int ip, unsigned char prefix_size
 		strcpy(subnet, "any");
 		return;
 	}
-	snprintf(subnet, MAX_SUBNET_LEN, "%d.%d.%d.%d/%d", ((unsigned char*) &ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS], ((unsigned char*) &ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - 1], ((unsigned char*) &ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - 2], ((unsigned char*) &ip)[MAXIMAL_INDX_OF_BYTE_IN_ADDRESS - 3], prefix_size);
+	snprintf(subnet, MAX_SUBNET_LEN + MAIN_NULL_INCLUDED, "%d.%d.%d.%d/%d", ((unsigned char*) &ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS], ((unsigned char*) &ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 1], ((unsigned char*) &ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 2], ((unsigned char*) &ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 3], prefix_size);
 }
 
 /*
@@ -317,29 +315,7 @@ void deseralize_port(char* port, unsigned short member)
 			strcpy(port, ABOVE_1023_STR);
 			return;
 	}
-	snprintf(port, MAX_PORT_LEN, "%hu", member);
-}
-
-/*
-	Deseralizes the member- member of the deseralized rule_t, and points the pointer pointed by field to the deseralized data.
-	Decides the correct value by the next assumption,
-	keyword[i] is the correct value for *field iff values[i] == member.
-
-	- field: The pointer it points to will point to the deseralized data after the function is run.
-	- member: The member of the rule_t to deseralize.
-	- keywords: An array of applicable values for *field.
-	- values: An array of the possible values of member.
-	- int: The length of keywords and values.
-*/
-void deseralize_field(char **field, unsigned int member, char* keywords[], unsigned int values[], size_t len)
-{
-	for (size_t i = 0; i < len; i++)
-	{
-		if (values[i] == member)
-		{
-			*field = keywords[i];
-		}
-	}
+	snprintf(port, MAX_PORT_LEN + MAIN_NULL_INCLUDED, "%hu", member);
 }
 
 /*
@@ -353,25 +329,28 @@ void deseralize_field(char **field, unsigned int member, char* keywords[], unsig
 */
 int rule_table_out_print(FILE* fptr)
 {
-	size_t rules_num = getc(fptr);
+	size_t rule_num;
+	clearerr(fptr); // We do that for the next check of getc's success.
+	rule_num = getc(fptr);
+	MAIN_MSG_ERR_CHECK(ferror(fptr),, MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG)
 	rule_t* temp = malloc(sizeof(rule_t));
 	MAIN_MSG_ERR_CHECK(temp == NULL,, MAIN_MALLOC_ERR_MSG);
-	char rule_name[MAX_RULE_NAME_LEN + NULL_INCLUDED], src_subnet[MAX_SUBNET_LEN + NULL_INCLUDED], dest_subnet[MAX_SUBNET_LEN + NULL_INCLUDED], src_port[MAX_PORT_LEN + NULL_INCLUDED], dst_port[MAX_PORT_LEN + NULL_INCLUDED];
+	char rule_name[MAX_RULE_NAME_LEN + MAIN_NULL_INCLUDED], src_subnet[MAX_SUBNET_LEN + MAIN_NULL_INCLUDED], dest_subnet[MAX_SUBNET_LEN + MAIN_NULL_INCLUDED], src_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], dst_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED];
 	rule_name[MAX_RULE_NAME_LEN] = '\0'; // We're making sure that rule_name will be NULL terminated throughout the function.
 	char *direction, *ack, *action, *prot;
 
-	for (size_t i = 0; i < rules_num; i++)
+	for (size_t i = 0; i < rule_num; i++)
 	{
-		fread(temp, sizeof(rule_t), 1, fptr);
+		MAIN_MSG_ERR_CHECK(fread(temp, sizeof(rule_t), 1, fptr), free(temp), MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG);
 		strncpy(rule_name, temp->rule_name, MAX_RULE_NAME_LEN);
-		deseralize_field(&direction, temp->direction, DIRECTION_STRS, DIRECTION_VALS, DIRECTION_NUM);
+		main_deseralize_field(&direction, temp->direction, DIRECTION_STRS, DIRECTION_VALS, DIRECTION_NUM);
 		deseralize_subnet(src_subnet, temp->src_ip, temp->src_prefix_size);
 		deseralize_subnet(dest_subnet, temp->dst_ip, temp->dst_prefix_size);
-		deseralize_field(&prot, temp->protocol, PROT_STRS, PROT_VALS, PROTS_NUM);
+		main_deseralize_field(&prot, temp->protocol, PROT_STRS, PROT_VALS, PROTS_NUM);
 		deseralize_port(src_port, temp->src_port);
 		deseralize_port(dst_port, temp->dst_port);
-		deseralize_field(&ack, temp->ack, ACK_STRS, ACK_VALS, ACK_NUM);
-		deseralize_field(&action, temp->action, END_ACTION_STRS, END_ACTION_VALS, END_ACTIONS_NUM);
+		main_deseralize_field(&ack, temp->ack, ACK_STRS, ACK_VALS, ACK_NUM);
+		main_deseralize_field(&action, temp->action, END_ACTION_STRS, END_ACTION_VALS, END_ACTIONS_NUM);
 
 		printf("%s %s %s %s %s %s %s %s %s\n", rule_name, direction, src_subnet, dest_subnet, prot, src_port, dst_port, ack, action);
 	}

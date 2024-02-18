@@ -1,13 +1,11 @@
 #ifndef LOGS
 #define LOGS
 
-#include <unistd.h>
+#include <unistd.h> // For read system call.
 #include <time.h> // For the timestamps.
 #include "main.h"
 
-#define TIMESTAMP_LEN 19
-#define 
 
-read_logs(int);
+int read_logs(int);
 
 #endif

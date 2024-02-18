@@ -1,6 +1,6 @@
 CFLAGS = -Wall -g
 
-SRC = list.c main.c rule_table.c
+SRC = list.c main.c rule_table.c logs.c
 OBJ = $(SRC:.c=.o)
 EXECUTABLE = main
 
