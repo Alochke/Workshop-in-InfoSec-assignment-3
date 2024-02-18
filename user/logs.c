@@ -46,7 +46,7 @@ int read_logs(int fd)
     MAIN_MSG_ERR_CHECK(read(fd, &row_num, sizeof(unsigned int)) != sizeof(unsigned int),, MAIN_READ_LOGS_ERR_MSG);
     rows = malloc(sizeof(log_row_t) * row_num);
     MAIN_MSG_ERR_CHECK(rows == NULL,, MAIN_MALLOC_ERR_MSG);
-    fprinf(stderr, "%d\n", read(fd, rows, sizeof(log_row_t) * row_num));
+    fprintf(stderr, "%d\n", read(fd, rows, sizeof(log_row_t) * row_num));
 
     printf(LOG_FORMAT_STRING(REASON_FORMAT_STR), "timestamp", "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "action", "reason", "count");
 
