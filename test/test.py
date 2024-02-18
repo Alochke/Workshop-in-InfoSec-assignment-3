@@ -1,4 +1,4 @@
-from scapy.all import IP, ICMP, TCP, send
+from scapy.all import IP, ICMP, TCP, sendp, Ether
 
 # Craft the IP packet
 ip_packet = IP(src="10.1.1.1", dst="10.1.1.2")
@@ -10,4 +10,4 @@ tcp_packet = TCP(sport=23, dport=1024, flags= "A")
 packet = ip_packet / tcp_packet
 
 # Send the packet
-send(packet)
+sendp(Ether()/packet, iface = "enp0s8")
