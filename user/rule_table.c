@@ -333,6 +333,7 @@ int rule_table_out_print(FILE* fptr)
 	clearerr(fptr); // We do that for the next check of getc's success.
 	rule_num = getc(fptr);
 	MAIN_MSG_ERR_CHECK(ferror(fptr),, MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG)
+	fprintf(stderr ,"idk\n");
 	rule_t* temp = malloc(sizeof(rule_t));
 	MAIN_MSG_ERR_CHECK(temp == NULL,, MAIN_MALLOC_ERR_MSG);
 	char rule_name[MAX_RULE_NAME_LEN + MAIN_NULL_INCLUDED], src_subnet[MAX_SUBNET_LEN + MAIN_NULL_INCLUDED], dest_subnet[MAX_SUBNET_LEN + MAIN_NULL_INCLUDED], src_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], dst_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED];

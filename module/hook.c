@@ -84,11 +84,10 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
         return NF_ACCEPT;
     }
     
-    interface = skb->dev->name;
+    interface = state->out->name;
     src_ip = ip_hdr(skb)->saddr;
     dst_ip = ip_hdr(skb)->daddr;
     protocol = ip_hdr(skb)->protocol;
-    printk("%s\n", state->out->name);
     
     if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
     {
