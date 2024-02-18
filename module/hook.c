@@ -5,7 +5,7 @@
 #define SRTCMP_OF_EQ 0
 #define CHECK_DIRECTION(VAL, STR) ((rule_table[i].direction & VAL) && (SRTCMP_OF_EQ == strcmp(interface, STR))) // Checks if the direction of a packet is in the domain of enforcement of a rule, used in nf_fn.
 #define CHECK_IP(rule_ip, packet_ip, mask) ((rule_ip & mask) == (packet_ip & mask)) // Checks if packet_ip is a member of the subnet defined by rule_ip/mask.
-#define CHECK_PORT(rule_port, packet_port) ((rule_port == FW_PORT_ANY) || ((rule_port == FW_PORT_ABOVE_1023) && (packet_port > 1023)) || (rule_port == packet_port))
+#define CHECK_PORT(rule_port, packet_port) ((rule_port == FW_PORT_ANY) || ((rule_port == (unsigned short)htons(FW_PORT_ABOVE_1023)) && (packet_port > 1023)) || (rule_port == packet_port))
 /* 
     The next part is kind of disgusting, sorry.
     I wrote it only because I found out that the only way to use this MACROS is to undef __kernel__ so we can get the macros from linux/netfilter_ipv4.h...
@@ -115,8 +115,6 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
 
     for(i = 0; i < rule_table_rules_num; i++)
     {
-        printk("%d\n", (rule_table[i].dst_port == FW_PORT_ABOVE_1023) && (dst_port > 1023));
-        printk("%d\n", rule_table[i].dst_port);
         if (
             (CHECK_DIRECTION(DIRECTION_IN, IN_STR) || CHECK_DIRECTION(DIRECTION_OUT, OUT_STR))
             &&
