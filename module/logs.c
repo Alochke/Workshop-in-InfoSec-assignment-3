@@ -159,6 +159,7 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(unsigned short));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(unsigned short));
             num_copied += copy_curr;
+            ptintk("%d\n", node_to_log(iter->i_cur)->src_port);
             if (copy_curr < sizeof(log_row_t))
             {
                 num_copied = MAIN_FAILURE;
