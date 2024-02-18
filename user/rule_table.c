@@ -320,7 +320,6 @@ void deseralize_port(char* port, unsigned short member)
 
 /*
 	Prints rule table.
-	Will print "Failed, the program an allocation." instead in case the alloation of a buffer to read to has failed.
 
 	fptr: A pointer to the FILE you get by openning "/sys/class/fw/rules/rules", we assume it was not read from or writen to previously to the function run-time,
 		and that it has read premissions.
@@ -355,6 +354,7 @@ int rule_table_out_print(FILE* fptr)
 
 		printf("%s %s %s %s %s %s %s %s %s\n", rule_name, direction, src_subnet, dest_subnet, prot, src_port, dst_port, ack, action);
 	}
+	free(temp);
 
 	return EXIT_SUCCESS;
 }
