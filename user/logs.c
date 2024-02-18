@@ -47,6 +47,7 @@ int read_logs(int fd)
     rows = malloc(sizeof(log_row_t) * row_num);
     MAIN_MSG_ERR_CHECK(rows == NULL,, MAIN_MALLOC_ERR_MSG);
     MAIN_MSG_ERR_CHECK(read(fd, rows, sizeof(log_row_t) * row_num) != (sizeof(log_row_t) * row_num), free(rows), MAIN_READ_LOGS_ERR_MSG)
+    fprintf(stderr, "check check\n");
 
     printf(LOG_FORMAT_STRING(REASON_FORMAT_STR), "timestamp", "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "action", "reason", "count");
 
@@ -54,7 +55,6 @@ int read_logs(int fd)
     {
         char timestamp[MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED], src_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], dst_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], src_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], dst_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], count[MAX_COUNT_LEN + MAIN_NULL_INCLUDED];
         char *protocol, *action, *reason;
-        fprintf(stderr, "check check\n");
         time_t walltime = rows[i].timestamp;
         struct tm tm_instance;
         MAIN_MSG_ERR_CHECK(localtime_r(&walltime, &tm_instance) == NULL, free(rows), MAIN_LOCALTIME_R_ERR_MSG)
