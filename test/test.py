@@ -1,7 +1,7 @@
 from scapy.all import IP, ICMP, TCP, send
 
 # Craft the IP packet
-ip_packet = IP(src="127.0.0.1", dst="10.1.1.1")
+ip_packet = IP(src="10.1.1.1", dst="10.1.2.1")
 
 # Craft the ICMP packet (ping request)
 tcp_packet = TCP(sport=0, dport=23)
