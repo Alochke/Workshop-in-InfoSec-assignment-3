@@ -6,10 +6,9 @@
 #define PORT_FORMAT "%-8s "
 #define PROT_FORMAT "%-8s "
 #define ACTION_FORMAT "%-6s "
-#define REASON_FORMAT_STR "%-23s "
-#define REASON_FORMAT_INT "%-23d "
+#define REASON_FORMAT "%-23s "
 #define COUNT_FORMAT "%-10s"
-#define LOG_FORMAT_STRING(REASON_FORMAT) TIMESTAMP_FORMAT IP_FORMAT IP_FORMAT PORT_FORMAT PORT_FORMAT PROT_FORMAT ACTION_FORMAT REASON_FORMAT COUNT_FORMAT "\n" // REASON_FORMAT == REASON_FORMAT_STR when we want to print a string for the reason field. When we want to print an integer instead, it'll be REASON_FORMAT_INT.
+#define LOG_FORMAT_STRING TIMESTAMP_FORMAT IP_FORMAT IP_FORMAT PORT_FORMAT PORT_FORMAT PROT_FORMAT ACTION_FORMAT REASON_FORMAT COUNT_FORMAT "\n" // REASON_FORMAT == REASON_FORMAT_STR when we want to print a string for the reason field. When we want to print an integer instead, it'll be REASON_FORMAT_INT.
 #define MAX_TIMESTAMP_LEN 19
 #define MAX_IP_LEN 15
 #define MAX_PORT_LEN 5 // This is diffrent than the suggested length by PORT_FORMAT because this specifies the maximal length of a port value.
@@ -46,14 +45,15 @@ int read_logs(int fd)
     MAIN_MSG_ERR_CHECK(read(fd, &row_num, sizeof(unsigned int)) != sizeof(unsigned int),, MAIN_READ_LOGS_ERR_MSG);
     rows = malloc(sizeof(log_row_t) * row_num);
     MAIN_MSG_ERR_CHECK(rows == NULL,, MAIN_MALLOC_ERR_MSG);
-    fprintf(stderr, "%d\n", read(fd, rows, sizeof(log_row_t) * row_num));
+    MAIN_MSG_ERR_CHECK(read(fd, rows, sizeof(log_row_t) * row_num), free(rows), MAIN_READ_LOGS_ERR_MSG);
 
-    printf(LOG_FORMAT_STRING(REASON_FORMAT_STR), "timestamp", "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "action", "reason", "count");
+    printf(LOG_FORMAT_STRING, "timestamp", "src_ip", "dst_ip", "src_port", "dst_port", "protocol", "action", "reason", "count");
 
     for (size_t i = 0; i < row_num; i++)
     {
-        char timestamp[MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED], src_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], dst_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], src_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], dst_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], count[MAX_COUNT_LEN + MAIN_NULL_INCLUDED];
+        char timestamp[MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED], src_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], dst_ip[MAX_IP_LEN + MAIN_NULL_INCLUDED], src_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], dst_port[MAX_PORT_LEN + MAIN_NULL_INCLUDED], count[MAX_COUNT_LEN + MAIN_NULL_INCLUDED], reason_num[MAX_REASON_LEN];
         char *protocol, *action, *reason;
+        reason = reason_num;
         time_t walltime = rows[i].timestamp;
         struct tm tm_instance;
         MAIN_MSG_ERR_CHECK(localtime_r(&walltime, &tm_instance) == NULL, free(rows), MAIN_LOCALTIME_R_ERR_MSG)
@@ -67,14 +67,9 @@ int read_logs(int fd)
         snprintf(count, MAX_COUNT_LEN + MAIN_NULL_INCLUDED, "%d", rows[i].count);
         if(main_deseralize_field(&reason, rows[i].reason, REASON_STRS, REASON_VALS, REASONS_NUM))
         {
-            // The printed reason should be a rule row number.
-            printf(LOG_FORMAT_STRING(REASON_FORMAT_INT), timestamp, src_ip, dst_ip, src_port, dst_port, protocol, action, rows[i].reason, count);
+            snprintf(reason_num, MAX_REASON_LEN, "%d", rows[i].reason);
         }
-        else
-        {
-            // The printed reason should be a string specification.
-            printf(LOG_FORMAT_STRING(REASON_FORMAT_STR), timestamp, src_ip, dst_ip, src_port, dst_port, protocol, action, reason, count);
-        }
+        printf(LOG_FORMAT_STRING, timestamp, src_ip, dst_ip, src_port, dst_port, protocol, action, reason, count);
     }
     free(rows);
     return EXIT_SUCCESS;

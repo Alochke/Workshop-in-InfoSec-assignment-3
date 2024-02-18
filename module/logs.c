@@ -3,7 +3,7 @@
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
-#define SIZE_ERR_MSG "The logs, were not transferred, because too small, is the buffer you've provided."
+#define SIZE_ERR_MSG "Were not transferred, the logs. Because too small, is the buffer you've provided."
 #define WRONG_ADDRESS_ERR_MSG "Failed is the logs transferring, because of illegal addresses is the buffer you've provided."
 #define ONE_COUNTED 1
 
@@ -122,10 +122,10 @@ int logs_open(struct inode *_inode, struct file *_file)
 
     If length == sizeof(unsigned int) then we write row_num to it,
     else,
-    The function checks if length < sizeof(rule_t) * row_num, where length is the size of the buffer,
-    and if that's the case then it prints "The logs, were not transferred, because too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
+    The function checks if length < sizeof(log_row_t) * row_num, where length is the size of the buffer,
+    and if that's the case then it prints "Were not transferred, the logs. Because too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
     and returns -1.
-    If length != sizeof(unsigned int) and (length >= sizeof(rule_t) * row_num) then the function goes thraugh the log_list linked-list and for every node it copies its rule_t to the buffer.
+    If length != sizeof(unsigned int) and (length >= sizeof(log_row_t) * row_num) then the function goes thraugh the log_list linked-list and for every node it copies its log_row_t to the buffer.
     
     Of course the function writes every byte to the user space cautiously, by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL,
     If one of the addresses didn't follow this, then "Failed is the logs transferring, because of illegal addresses is the buffer you've provided." will be writen to the to the kernel logs that can be seen by the dmesg shell command
@@ -133,7 +133,7 @@ int logs_open(struct inode *_inode, struct file *_file)
 
     Thus, partial writes are possible on error.
 
-    Returns: Number of bytes written into the buffer on success, and -1 on error.
+    Returns: Number of bytes written into the buffer on success or in case a partial write has accrued, and -1 on error.
 */
 ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
 {
