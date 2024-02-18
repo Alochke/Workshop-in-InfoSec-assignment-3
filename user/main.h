@@ -32,7 +32,7 @@
 }
 
 #define MAIN_SIMPLE_ERR_CHECK(condition) MAIN_ERR_CHECK(condition,)
-#define MAIN_MSG_ERR_CHECK(condition, extracode, msg) MAIN_ERR_CHECK(condition, extracode; dprintf(stderr, "%s\n", msg);)
+#define MAIN_MSG_ERR_CHECK(condition, extracode, msg) MAIN_ERR_CHECK(condition, extracode; fprintf(stderr, "%s\n", msg);)
 
 int main_deseralize_field(char**, unsigned int, char**, unsigned int*, size_t);
 
