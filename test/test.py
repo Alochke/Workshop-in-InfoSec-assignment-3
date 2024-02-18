@@ -10,4 +10,4 @@ tcp_packet = TCP(sport=23, dport=1024, flags= "A")
 packet = ip_packet / tcp_packet
 
 # Send the packet
-sendp(packet)
+sendp(Ether()/packet, iface = "enp0s8")
