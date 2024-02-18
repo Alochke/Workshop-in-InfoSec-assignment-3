@@ -11,3 +11,5 @@ packet = ip_packet / transort
 
 # Send the packet
 send(packet)
+
+packet.show()
