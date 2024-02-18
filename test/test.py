@@ -1,4 +1,4 @@
-from scapy.all import IP, ICMP, TCP, sendp, Ether, send
+from scapy.all import IP, ICMP, TCP, UDP, sendp, Ether, send
 
 # Craft the IP packet
 ip_packet = IP(dst = "10.1.2.2")
