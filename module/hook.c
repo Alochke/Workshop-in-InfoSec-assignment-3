@@ -116,7 +116,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     for(i = 0; i < rule_table_rules_num; i++)
     {
         printk("%d\n", (rule_table[i].dst_port == (unsigned short)htons(FW_PORT_ABOVE_1023)) && (dst_port > 1023));
-        printk("%d\n", (unsigned short)htons(FW_PORT_ABOVE_1023))
+        printk("%d\n", (unsigned short)htons(FW_PORT_ABOVE_1023));
         if (
             (CHECK_DIRECTION(DIRECTION_IN, IN_STR) || CHECK_DIRECTION(DIRECTION_OUT, OUT_STR))
             &&
