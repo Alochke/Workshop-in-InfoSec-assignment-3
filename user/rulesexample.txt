@@ -1,2 +1,2 @@
-idk any any 10.1.1.0/24 any any any any accept
+idk any any any TCP any any any accept
 default any any any any any any any drop
