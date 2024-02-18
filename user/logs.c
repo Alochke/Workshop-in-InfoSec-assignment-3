@@ -44,6 +44,7 @@ int read_logs(int fd)
 
     // It's ok to use the read system call like this because we know  how the read implementation of this char dev is implemented.
     MAIN_MSG_ERR_CHECK(read(fd, &row_num, sizeof(unsigned int)) != sizeof(unsigned int),, MAIN_READ_LOGS_ERR_MSG);
+    printf("check check\n");
     rows = malloc(sizeof(log_row_t) * row_num);
     MAIN_MSG_ERR_CHECK(rows == NULL,, MAIN_MALLOC_ERR_MSG);
     MAIN_MSG_ERR_CHECK(read(fd, rows, sizeof(log_row_t) * row_num) != (sizeof(log_row_t) * row_num), free(rows), MAIN_READ_LOGS_ERR_MSG)
