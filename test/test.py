@@ -1,13 +1,13 @@
-from scapy.all import IP, ICMP, TCP, sendp, Ether
+from scapy.all import IP, ICMP, TCP, sendp, Ether, send
 
 # Craft the IP packet
-ip_packet = IP(src="10.1.1.1", dst="10.1.1.2")
+ip_packet = IP()
 
 # Craft the ICMP packet (ping request)
-tcp_packet = TCP(sport=23, dport=1024, flags= "A")
+tcp_packet = TCP()
 
 # Combine the IP and ICMP packets
 packet = ip_packet / tcp_packet
 
 # Send the packet
-sendp(Ether()/packet, iface = "enp0s8")
+send(packet)
