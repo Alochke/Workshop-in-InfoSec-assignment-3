@@ -7,7 +7,7 @@ ip_packet = IP(dst = "10.1.2.2")
 transort= UDP()
 
 # Combine the IP and ICMP packets
-packet = ip_packet / transort
+packet = ip_packet
 
 # Send the packet
 send(packet)
