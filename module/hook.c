@@ -109,8 +109,8 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     else
     {
         // protocol must be ICMOP.
-        src_port = PROT_ANY;
-        dst_port = PROT_ANY;
+        src_port = FW_PORT_ANY;
+        dst_port = FW_PORT_ANY;
     }
 
     for(i = 0; i < rule_table_rules_num; i++)
