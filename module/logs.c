@@ -150,6 +150,7 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
     }
     else
     {
+        printk("%d\n", row_num);
         MAIN_SIMPLE_ERR_CHECK(length < sizeof(rule_t) * row_num, SIZE_ERR_MSG);
         for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
         {
