@@ -341,7 +341,7 @@ int rule_table_out_print(FILE* fptr)
 
 	for (size_t i = 0; i < rule_num; i++)
 	{
-		fread(temp, sizeof(rule_t), 1, fptr) != sizeof(rule_t);
+		fread(temp, sizeof(rule_t), 1, fptr);
 		MAIN_MSG_ERR_CHECK(ferror(fptr),, MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG);
 		strncpy(rule_name, temp->rule_name, MAX_RULE_NAME_LEN);
 		main_deseralize_field(&direction, temp->direction, DIRECTION_STRS, DIRECTION_VALS, DIRECTION_NUM);
