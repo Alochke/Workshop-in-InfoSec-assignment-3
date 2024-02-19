@@ -6,7 +6,7 @@
 #define CHECK_DIRECTION(VAL, STR) ((rule_table[i].direction & VAL) && (SRTCMP_OF_EQ == strcmp(interface, STR))) // Checks if the direction of a packet is in the domain of enforcement of a rule, used in nf_fn.
 #define CHECK_IP(rule_ip, packet_ip, mask) ((rule_ip & mask) == (packet_ip & mask)) // Checks if packet_ip is a member of the subnet defined by rule_ip/mask.
 #define NETWORK_ORDER_1024 4 // This is to minimize casting between network and host order
-#define FIRST_BYTE_MASK (1 << 8) -1 // This too.
+#define FIRST_BYTE_MASK ((1 << 8) -1) // This too.
 #define CHECK_PORT(rule_port, packet_port) ((rule_port == FW_PORT_ANY) || (rule_port == packet_port) || ((rule_port == NETWORK_ORDER_1024) && ((packet_port & FIRST_BYTE_MASK) >= NETWORK_ORDER_1024)))
 /* 
     The next part is kind of disgusting, sorry.
