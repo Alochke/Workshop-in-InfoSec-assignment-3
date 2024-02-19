@@ -107,6 +107,7 @@ enum stage{
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
     list_destroy(log_list, iter);
+    row_num = 0;
     return MAIN_SUCEESS;
 }
 
