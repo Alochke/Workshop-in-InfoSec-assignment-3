@@ -4,7 +4,7 @@ from scapy.all import IP, UDP, ICMP, TCP, sendp, Ether, send
 ip_packet = IP(dst = "10.1.1.1")
 
 # Craft the ICMP packet (ping request)
-transort= UDP(sport = 1)
+transort= UDP(sport = 2)
 
 # Combine the IP and ICMP packets
 packet = ip_packet / transort
