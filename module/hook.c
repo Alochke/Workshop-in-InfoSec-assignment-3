@@ -74,6 +74,8 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     ack_t ack;
 
     int i; // For loop index.
+
+    printk("check check");
     
     /*
         First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary,
