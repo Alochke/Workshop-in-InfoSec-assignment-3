@@ -98,11 +98,16 @@ enum stage{
 };
 
 /*
-	The implementation of store.
+	The implementation of store for the sysfs device.
+
+    Resets the logs.
+
+    Returns 0
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-    return 0;
+    list_destroy(log_list, iter);
+    return MAIN_SUCEESS;
 }
 
 /*
