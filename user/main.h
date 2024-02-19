@@ -15,9 +15,11 @@
 #define MAIN_RULE_TABLE_OPEN_ATTRIBUTE_ERR_MSG "Openning /sys/class/fw/rules/rules, the program has failed."
 #define MAIN_RULE_TABLE_WRITE_ATTRIBUTE_ERR_MSG "Writing to /sys/class/fw/rules/rules, the program has failed."
 #define MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG "Reading from /sys/class/fw/rules/rules, the program has failed."
-#define MAIN_SHOW_LOGS_FILE_OPEN_ERR_MSG "Openning /dev/fw_log, the program has failed."
+#define MAIN_LOGS_CHAR_DEV_OPEN_ERR_MSG "Openning /dev/fw_log, the program has failed."
 #define MAIN_READ_LOGS_ERR_MSG "Occoured, an error, when from /dev/fw_log- the program read."
 #define MAIN_LOCALTIME_R_ERR_MSG "Has failed, the function localtime_r."
+#define MAIN_LOGS_ATTRIBUTE_OPEN_ERR_MSG "Occured, an error, when /sys/class/fw/log/reset, the program openned."
+#define MAIN_LOGS_ATTRIBUTE_WRITE_ERR_MSG "Occured, an error, when to /sys/class/fw/log/reset, the program wrote."
 #define SRTCMP_OF_EQ 0
 #define MAIN_SYSCALL_FAIL_RETURN -1
 #define MAIN_NULL_INCLUDED 1 // Used to signify the reason we're adding one to the length of a string that will store deserialized struct members.

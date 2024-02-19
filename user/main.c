@@ -7,6 +7,8 @@
 #define LAST_ARG 2
 #define RULE_TABLE_ATTRIBUTE "/sys/class/fw/rules/rules"
 #define LOGS_READ_DEV "/dev/fw_log"
+#define LOGS_ATTRIBUTE "/sys/class/fw/log/reset"
+#define MIN_STORE 1 // The minimal amount of bytes we need to write into a sysfs attribute in order for the store function to take action.
 #define ERR_CHECK_INIT(condition, state) MAIN_ERR_CHECK(condition, cleanup(state);)
 #define ERR_CHECK_INIT_MSG(condition, state, msg) MAIN_ERR_CHECK(condition, cleanup(state); fprintf(stderr ,"%s\n", msg);)
 
@@ -52,7 +54,7 @@ int main_deseralize_field(char **field, unsigned int member, char* keywords[], u
 }
 
 /*
-    The next enum is for the cleanup function in main.c. Items represent states in which the program can be in during exeution that should be cleaned up differently.
+    The next enum is for the cleanup function in main.c. Items represent states at which the program can be during exeution and should be cleaned up differently.
 */
 enum stage{
     FIRST,
@@ -60,7 +62,8 @@ enum stage{
     LIST_INIT,
     POST_LIST_INIT,
     RULE_TABLE_INIT,
-    MID_OPENING
+    MID_OPENING,
+    RESET_LOGS
 };
 
 /*
@@ -76,8 +79,11 @@ static void cleanup(enum stage stg)
     {
         case FIRST:
             break;
+        case RESET_LOGS:
         case MID_OPENING:
             close(fd);
+            if(stg == RESET_LOGS)
+                break;
         case RULE_TABLE_INIT:
             free(rule_table);
         case POST_LIST_INIT:
@@ -106,13 +112,16 @@ int main(int argc, char* argv[])
         else if (strcmp(argv[FIRST_ARG], "show_log") == SRTCMP_OF_EQ)
         {
             fd = open(LOGS_READ_DEV, O_RDONLY);
-            ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, FIRST, MAIN_SHOW_LOGS_FILE_OPEN_ERR_MSG)
+            ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, FIRST, MAIN_LOGS_CHAR_DEV_OPEN_ERR_MSG)
             read_logs(fd);
             close(fd);
         }
         else if (strcmp(argv[FIRST_ARG], "clear_log") == SRTCMP_OF_EQ)
         {
-            /* code */
+            fd = open(LOGS_ATTRIBUTE, O_WRONLY);
+            ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, FIRST, MAIN_LOGS_ATTRIBUTE_OPEN_ERR_MSG)
+            ERR_CHECK_INIT_MSG(write(fd, "A very functional and important text", MIN_STORE) == MAIN_SYSCALL_FAIL_RETURN, RESET_LOGS, MAIN_LOGS_ATTRIBUTE_WRITE_ERR_MSG)
+            cleanup(RESET_LOGS);
         }
         else
         {

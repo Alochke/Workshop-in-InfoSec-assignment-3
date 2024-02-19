@@ -17,9 +17,9 @@
 #define TM_MON_OFFSET 1 // This signifies that tms start to count the monthes from 0.
 #define TM_YEAR_OFFSET 1900 // This signifies that tms start to count the years from 1900.
 
-#define PROTS_NUM 4
-#define PROT_STRS (char*[PROTS_NUM]){"tcp", "udp", "icmp", "other"} // The protocol specifications that can appear in a log row.
-#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP, PROT_OTHER} // The legal values of a protocol member of a log_row_t.
+#define PROTS_NUM 3
+#define PROT_STRS (char*[PROTS_NUM]){"tcp", "udp", "icmp"} // The protocol specifications that can appear in a log row.
+#define PROT_VALS (unsigned int[PROTS_NUM]){PROT_TCP, PROT_UDP, PROT_ICMP} // The legal values of a protocol member of a log_row_t.
 #define ACTIONS_NUM 2
 #define ACTION_STRS (char*[ACTIONS_NUM]){"accept", "drop"} // The possible strings for an accepetion/dropping verdict of a packet that can appear in a log row.
 #define ACTION_VALS (unsigned int[ACTIONS_NUM]){NF_ACCEPT, NF_DROP} // The possible values of the action member of a log_row_t, respectively to the string that appear in ACTION_STRS.

@@ -93,7 +93,6 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     
     if ((protocol != PROT_TCP) && (protocol != PROT_UDP) && (protocol != PROT_ICMP))
     {
-        logs_update(PROT_OTHER, NF_ACCEPT, src_ip, dst_ip, FW_PORT_ANY, FW_PORT_ANY, REASON_NO_MATCHING_RULE);
         return NF_ACCEPT;
     }
 
