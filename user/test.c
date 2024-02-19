@@ -1,12 +1,9 @@
-#include<stdio.h>
+#include <unistd.h> // For read system call.
+#include <time.h> // For the timestamps.
+#include <stdio.h>
 int main(){
-   unsigned int a  = -1;
-   unsigned int b  = -2;
-   unsigned int c = -4;
-   unsigned int d = -6;
-   printf("%0x\n", (unsigned int) a);
-   printf("%0x\n", (unsigned int) b);
-   printf("%0x\n", (unsigned int) c);
-   printf("%0x\n", (unsigned int) d);
-   return 0;
+   time_t t = time(NULL);
+   struct tm tm_instance;
+   localtime_r(&t, &tm_instance);
+   printf("%02d/%02d/%d %02d:%02d:%02d", tm_instance.tm_mday, tm_instance.tm_mon + 1, tm_instance.tm_year + 1900, tm_instance.tm_hour, tm_instance.tm_min, tm_instance.tm_sec);
 }
