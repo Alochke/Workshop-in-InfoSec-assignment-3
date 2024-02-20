@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
         {
             fd = open(LOGS_ATTRIBUTE, O_WRONLY);
             ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, FIRST, MAIN_LOGS_ATTRIBUTE_OPEN_ERR_MSG)
-            ERR_CHECK_INIT_MSG(write(fd, "A very functional and important text", MIN_STORE) == MAIN_SYSCALL_FAIL_RETURN, RESET_LOGS, MAIN_LOGS_ATTRIBUTE_WRITE_ERR_MSG)
+            ERR_CHECK_INIT_MSG(write(fd, "A very functional and important text", MIN_STORE) == MAIN_SYSCALL_FAIL_RETURN, RESET_LOGS, MAIN_LOGS_ATTRIBUTE_WRITE_ERR_MSG) // This is a meme, we could give any buffer to write and it won't change the functionality. See, we're being professional here -_-.
             cleanup(RESET_LOGS);
         }
         else
