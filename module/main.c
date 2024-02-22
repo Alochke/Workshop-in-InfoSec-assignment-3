@@ -53,6 +53,20 @@ static void cleanup(enum stage stg)
 }
 
 /*
+    This function sets the permissions for a /dev device that is created by device_create.
+
+    It's necessary for setting the permissions of /dev/fw_log to be as expected.
+*/
+static char *setmode(struct device *dev, umode_t *mode)
+{
+    if (!mode) // We're checking that mode is not null because it can be when the module is getting destroyed.
+            return NULL;
+    if (dev->devt == MKDEV(major_number, MAIN_LOGS_DEV_MINOR))
+            *mode = 0400;
+    return NULL;
+}
+
+/*
     Module initialization function.
 
     Returns: 0 in case of success, else, it'll return -1.
@@ -65,6 +79,8 @@ static int __init fw_init(void)
 	MAIN_INIT_ERR_CHECK((major_number = register_chrdev(AUTO_MINOR, MAJOR_DEVICE, &fops)) < 0, HOOK_INIT, "register_chrdev")
 
     MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_class = class_create(THIS_MODULE, CLASS)), CHAR_DEV_INIT, "class_create")
+
+    sysfs_class->devnode = setmode; // We set a callback that ensures that the premissions of the dev devices are set as expected.
 
     MAIN_INIT_ERR_CHECK(rule_table_init(), SYSFS_CLASS_INIT, "rule_table_init")
 
