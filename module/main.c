@@ -61,7 +61,7 @@ static char *setmode(struct device *dev, umode_t *mode)
 {
     if (!mode) // We're checking that mode is not null because it can be when the module is getting destroyed.
             return NULL;
-    if (dev->devt == MKDEV(major_number, MAIN_LOGS_DEV_MINOR))
+    if (dev->devt == MKDEV(major_number, LOGS_DEV_MINOR))
             *mode = 0400;
     return NULL;
 }

@@ -151,7 +151,7 @@ static void cleanup(enum stage stg)
         case ATTRIBUTE_INIT:
             device_remove_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr);
 	    case DEVICE_INIT:
-		    device_destroy(sysfs_class, MKDEV(major_number, MAIN_RULE_TABLE_MINOR));
+		    device_destroy(sysfs_class, MKDEV(major_number, RULE_TABLE_MINOR));
 	}
 }
 

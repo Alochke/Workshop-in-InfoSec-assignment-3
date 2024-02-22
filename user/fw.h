@@ -6,33 +6,15 @@ typedef enum {
 	PROT_ICMP	= 1,
 	PROT_TCP	= 6,
 	PROT_UDP	= 17,
-	PROT_OTHER 	= 255,
 	PROT_ANY	= 143
 } fw_prot_t;
 
 
 // various reasons to be registered in each log entry
 typedef enum {
-	REASON_FW_INACTIVE           = -1,
 	REASON_NO_MATCHING_RULE      = -2,
-	REASON_XMAS_PACKET           = -4,
-	REASON_ILLEGAL_VALUE         = -6,
+	REASON_XMAS_PACKET           = -4
 } reason_t;
-	
-#define FW_DEVICE_NAME_CONN_TAB		"conn_tab"
-#define FW_LOOPBACK_NET_DEVICE_NAME	"lo"
-#define FW_IN_NET_DEVICE_NAME		"eth1"
-#define FW_OUT_NET_DEVICE_NAME		"eth2"
-
-// auxiliary values, for your convenience
-#define FW_IP_VERSION		(4)
-#define FW_PORT_ANY			(0)
-
-// device minor numbers, for your convenience
-typedef enum {
-	MINOR_RULES    = 0,
-	MINOR_LOG      = 1,
-} fw_minor_t;
 
 typedef enum {
 	ACK_NO 		= 0x01,
