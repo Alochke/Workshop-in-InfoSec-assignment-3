@@ -57,8 +57,7 @@ static void cleanup(enum stage stg)
     When a match is found the hook accepts or drops the packet, according to the rule's verdict,
     If no match was found, a tcp/udp/icmp packet is dropped.
 
-    In any case, as long as the provided sk_buff is not null, the hooks actions, the reason for them and the packet's data is logged in the logs by filling a log_row_t and adding it
-    to the list data structure that is under the logs interface.
+    In any case, as long as the provided sk_buff is not null, the hooks actions, the reason for them and the packet's data is logged.
 
     Returns: 1 on acceptance, 0 when dropping.
 */
@@ -98,9 +97,15 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
 
     if (protocol == PROT_TCP)
     {
-        src_port = tcp_hdr(skb)->source;
-        dst_port = tcp_hdr(skb)->dest;
-        ack = (ack_t) tcp_hdr(skb)->ack;
+        struct tcphdr hdr = tcp_hdr(skb);
+        src_port = hdr->source;
+        dst_port = hdr->dest;
+        ack = (ack_t) hdr->ack;
+        if(hdr->fin && hdr->urg && hdr->psh)
+        {
+            logs_update(protocol, NF_DROP, src_ip, dst_ip, src_port, dst_port, REASON_XMAS_PACKET);
+            return NF_DROP;
+        }
     }
     else if (protocol == PROT_UDP)
     {
