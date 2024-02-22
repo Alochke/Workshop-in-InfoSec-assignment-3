@@ -1,6 +1,19 @@
 #ifndef _FW_H_
 #define _FW_H_
 
+#include <linux/kernel.h>   /* We're doing kernel work. */
+#include <linux/slab.h>     /* For kmaloc and kfree. */
+#include <linux/netfilter.h>/* Next two includes are for the Netfilter API */
+#include <linux/netfilter_ipv4.h>
+#include <linux/string.h> // For strcmp.
+#include <linux/ip.h> // The three next includes are for inspecting the traffic.
+#include <linux/tcp.h>
+#include <linux/udp.h>
+#include <linux/timekeeping.h> // For time stamping the logs.
+#include <linux/uaccess.h> // For copy_to_user.
+#include <linux/fs.h> /* This and the next header are for sysfs kernel api to work. */
+#include <linux/device.h> 
+
 #define FW_PORT_ANY			(0)
 
 

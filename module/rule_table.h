@@ -1,7 +1,6 @@
 #ifndef RULE_TABLE
 #define RULE_TABLE
 
-#include <linux/ip.h> // For hton and ntoh.
 #include "main.h"
 #include "fw.h"
 
