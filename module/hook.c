@@ -97,7 +97,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
 
     if (protocol == PROT_TCP)
     {
-        struct tcphdr hdr = tcp_hdr(skb);
+        struct tcphdr* hdr = tcp_hdr(skb);
         src_port = hdr->source;
         dst_port = hdr->dest;
         ack = (ack_t) hdr->ack;
