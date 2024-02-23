@@ -1,18 +1,26 @@
 #include "list.h"
 
 /*
-    The get method of the klist, will be useful for log_node-related memory deallocation.
+    The put function of the klist, will be useful for log_node-related memory deallocation.
+    This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with the node as the function's parameter.
+
+    Parameters:
+        node: The node that is being removed from a list.
 */
 void list_put(struct klist_node* node)
 {
-    if (((log_node*)node)->log != NULL)
+    if (likely(((log_node*)node)->log != NULL))
     {
         kfree(((log_node*)node)->log);
     }
 }
 
 /*
-    The put method of the klist, will be useful for its log_node-related memory allocation.
+    The get function of the klist, will be useful for log_node-related memory allocation.
+    This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with the node as the function's parameter.
+
+    Parameters:
+        node: The node that is being added to to the list.
 */
 void list_get(struct klist_node* node)
 {
@@ -21,7 +29,8 @@ void list_get(struct klist_node* node)
 }
 
 /*
-    Destroies list, by using iter.
+    Resets list, by using iter.
+    This doesn't free list, for reusabilty reasons.
     
     Parameters:
     - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.

@@ -24,7 +24,7 @@
     }                                              \
 }
 
-#define MAIN_INIT_ERR_CHECK(condition, state, function_name) MAIN_ERR_CHECK(condition, cleanup(state);, function_name "has failed")
+#define MAIN_INIT_ERR_CHECK(condition, state, function_name) MAIN_ERR_CHECK(condition, cleanup(state);, function_name " has failed")
 
 #define MAIN_SIMPLE_ERR_CHECK(condition, msg) MAIN_ERR_CHECK(condition,, msg)
 

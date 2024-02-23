@@ -10,8 +10,7 @@ struct class* sysfs_class;
 
 static struct file_operations fops = {
 	.owner = THIS_MODULE,
-    .read = logs_read,
-    .open = logs_open
+    .read = logs_read
 };
 
 /*

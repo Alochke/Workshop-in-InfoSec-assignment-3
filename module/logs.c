@@ -5,7 +5,7 @@
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
 #define SIZE_ERR_MSG "Were not transferred, the logs. Because too small, is the buffer you've provided."
 #define WRONG_ADDRESS_ERR_MSG "Failed is the logs transferring, because of illegal addresses is the buffer you've provided."
-#define ONE_COUNTED 1
+#define ONE_COUNTED 1 // Legitimizes the reason we're increamenting the packet counter of a log entery, no magic numbers allowed here.
 
 #define RVAL_UINT_TO_POINTER(x) (unsigned int[1]){x}
 #define RVAL_UCHAR_TO_POINTER(x) (unsigned short[1]){x}
@@ -22,7 +22,7 @@ static unsigned int row_num = 0; // The number of rows in the logs.
 
     Parameters:
     - protocol: The transport protocol number of the packet.
-    - action: The action the hook has taken about the paket, will be one of NF_ACCEPT, NF_DROP.
+    - action: The action the hook had taken about the packet, will be one of NF_ACCEPT, NF_DROP.
     - src_ip: The source ip of the packet.
     - dst_ip: The destination ip of the packet.
     - src_port: The source port of the packet, will be zero for every packet which is not TCP/UDP.
@@ -103,18 +103,6 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
     row_num = 0;
     return MAIN_SUCEESS;
 }
-
-/*
-    The open implementation of the dev/ devices of the driver.
-
-    Returns: 0
-*/
-int logs_open(struct inode *_inode, struct file *_file)
-{
-    return MAIN_SUCEESS;
-}
-
-
 
 /*
     The read implementation of the dev/ device of the driver.

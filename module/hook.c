@@ -33,7 +33,7 @@ enum stage
 	Cleans the hook part of the module.
 
 	Parameters:
-    - stg (stage): A designated enum's member that represents the stage of initialization the hook part of the module is at.
+    - stg: A designated enum's member that represents the stage of initialization the hook part of the module is at.
 */
 static void cleanup(enum stage stg)
 {
@@ -72,7 +72,7 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
     __be16 src_port, dst_port;
     ack_t ack;
 
-    int i; // For loop index.
+    unsigned int i; // For loop index.
     
     /*
         First we check if the skb is empty, and if so, we let this packet continue on its routing. While this seems a bit unnecessary,
@@ -153,9 +153,9 @@ static unsigned int nf_fn(void* priv, struct sk_buff *skb, const struct nf_hook_
 }
 
 /*
-    The hook creation method.
+    The hook creation function.
     
-    Returns: 0 on MAIN_SUCEESS and -1 in case of failure.
+    Returns: 0 on success and -1 in case of failure.
 */
 int hook_init(void)
 {
