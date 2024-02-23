@@ -29,7 +29,7 @@ static unsigned int row_num = 0; // The number of rows in the logs.
     - dst_port: The destination port of the packet, will be zero for every packet which is not TCP/UDP.
     - reason: The reason for action.
 */
-void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
+int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
     log_node* node; // If a new row has to be added to the logs, we'll use that pointer to point to it.
     log_row_t* log_row; // Will point to the log_row_t the function points to at a given point in time.
