@@ -33,7 +33,7 @@ enum stage
 	Cleans the hook part of the module.
 
 	Parameters:
-    - stg: A designated enum's member that represents the stage of initialization the hook part of the module is at.
+    - stg: A designated enum member that represents the stage of initialization the hook part of the module is at. This is enum is defined in hook.c.
 */
 static void cleanup(enum stage stg)
 {
@@ -53,11 +53,11 @@ static void cleanup(enum stage stg)
     The packet handling procedure.
 
     Checks if a packet is tcp or udp or icmp, other types of transport protocols are accepted,
-    The tcp, udp and icmp packets are checked against a match for every rules domain from the top of the loaded rule table to the bottom.
+    The tcp, udp, and icmp packets are checked against a match for every rule's domain from the top of the loaded rule table to the bottom.
     When a match is found the hook accepts or drops the packet, according to the rule's verdict,
-    If no match was found, a tcp/udp/icmp packet is dropped.
+    If no match is found, a tcp/udp/icmp packet is dropped.
 
-    In any case, as long as the provided sk_buff is not null, the hooks actions, the reason for them and the packet's data is logged.
+    In any case, as long as the provided sk_buff is not null, the hook's actions, the reason for them, and the packet's data are logged.
 
     Returns: 1 on acceptance, 0 when dropping.
 */
@@ -172,7 +172,7 @@ int hook_init(void)
 
 /*
     A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the hook part of the module,
-	In case the initialization of that part of the module is done.
+	in case the initialization of that part of the module is done.
 */
 void hook_destroy(void)
 {

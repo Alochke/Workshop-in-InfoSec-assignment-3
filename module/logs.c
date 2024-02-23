@@ -23,16 +23,18 @@ static unsigned int row_num = 0; // The number of rows in the logs.
     Parameters:
     - protocol: The transport protocol number of the packet.
     - action: The action the hook had taken about the packet, will be one of NF_ACCEPT, NF_DROP.
-    - src_ip: The source ip of the packet.
-    - dst_ip: The destination ip of the packet.
+    - src_ip: The source IP of the packet.
+    - dst_ip: The destination IP of the packet.
     - src_port: The source port of the packet, will be zero for every packet which is not TCP/UDP.
     - dst_port: The destination port of the packet, will be zero for every packet which is not TCP/UDP.
     - reason: The reason for action.
+
+    Returns: 0 on success, -1 on failure.
 */
 int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
     log_node* node; // If a new row has to be added to the logs, we'll use that pointer to point to it.
-    log_row_t* log_row; // Will point to the log_row_t the function points to at a given point in time.
+    log_row_t* log_row; // Will point to the log_row_t the function inspects to at a given point in time.
     struct timeval ktv; // This will be used to get the current time.
     do_gettimeofday(&ktv);
     for (klist_iter_init(log_list, iter); klist_next(iter) != NULL;)
@@ -79,23 +81,11 @@ int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __b
 }
 
 /*
-    The next enum is for the cleanup function in logs.c. Items represent the state of the logs initialization the module is currently at.
-*/
-enum stage{
-    FIRST,
-    DEV_DEVICE_INIT,
-    SYSFS_DEVICE_INIT,
-    ATTRIBUTE_INIT,
-    ITER_INIT,
-    LIST_INIT
-};
-
-/*
-	The implementation of store for the sysfs device.
+	The implementation of sysfs's store for the sysfs device.
 
     Resets the logs.
 
-    Returns 0
+    Returns: 0
 */
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
@@ -109,20 +99,22 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 
     If length == sizeof(unsigned int) then we write row_num to it,
     else,
-    The function checks if length < sizeof(log_row_t) * row_num, where length the size of the given buffer in bytes,
-    and if that's the case then it prints "Were not transferred, the logs. Because too small, is the buffer you've provided." to the kernel logs that can be seen by the dmesg shell command
-    and returns -1.
+    The function checks if length < sizeof(log_row_t) * row_num, where length is the size of the given buffer in bytes,
+    and if that's the case then it prints "Were not transferred, the logs. Because too small, is the buffer you've provided." 
+    to the kernel logs that can be seen by the dmesg shell command and returns -1.
     If length != sizeof(unsigned int) and (length >= sizeof(log_row_t) * row_num) then the function goes thraugh the log_list linked-list and for every node it copies its log_row_t to the buffer.
     
-    Of course the function writes every byte to the user space cautiously, by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL,
-    If one of the addresses didn't follow this, then "Failed is the logs transferring, because of illegal addresses is the buffer you've provided." will be written to the to the kernel logs that can be seen by the dmesg shell command
-    and the function returns -1.
+    Of course, the function writes every byte to the user space cautiously,
+    by using the copy_to_user function that will transfer the byte only if the destined address is not in kernel space and is not NULL,
+    If one of the addresses didn't follow this,
+    then "Failed is the logs transferring, because of illegal addresses is the buffer you've provided." 
+    will be written to the to the kernel logs that can be seen by the dmesg shell command and the function returns -1..
 
     Thus, partial writes are possible on error.
 
-    Returns: Number of bytes written into the buffer on success or in case a partial write has accrued, and -1 on error.
+    Returns: Number of bytes written into the buffer on success and -1 on error.
 */
-ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
+ssize_t logs_read(struct file *file, char *buff, size_t length, loff_t *offp)
 {
     size_t num_copied = 0; // Number of bytes copied to the buffer.
     size_t copy_curr = 0; // Number of bytes copied in a given iteration of going thraugh the log_list list.
@@ -162,10 +154,22 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
 static DEVICE_ATTR(reset, 0200, NULL, modify);
 
 /*
+    The next enum is for the cleanup function in logs.c. Items represent the state of the logs initialization the module is currently at.
+*/
+enum stage{
+    FIRST,
+    DEV_DEVICE_INIT,
+    SYSFS_DEVICE_INIT,
+    ATTRIBUTE_INIT,
+    ITER_INIT,
+    LIST_INIT
+};
+
+/*
 	Cleans the logs part of the module.
 
 	Parameters:
-    - stg (stage): A designated enum's member that represents the stage of initialization the logs part of the module is at.
+    - stg: A designated enum member that represents the stage of initialization the logs part of the module is at. This enum is defined in logs.c
 */
 static void cleanup(enum stage stg)
 {
@@ -215,7 +219,7 @@ int logs_init(void)
 
 /*
     A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the logs part of the module,
-	In case the initialization of that part of the module is done.
+	in case the initialization of that part of the module is done.
 */
 void logs_destroy()
 {

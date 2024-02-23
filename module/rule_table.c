@@ -8,8 +8,8 @@ static struct device* sysfs_device; // The sysfs device.
 #define SIZE_ERR_MSG "Failed is the rule table loading, because too much data you provided."
 #define FORMAT_ERR_MSG "Failed is the rule table loading, because data of the wrong format, you provided."
 #define MAX_RULES (50)
-#define RULE_TABLE_DISPLAY_OFFSET 1
-#define RULE_TABLE_SIZE MAX_RULES * sizeof(rule_t)
+#define RULE_TABLE_DISPLAY_OFFSET 1 // This is to legitimize the reason we're shifting the seralized data by 1, we've to do so because we use the first byte to transfer rule_table_rules_num.
+#define RULE_TABLE_SIZE (MAX_RULES * sizeof(rule_t))
 #define NUMBR_OF_BYTES_TRANSFERED rule_table_rules_num * sizeof(rule_t)
 #define DIRECTION_NUM 3 // The number of possible values for the direction member of a rule_t.
 #define DIRECTION_VALS (unsigned int[DIRECTION_NUM]){DIRECTION_IN, DIRECTION_OUT, DIRECTION_ANY} // The possible values of a direction member of a rule_t.
@@ -22,22 +22,11 @@ static struct device* sysfs_device; // The sysfs device.
 #define MAX_MASK_LEN 32
 #define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? 0 : ~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
-
 /*
-    The next enum is for the cleanup function in rule_table.c. Items represent the state of the rule_table initialization the module is currently at.
-*/
-enum stage{
-    FIRST,
-    DEVICE_INIT,
-    ATTRIBUTE_INIT,
-    RULE_TABLE_ALLOC
-};
+	The implementation of sysfs's show.
 
-/*
-	The implementation of show.
-
-    Changes the first byte of buf to rule_num, and then writes the rule table to buf[1],
-    while changing the ip and port fields to host-endianness.
+    Changes the first byte of buf to rule_num, and then writes the rule table to &buf[1],
+    while changing the IP and port fields to host-endianness.
     
     Returns: ((sizeof(rule_t) * rule_table_rules_num) + 1), which is the amount of bytes copied to buf.
 */
@@ -61,11 +50,12 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
 
 /*
     This function is a refactorization of the procedure of checking if a member of a rule_t is correct.
+    This is used when loading a rule to the rule table.
 
     Parameters:
-        - member (unsigned int): The member whose correctness is checked.
-        - values (unsigned int[]): The correct values for member.
-        - len (unsigned int): The length of values.
+        - member: The member whose correctness is checked.
+        - values: The correct values for member.
+        - len: The length of values.
 
     Returns: 0 if member is correct, else, return -1.
 */
@@ -83,7 +73,7 @@ static inline int check_correct(unsigned int member, unsigned int values[], unsi
 /*
 	The implementation of store.
 
-    Transfers count / sizeof(rule_t) rule_ts from buf to the rule_table while changing their ip, prefix_mask and port fields to network-endianness.
+    Transfers count / sizeof(rule_t) rule_ts from buf to the rule_table while changing their IP, prefix_mask, and port fields to network-endianness.
     Will error in case count > RULE_TABLE_SIZE, or the given buffer has undefined values.
 
     Returns: -1 on failure, (count / sizeof(rule_t)) on success.
@@ -110,7 +100,7 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
             (((rule_t*)buf)[i].src_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].src_prefix_size))
             ||
             (((rule_t*)buf)[i].dst_prefix_mask != MASK_FROM_SIZE(((rule_t*)buf)[i].dst_prefix_size)),
-            FORMAT_ERR_MSG 
+            FORMAT_ERR_MSG
         )
     }
     
@@ -134,14 +124,25 @@ static ssize_t modify(struct device *dev, struct device_attribute *attr, const c
 static DEVICE_ATTR(rules, 0600, display, modify);
 
 /*
+    The next enum is for the cleanup function in rule_table.c. Items represent the state of the rule_table initialization the module is currently at.
+*/
+enum stage{
+    FIRST,
+    DEVICE_INIT,
+    ATTRIBUTE_INIT,
+    RULE_TABLE_ALLOC
+};
+
+/*
 	Cleans the rule_table part of the module.
 
 	Parameters:
-    - stg (stage): A designated enum's member that represents the stage of initialization the rule_table part of the module is at.
+    - stg: A designated enum member that represents the stage of initialization the rule_table part of the module is at.
+        This is enum is defined in rule_table.c.
 */
 static void cleanup(enum stage stg)
 {
-	// We use the enum- stage, defined in rule_table.c to choose action based on the state of the sysfs initialization the module is currently at. 
+	// We use the enum- stage, defined in rule_table.c to choose action based on the state of the rule table initialization the module is currently at. 
 	switch (stg)
 	{
         case FIRST:
@@ -158,12 +159,12 @@ static void cleanup(enum stage stg)
 /*
     Initiates the rule table.
 
-    Returns: 0 in case succeeded, else, it'll return -1.
+    Returns: 0 in case of success, else, it'll return -1.
 */
 int rule_table_init()
 {
     //create sysfs device.
-    MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, 0), NULL, SYSFS_DEVICE)), FIRST, "device_create")
+    MAIN_INIT_ERR_CHECK(IS_ERR(sysfs_device = device_create(sysfs_class, NULL, MKDEV(major_number, RULE_TABLE_MINOR), NULL, SYSFS_DEVICE)), FIRST, "device_create")
 
     //create sysfs file attributes.
 	MAIN_INIT_ERR_CHECK(device_create_file(sysfs_device, (const struct device_attribute *)&dev_attr_rules.attr), DEVICE_INIT, "device_create_file")
@@ -174,8 +175,8 @@ int rule_table_init()
 }
 
 /*
-    A wrapper function of cleanup, that serves as an abstraction layer of the cleanup process of the rule_table part of the module,
-	In case the initialization of that part of the module is done.
+    A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the rule_table part of the module,
+	in case the initialization of that part of the module is done.
 */
 void rule_table_destroy()
 {
