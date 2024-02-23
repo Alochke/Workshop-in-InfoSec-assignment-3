@@ -7,14 +7,6 @@
 #define WRONG_ADDRESS_ERR_MSG "Failed is the logs transferring, because of illegal addresses is the buffer you've provided."
 #define ONE_COUNTED 1
 
-#define VOID_ERR_CHECK(condition, extra_code, function) {   \
-    if(condition)                                           \
-    {                                                       \
-        printk(KERN_ERR function " has failed\n");          \
-        return;                                             \
-    }                                                       \
-}
-
 #define RVAL_UINT_TO_POINTER(x) (unsigned int[1]){x}
 #define RVAL_UCHAR_TO_POINTER(x) (unsigned short[1]){x}
 
@@ -69,9 +61,9 @@ void logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __
         }
     }
     klist_iter_exit(iter);
-    VOID_ERR_CHECK((node = kmalloc(sizeof(log_node), GFP_KERNEL)) == NULL,, "kmalloc");
+    MAIN_ERR_CHECK((node = kmalloc(sizeof(log_node), GFP_KERNEL)) == NULL,, "kmalloc has failed");
     klist_add_tail(&node->node, log_list);
-    VOID_ERR_CHECK(node->log == NULL, klist_del(node->node), "kmalloc"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
+    MAIN_ERR_CHECK(node->log == NULL, klist_del(node->node), "kmalloc has failed"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
     log_row = (log_row_t*)node->log;
     log_row->timestamp = ktv.tv_sec;
     log_row->protocol = protocol;
@@ -148,7 +140,7 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
     if (length == sizeof(unsigned int))
     {
         num_copied = sizeof(unsigned int) - copy_to_user(buff, &row_num, sizeof(unsigned int));
-        if (num_copied < sizeof(unsigned int))
+        if (unlikely(num_copied < sizeof(unsigned int)))
         {
             num_copied = MAIN_FAILURE;
             printk(KERN_ERR WRONG_ADDRESS_ERR_MSG "\n");
@@ -165,7 +157,7 @@ ssize_t logs_read(struct file *filp, char *buff, size_t length, loff_t *offp)
             copy_to_user(buff + num_copied + offsetof(log_row_t, src_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->src_port)), sizeof(unsigned short));
             copy_to_user(buff + num_copied + offsetof(log_row_t, dst_port), RVAL_UCHAR_TO_POINTER(ntohs(node_to_log(iter->i_cur)->dst_port)), sizeof(unsigned short));
             num_copied += copy_curr;
-            if (copy_curr < sizeof(log_row_t))
+            if (unlikely(copy_curr < sizeof(log_row_t)))
             {
                 num_copied = MAIN_FAILURE;
                 printk(KERN_ERR WRONG_ADDRESS_ERR_MSG "\n");

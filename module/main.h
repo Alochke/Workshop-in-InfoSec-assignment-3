@@ -1,9 +1,6 @@
 #ifndef MAIN
 #define MAIN
-#include <linux/kernel.h>   /* We're doing kernel work. */
-#include <linux/module.h>   /* We're adding a kernel module. */
-#include <linux/fs.h> /* This and the next header are for sysfs kernel api to work. */
-#include <linux/device.h> 
+
 #include "hook.h"
 #include "logs.h"
 #include "rule_table.h"
@@ -20,7 +17,7 @@
 
 
 #define MAIN_ERR_CHECK(condition, extra_code, msg){\
-    if(condition){                                 \
+    if(unlikely(condition)){                       \
         extra_code                                 \
         printk(KERN_ERR msg "\n");                 \
         return MAIN_FAILURE;                       \

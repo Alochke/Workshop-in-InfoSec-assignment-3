@@ -30,7 +30,8 @@ enum stage{
 	Cleans the module.
 
 	Parameters:
-    - stg (stage): A designated enum's member that represents the stage of initialization the module is at.
+    - stg: A designated enum's member that represents the stage of initialization the module is at.
+        The enum is stage, and it's defined at main.c.
 */
 static void cleanup(enum stage stg)
 {
