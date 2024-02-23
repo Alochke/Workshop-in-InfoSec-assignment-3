@@ -75,6 +75,7 @@ int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __b
     log_row->reason = reason;
     log_row->count = ONE_COUNTED;
     row_num += ONE_COUNTED;
+    return MAIN_SUCEESS;
 }
 
 /*
