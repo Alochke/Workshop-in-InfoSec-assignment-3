@@ -57,13 +57,13 @@ int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __b
             log_row->count += ONE_COUNTED;
             log_row->timestamp = ktv.tv_sec;
             klist_iter_exit(iter);
-            return;
+            return MAIN_SUCEESS;
         }
     }
     klist_iter_exit(iter);
     MAIN_ERR_CHECK((node = kmalloc(sizeof(log_node), GFP_KERNEL)) == NULL,, "kmalloc has failed");
     klist_add_tail(&node->node, log_list);
-    MAIN_ERR_CHECK(node->log == NULL, klist_del(node->node);, "kmalloc has failed"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
+    MAIN_ERR_CHECK(node->log == NULL, klist_del(&node->node);, "kmalloc has failed"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
     log_row = (log_row_t*)node->log;
     log_row->timestamp = ktv.tv_sec;
     log_row->protocol = protocol;
