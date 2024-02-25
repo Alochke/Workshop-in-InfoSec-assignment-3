@@ -117,17 +117,18 @@ void list_reverse(list *l)
 */
 int list_parse_lines(list *l, FILE *stream)
 {
-    char *datapoint_line = NULL;
+    char *buf = NULL;
+	size_t* n = 0; // We just add this because we have to, to make getline work.
 
-	while (getline(&datapoint_line, NULL, stream) != EOF)
+	while (getline(&buf, n, stream) != EOF)
 	{
-		char *temp = (char *)malloc(sizeof(char) * SIZE_PLUS_NULL(datapoint_line));
+		char *temp = (char *)malloc(SIZE_PLUS_NULL(buf));
 		
 		MAIN_SIMPLE_ERR_CHECK(temp == NULL)
 		
-		strcpy(temp, datapoint_line);
+		strcpy(temp, buf);
 		MAIN_ERR_CHECK(list_insert_key(l, temp) == NULL, free(temp);)
 	}
-	free(datapoint_line);
+	free(buf);
 	return EXIT_SUCCESS;
 }
