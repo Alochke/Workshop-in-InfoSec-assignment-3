@@ -1,0 +1,2 @@
+telnet2 any any any any any any any drop
+default any any any any any any any drop
