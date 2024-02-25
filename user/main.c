@@ -152,12 +152,14 @@ int main(int argc, char* argv[])
 
         list_reverse(lst);
 
+
         ERR_CHECK_INIT(rule_table_init(&rule_table, lst), POST_LIST_INIT)
 
         fd = open(RULE_TABLE_ATTRIBUTE, O_WRONLY);
 
         ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, RULE_TABLE_INIT, MAIN_RULE_TABLE_OPEN_ATTRIBUTE_ERR_MSG)
         
+        // The trinary operator is for dealing with empty rule table loading.
         ERR_CHECK_INIT_MSG(write(fd, rule_table, (lst->size == EMPTY_FILE) ? MIN_STORE : ((lst->size) * sizeof(rule_t))) == MAIN_SYSCALL_FAIL_RETURN, MID_OPENING, MAIN_RULE_TABLE_WRITE_ATTRIBUTE_ERR_MSG)
 
         cleanup(MID_OPENING);
