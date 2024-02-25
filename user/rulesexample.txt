@@ -1,2 +1,0 @@
-loopback any any any any any any any drop
-GW_attack any any any any any any any drop
