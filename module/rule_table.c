@@ -8,7 +8,7 @@ static struct device* sysfs_device; // The sysfs device.
 #define SIZE_ERR_MSG "Failed is the rule table loading, because too much data you provided."
 #define FORMAT_ERR_MSG "Failed is the rule table loading, because data of the wrong format, you provided."
 #define MAX_RULES (50)
-#define RULE_TABLE_DISPLAY_OFFSET 1 // This is to legitimize the reason we're shifting the seralized data by 1, we've to do so because we use the first byte to transfer rule_table_rules_num.
+#define RULE_TABLE_DISPLAY_OFFSET 1 // This is to legitimize the reason we're shifting the serialized data by 1, we've to do so because we use the first byte to transfer rule_table_rules_num.
 #define RULE_TABLE_SIZE (MAX_RULES * sizeof(rule_t))
 #define NUMBR_OF_BYTES_TRANSFERED rule_table_rules_num * sizeof(rule_t)
 #define DIRECTION_NUM 3 // The number of possible values for the direction member of a rule_t.
@@ -53,9 +53,9 @@ static ssize_t display(struct device *dev, struct device_attribute *attr, char *
     This is used when loading a rule to the rule table.
 
     Parameters:
-        - member: The member whose correctness is checked.
-        - values: The correct values for member.
-        - len: The length of values.
+    - member: The member whose correctness is checked.
+    - values: The correct values for member.
+    - len: The length of values.
 
     Returns: 0 if member is correct, else, return -1.
 */

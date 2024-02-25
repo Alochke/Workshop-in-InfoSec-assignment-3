@@ -90,7 +90,7 @@ Only IPv4 forwarding-ment packets, which are also TCP, UDP or ICMP are going thr
 
     "show_log" prints the logs,
     Those will provide data about every packet that passes through the filter.
-    Its source and destination IPs, its source and destination ports (which will be 0 for ICMP packets), its transfer protocol, the action taken by the firewall about this packet, how many packets with those parameters equal passed through the filter and the last time one of those did so.
+    Its source and destination IPs, its source and destination ports (which will be 0 for ICMP packets), its transfer protocol, the action taken by the firewall about this packet, the reason for this action, which will be a rule's index in case the reason is a rule, how many packets with those parameters equal passed through the filter and the last time one of those did so.
 
     "clear log" resets the logs.
 

@@ -1,6 +1,6 @@
 ============================= main.c =============================
     
-    "And one c file to rule them all..."
+    "One c file to rule them all..."
 
     Here the initialization and clean-up of the module happens.
     Setting an environment for the other c files to initialize, by registering a character device and a sysfs class and calling the initialization functions of the other c files.
@@ -70,22 +70,22 @@
         This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
 
         Parameters:
-            node: The node that is being removed from a list.
+        - node: The node that is being removed from a list.
 
     void list_get(struct klist_node* node)
         The get function of the klist. It will be useful for log_node-related memory allocation. (log_node is the struct that stores list-nodes obviously.)
         This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with node as klist_add_tail's parameter.
 
         Parameters:
-            node: The node that is being added to a list.
+        - node: The node that is being added to a list.
 
     void list_destroy(struct klist *list, struct klist_iter *iter)
         Resets list, by using iter.
         This doesn't free list, for reusability reasons.
             
         Parameters:
-            - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.
-            - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from list.c in practice.
+        - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.
+        - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from list.c in practice.
 
 ============================= logs.c =============================
 
@@ -160,9 +160,9 @@
         This is used when loading a rule to the rule table.
 
         Parameters:
-            - member: The member whose correctness is checked.
-            - values: The correct values for member.
-            - len: The length of values.
+        - member: The member whose correctness is checked.
+        - values: The correct values for member.
+        - len: The length of values.
 
         Returns: 0 if member is correct, else, return -1.
 

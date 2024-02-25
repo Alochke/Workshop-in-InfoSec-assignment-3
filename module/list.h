@@ -13,7 +13,7 @@ typedef struct{
 }log_node;
 
 /*
-    Returns a pointer to the log_row_t that is also a member fo the log_node that klist is a member of.
+    Returns a pointer to the log_row_t that is also a member of the log_node that klist is a member of.
 */
 static inline log_row_t* node_to_log(struct klist_node *knode)
 {

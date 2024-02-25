@@ -5,7 +5,7 @@
     This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
 
     Parameters:
-        node: The node that is being removed from a list.
+    - node: The node that is being removed from a list.
 */
 void list_put(struct klist_node* node)
 {
@@ -20,7 +20,7 @@ void list_put(struct klist_node* node)
     This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with node as klist_add_tail's parameter.
 
     Parameters:
-        node: The node that is being added to a list.
+    - node: The node that is being added to a list.
 */
 void list_get(struct klist_node* node)
 {
@@ -33,8 +33,8 @@ void list_get(struct klist_node* node)
     This doesn't free list, for reusability reasons.
             
     Parameters:
-        - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.
-        - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from list.c in practice.
+    - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.
+    - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from list.c in practice.
 */
 void list_destroy(struct klist *list, struct klist_iter *iter)
 {   
