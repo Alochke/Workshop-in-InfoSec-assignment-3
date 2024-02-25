@@ -1,2 +1,2 @@
-telnet2 any any any any any any yes accept
+telnet2 any any any any any any no accept
 default any any any any any any any drop
