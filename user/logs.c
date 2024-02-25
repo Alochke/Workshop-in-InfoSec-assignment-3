@@ -58,7 +58,7 @@ int logs_read(int fd)
         time_t walltime = rows[i].timestamp;
         struct tm tm_instance;
         MAIN_MSG_ERR_CHECK(localtime_r(&walltime, &tm_instance) == NULL, free(rows), MAIN_LOCALTIME_R_ERR_MSG)
-        snprintf(timestamp, MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED, "%02d/%02d/%d %02d:%02d:%02d", tm_instance.tm_mday, tm_instance.tm_mon + TM_MON_OFFSET, tm_instance.tm_year + TM_YEAR_OFFSET, tm_instance.tm_hour, tm_instance.tm_min, tm_instance.tm_sec);
+        snprintf(timestamp, MAX_TIMESTAMP_LEN + MAIN_NULL_INCLUDED, "%02d/%02d/%d %02d:%02d:%02d", tm_instance.tm_mon + TM_MON_OFFSET, tm_instance.tm_mday, tm_instance.tm_year + TM_YEAR_OFFSET, tm_instance.tm_hour, tm_instance.tm_min, tm_instance.tm_sec);
         snprintf(src_ip, MAX_IP_LEN + MAIN_NULL_INCLUDED, "%d.%d.%d.%d", ((unsigned char*) &rows[i].src_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS], ((unsigned char*) &rows[i].src_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 1], ((unsigned char*) &rows[i].src_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 2], ((unsigned char*) &rows[i].src_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 3]);
         snprintf(dst_ip, MAX_IP_LEN + MAIN_NULL_INCLUDED, "%d.%d.%d.%d", ((unsigned char*) &rows[i].dst_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS], ((unsigned char*) &rows[i].dst_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 1], ((unsigned char*) &rows[i].dst_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 2], ((unsigned char*) &rows[i].dst_ip)[MAIN_MAX_INDX_OF_BYTE_IN_ADDRESS - 3]);
         snprintf(src_port, MAX_PORT_LEN + MAIN_NULL_INCLUDED, "%d", rows[i].src_port);
