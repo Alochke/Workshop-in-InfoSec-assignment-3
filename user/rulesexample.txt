@@ -1,2 +1,2 @@
-telnet2 any any 10.1.1.5/27 any any any any accept
+telnet2 any any any TCP any any any accept
 default any any any any any any any drop
