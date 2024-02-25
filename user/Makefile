@@ -1,4 +1,4 @@
-CFLAGS = -Wall -g
+CFLAGS = -Wall
 
 SRC = list.c main.c rule_table.c logs.c
 OBJ = $(SRC:.c=.o)
