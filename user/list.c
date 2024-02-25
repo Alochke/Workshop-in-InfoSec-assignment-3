@@ -118,9 +118,9 @@ void list_reverse(list *l)
 int list_parse_lines(list *l, FILE *stream)
 {
     char *buf = NULL;
-	size_t* n = 0; // We just add this because we have to, to make getline work.
+	size_t n = 0; // We just add this because we have to, to make getline work.
 
-	while (getline(&buf, n, stream) != EOF)
+	while (getline(&buf, &n, stream) != EOF)
 	{
 		char *temp = (char *)malloc(SIZE_PLUS_NULL(buf));
 		
