@@ -14,7 +14,7 @@ static struct file_operations fops = {
 };
 
 /*
-    The next enum is for the cleanup function in main.c. Items represent the state of the module initialization the module is currently at.
+    The next enum is for the cleanup function in hw3secws.c. Items represent the state of the module initialization the module is currently at.
 */
 enum stage{
     FIRST,
@@ -30,11 +30,10 @@ enum stage{
 
 	Parameters:
     - stg: A designated enum member that represents the stage of initialization the module is at.
-        The enum is stage, and it's defined in main.c.
+        The enum is stage, and it's defined in hw3secws.c.
 */
 static void cleanup(enum stage stg)
 {
-    // We use the enum- stage, defined in main.c to choose action based on the state of the sysfs initialization the module is currently at. 
     switch (stg)
     {
         case FIRST:

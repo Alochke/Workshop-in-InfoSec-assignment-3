@@ -1,4 +1,4 @@
-============================= main.c =============================
+============================= hw3secws.c =============================
     
     "One c file to rule them all..."
 
@@ -11,7 +11,7 @@
         Cleans the module.
 
         Parameters:
-        - stg: A designated enum member that represents the stage of initialization the module is at. The enum is stage, and it's defined in main.c.
+        - stg: A designated enum member that represents the stage of initialization the module is at. The enum is stage, and it's defined in hw3secws.c.
 
     static char *setmode(struct device *dev, umode_t *mode)
         This function sets the permissions for a /dev device that is created by device_create.

@@ -25,7 +25,7 @@ int fd;
 
 /*
     I put the next function here because both rule_table.c and logs.c should use it and it seems like an overkill to put it in a .c of its own.
-    Plus, main.c is naturaly the only one above log.c and rule_table.c in any hierarchy.
+    Plus, main.c is naturally the only one above log.c and rule_table.c in any hierarchy.
 */
 
 /*

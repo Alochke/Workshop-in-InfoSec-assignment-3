@@ -161,7 +161,7 @@ enum type{
 int parse_member(void *member, char* keywords[], unsigned int values[], int len, char* delimiters, enum type t)
 {
 	/*
-		This function can be refactored even more, together with main_deseralize_field, if we'll mix them together into one function,
+		This function can be refactored even more, together with main_deseralize_field, if we'll mix them into one function,
 		but right now, it's not worth the time.
 	*/
 	
