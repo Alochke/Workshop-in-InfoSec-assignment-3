@@ -22,6 +22,10 @@ static struct device* sysfs_device; // The sysfs device.
 #define MAX_MASK_LEN 32
 #define MASK_FROM_SIZE(mask_size) ((mask_size == 0) ? 0 : ~((1LU << (MAX_MASK_LEN - (mask_size))) - 1))
 
+// Those two are for dealing with empty rule table loading.
+#define COUNT_FOR_EMPTY 1
+#define NO_RULES 0
+
 /*
 	The implementation of sysfs's show.
 
@@ -81,6 +85,12 @@ static inline int check_correct(unsigned int member, unsigned int values[], unsi
 static ssize_t modify(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
     size_t i; // For loop index.
+
+    // This is to dill with the edge case where we are trying to load an empty rule table.
+    if (count == COUNT_FOR_EMPTY)
+    {
+        count = NO_RULES;
+    }
 
     // This is sufficient input size checking because RULE_TABLE_SIZE < PAGE_SIZE.
     MAIN_SIMPLE_ERR_CHECK(count > RULE_TABLE_SIZE, SIZE_ERR_MSG)

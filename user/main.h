@@ -10,13 +10,13 @@
 #define MAIN_FILE_OPEN_ERR_MSG "Wrong file path, you've given. Or permissions for it, you lack."
 #define MAIN_MALLOC_ERR_MSG "Failed an allocation, the program."
 #define MAIN_FILE_FORMAT_ERR_MSG "Wrong format, the file you've given is in."
-#define MAIN_RULE_TABLE_OPEN_ATTRIBUTE_ERR_MSG "Openning /sys/class/fw/rules/rules, the program has failed."
+#define MAIN_RULE_TABLE_OPEN_ATTRIBUTE_ERR_MSG "Opening /sys/class/fw/rules/rules, the program has failed."
 #define MAIN_RULE_TABLE_WRITE_ATTRIBUTE_ERR_MSG "Writing to /sys/class/fw/rules/rules, the program has failed."
 #define MAIN_RULE_TABLE_READ_ATTRIBUTE_ERR_MSG "Reading from /sys/class/fw/rules/rules, the program has failed."
-#define MAIN_LOGS_CHAR_DEV_OPEN_ERR_MSG "Openning /dev/fw_log, the program has failed."
+#define MAIN_LOGS_CHAR_DEV_OPEN_ERR_MSG "Opening /dev/fw_log, the program has failed."
 #define MAIN_READ_LOGS_ERR_MSG "Occurred, an error, when from /dev/fw_log- the program read."
 #define MAIN_LOCALTIME_R_ERR_MSG "Has failed, the function localtime_r."
-#define MAIN_LOGS_ATTRIBUTE_OPEN_ERR_MSG "Occurred, an error, when /sys/class/fw/log/reset, the program openned."
+#define MAIN_LOGS_ATTRIBUTE_OPEN_ERR_MSG "Occurred, an error, when /sys/class/fw/log/reset, the program opened."
 #define MAIN_LOGS_ATTRIBUTE_WRITE_ERR_MSG "Occurred, an error, when to /sys/class/fw/log/reset, the program wrote."
 #define SRTCMP_OF_EQ 0
 #define MAIN_SYSCALL_FAIL_RETURN -1

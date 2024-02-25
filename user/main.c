@@ -9,6 +9,7 @@
 #define LOGS_READ_DEV "/dev/fw_log"
 #define LOGS_ATTRIBUTE "/sys/class/fw/log/reset"
 #define MIN_STORE 1 // The minimal amount of bytes we need to write into a sysfs attribute in order for the store function to take action.
+#define EMPTY_FILE 0 // Used to that an empty file was read.
 #define ERR_CHECK_INIT(condition, state) MAIN_ERR_CHECK(condition, cleanup(state);)
 #define ERR_CHECK_INIT_MSG(condition, state, msg) MAIN_ERR_CHECK(condition, cleanup(state); fprintf(stderr ,"%s\n", msg);)
 
@@ -157,7 +158,7 @@ int main(int argc, char* argv[])
 
         ERR_CHECK_INIT_MSG(fd == MAIN_SYSCALL_FAIL_RETURN, RULE_TABLE_INIT, MAIN_RULE_TABLE_OPEN_ATTRIBUTE_ERR_MSG)
         
-        ERR_CHECK_INIT_MSG(write(fd, rule_table, (lst->size) * sizeof(rule_t)) == MAIN_SYSCALL_FAIL_RETURN, MID_OPENING, MAIN_RULE_TABLE_WRITE_ATTRIBUTE_ERR_MSG)
+        ERR_CHECK_INIT_MSG(write(fd, rule_table, (lst->size == EMPTY_FILE) ? MIN_STORE : ((lst->size) * sizeof(rule_t))) == MAIN_SYSCALL_FAIL_RETURN, MID_OPENING, MAIN_RULE_TABLE_WRITE_ATTRIBUTE_ERR_MSG)
 
         cleanup(MID_OPENING);
     }
