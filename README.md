@@ -19,7 +19,7 @@ Only IPv4 forwarding-ment packets, which are also TCP, UDP or ICMP are going thr
     - /dev/fw_log
     - Some unnamed symlinks at /dev/char.
     - The directory /sys/class/fw and the files within it.
-    (Compilation files will be added within the module directory but all of those can be cleaned up if you choose to clean them.)
+    (firewall.ko will be added within the module directory but this can be cleaned up if you choose to clean it.)
 
     When a packet doesn't match any rule- it's dropped.
     The module also drops every Christmas tree packet.
