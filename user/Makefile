@@ -14,4 +14,4 @@ $(EXECUTABLE): $(OBJ)
 	gcc $(CFLAGS) -c $<
 
 clean:
-	rm $(EXECUTABLE) $(OBJ)
+	rm $(EXECUTABLE)
