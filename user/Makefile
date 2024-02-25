@@ -8,6 +8,7 @@ all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ)
 	gcc $(CFLAGS) $^ -o $@
+	rm $(OBJ)
 
 %.o: %.c
 	gcc $(CFLAGS) -c $<

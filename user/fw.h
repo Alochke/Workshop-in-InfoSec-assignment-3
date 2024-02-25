@@ -1,6 +1,16 @@
 #ifndef _FW_H_
 #define _FW_H_
 
+#include <unistd.h> // For read and write system calls.
+#include <time.h> // For the timestamps.
+#include <string.h> // For string operations.
+#include <fcntl.h> // For openning files.
+#include <arpa/inet.h> // For htol/htoc.
+#include <stdio.h> // For snprintf.
+#include <stdlib.h> // For malloc.
+#include <stdbool.h> // For bool type.
+#include <linux/netfilter.h> // For NF_DROP NF_ACCEPT.
+
 // the protocols we will work with
 typedef enum {
 	PROT_ICMP	= 1,
@@ -10,7 +20,7 @@ typedef enum {
 } fw_prot_t;
 
 
-// various reasons to be registered in each log entry
+// various reasons to be registered in each log entry.
 typedef enum {
 	REASON_NO_MATCHING_RULE      = -2,
 	REASON_XMAS_PACKET           = -4
@@ -28,7 +38,7 @@ typedef enum {
 	DIRECTION_ANY 	= DIRECTION_IN | DIRECTION_OUT,
 } direction_t;
 
-// rule base
+// rule base.
 typedef struct {
 	char 			rule_name[20];		// names will be no longer than 20 chars
 	direction_t 	direction;
@@ -51,9 +61,9 @@ typedef struct {
 	unsigned long  	timestamp;     	// time of creation/update
 	unsigned char  	protocol;     	// values from: prot_t
 	unsigned char  	action;       	// valid values: NF_ACCEPT, NF_DROP
-	unsigned int   	src_ip;		  	// if you use this struct in userspace, change the type to unsigned int
+	unsigned int   	src_ip;		  	
 	unsigned int	dst_ip;		  	
-	unsigned short 	src_port;	  	// if you use this struct in userspace, change the type to unsigned short
+	unsigned short 	src_port;	  	
 	unsigned short	dst_port;	  	
 	reason_t     	reason;       	// rule index, or values from: reason_t
 	unsigned int   	count;        	// counts this line's hits

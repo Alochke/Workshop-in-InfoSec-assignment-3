@@ -1,12 +1,10 @@
 #ifndef MAIN
 #define MAIN
 
-#include <string.h> // For strcmp.
-#include <unistd.h> // For read and write.
-#include <fcntl.h> // For openning files.
 #include "list.h"
 #include "rule_table.h"
 #include "logs.h"
+#include "fw.h"
 
 #define MAIN_ARG_ERR_MSG "Wrong arguments, you've entered.\nThe correct arguments are:\n•show_rules\n•load_rules <path_to_rules_file>\n•show_log\n•clear_log"
 #define MAIN_FILE_OPEN_ERR_MSG "Wrong file path, you've given. Or permissions for it, you lack."
@@ -36,6 +34,6 @@
 #define MAIN_SIMPLE_ERR_CHECK(condition) MAIN_ERR_CHECK(condition,)
 #define MAIN_MSG_ERR_CHECK(condition, extracode, msg) MAIN_ERR_CHECK(condition, extracode; fprintf(stderr, "%s\n", msg);)
 
-int main_deseralize_field(char**, unsigned int, char**, unsigned int*, size_t);
+int main_deserialize_field(char**, unsigned int, char**, unsigned int*, size_t);
 
 #endif

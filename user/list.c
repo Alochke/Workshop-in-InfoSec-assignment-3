@@ -1,9 +1,12 @@
 #include "list.h"
 
+#define SIZE_PLUS_NULL(x) (strlen(x) + 1)
+
 /*
 	Initializes l.
 
-	- l: The initalized list.
+	Parameters:
+	- l: A pointer to a pointer that will point to the initialized list.
 */
 int list_init(list **l)
 {
@@ -16,10 +19,11 @@ int list_init(list **l)
 /*
 	Inserts node into l from the head-end of l.
 
-	- l: The list to which l will be inserted.
-	- node: The which will be inserted.
+	Parameters:
+	- l: The address of the list node will be inserted into.
+	- node: The address of the inserted node.
 
-	returns: A pointer with node's address, or NULL if the initilization failed.
+	Returns: node's address, or NULL if the initialization failed.
 */
 list_node *list_insert(list *l, list_node *node)
 {
@@ -35,12 +39,13 @@ list_node *list_insert(list *l, list_node *node)
 }
 
 /*
-	Inserts to l a node that will be initalized with key as its key, from the head-end.
+	Inserts a node that will be initialized with key as its key, to the head-end of l.
 
-	- l (list*): The list we'll insert the key to.
-	- key (char*): This will be the key of the isnerted node.
+	Parameters:
+	- l: The address of the list we'll insert the key into.
+	- key: The string that node->key will point to.
 
-	returns: A pointer with the insrted node's address, or NULL if the initilization failed.
+	Returns: A pointer with the inserted node's address, or NULL if the initialization failed.
 */
 list_node *list_insert_key(list *l, char *key)
 {
@@ -55,30 +60,10 @@ list_node *list_insert_key(list *l, char *key)
 }
 
 /*
-	Removes p from l.
-
-	- l (list*): p's list.
-	- p (list_node*): The node we'll remove from l.
-*/
-void list_delete(list *l, list_node *p)
-{
-	if (p->prev != NULL)
-	{
-		(p->prev)->next = p->next;
-	}
-	else
-	{
-		l->head = p->next;
-	}
-	if (p->next != NULL)
-		(p->next)->prev = p->prev;
-	l->size--;
-}
-
-/*
 	Frees l and all of its nodes.
 
-	- l (list*): The freed list.
+	Parameters:
+	- l: A pointer to the freed list.
 */
 void list_destroy(list *l)
 {
@@ -98,9 +83,10 @@ void list_destroy(list *l)
 }
 
 /*
-	Reverses l.
+	Reverses *l.
 
-	- l (list*): The reversed list.
+	Parameters:
+	- l: A pointer to the reversed list.
 */
 void list_reverse(list *l)
 {
@@ -111,8 +97,37 @@ void list_reverse(list *l)
 	{
 		next = curr->next;
 		curr->next = prev;
+		curr->prev = next;
 		prev = curr;
 		curr = next;
 	}
 	l->head = prev;
+}
+
+/*
+	Parses stream into a list where every node has a line of stream as its key.
+	
+	Assumptions: stream wasn't read beforehand, and *l is empty.
+
+	Parameters:
+	- l: Address of the list that will have all of stream's lines stored as the keys of its nodes.
+	- stream: The address of the FILE we'll read the lines from.
+
+	Returns: 0 on success, 1 upon failure.
+*/
+int list_parse_lines(list *l, FILE *stream)
+{
+    char *datapoint_line = NULL;
+
+	while (getline(&datapoint_line, NULL, stream) != EOF)
+	{
+		char *temp = (char *)malloc(sizeof(char) * SIZE_PLUS_NULL(datapoint_line));
+		
+		MAIN_SIMPLE_ERR_CHECK(temp == NULL)
+		
+		strcpy(temp, datapoint_line);
+		MAIN_ERR_CHECK(list_insert_key(l, temp) == NULL, free(temp);)
+	}
+	free(datapoint_line);
+	return EXIT_SUCCESS;
 }
