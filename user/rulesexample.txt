@@ -1,2 +1,2 @@
-telnet2 any any any any 314 any any accept
+telnet2 any any any any >1024 any any accept
 default any any any any any any any drop
