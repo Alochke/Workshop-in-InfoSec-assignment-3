@@ -39,7 +39,7 @@ static void cleanup(enum stage stg)
         case ITER_INIT:
             kfree(iter);
         case ATTRIBUTE_INIT:
-            device_remove_file(device, (const struct device_attribute *)&dev_attr_reset.attr);
+            device_remove_file(device, (const struct device_attribute *)&dev_attr_conn.attr);
         case DEVICE_INIT:
             device_destroy(sysfs_class, MKDEV(major_number, CONNECTION_TABLE_MINOR));
     }
