@@ -5,23 +5,27 @@
 #include "main.h"
 
 typedef enum state{
-	LISTEN,
-    LISTEN_SYN_RCVD,
-    SYN_RCVD,
-    SYN_SENT,
-    SYN_SENT_ESTABLISHED,
-    SYN_SENT_RCVD,
-    ESTABLISHED,
-    ESTABLISHED_CLOSE_WAIT,
-    CLOSE_WAIT,
-    LAST_ACK,
-    FIN_WAIT_1,
-    FIN_WAIT_1_CLOSING,
-    FIN_WAIT_1_TIME_WAIT,
-    CLOSING,
-    TIME_WAIT,
-    FIN_WAIT_2,
-    FIN_WAIT_2_TIME_WAIT
+    /*
+    The reason I added the "STATE_" prefix is that apperntly TIME_WAIT is already defined,
+    within the kernel source.
+    */
+	STATE_LISTEN,
+    STATE_LISTEN_SYN_RCVD,
+    STATE_SYN_RCVD,
+    STATE_SYN_SENT,
+    STATE_SYN_SENT_ESTABLISHED,
+    STATE_SYN_SENT_RCVD,
+    STATE_ESTABLISHED,
+    STATE_ESTABLISHED_CLOSE_WAIT,
+    STATE_CLOSE_WAIT,
+    STATE_LAST_ACK,
+    STATE_FIN_WAIT_1,
+    STATE_FIN_WAIT_1_CLOSING,
+    STATE_FIN_WAIT_1_TIME_WAIT,
+    STATE_CLOSING,
+    STATE_TIME_WAIT,
+    STATE_FIN_WAIT_2,
+    STATE_FIN_WAIT_2_TIME_WAIT
 } state;
 
 typedef struct connection_table_entry
