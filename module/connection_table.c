@@ -62,7 +62,7 @@ int connection_table_init(void)
 
     MAIN_INIT_ERR_CHECK((connection_table = kmalloc(sizeof(struct klist) ,GFP_KERNEL)) == NULL, ITER_INIT, "kmalloc")
 
-    klist_init(log_list, NULL, NULL);
+    klist_init(connection_table, NULL, NULL);
 
     return MAIN_SUCEESS;
 }
