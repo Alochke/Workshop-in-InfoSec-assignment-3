@@ -14,7 +14,7 @@ static struct file_operations fops = {
 };
 
 /*
-    The next enum is for the cleanup function in hw3secws.c. Items represent the state of the module initialization the module is currently at.
+    The next enum is for the cleanup function in hw4secws.c. Items represent the state of the module initialization the module is currently at.
 */
 enum stage{
     FIRST,
@@ -22,7 +22,8 @@ enum stage{
     CHAR_DEV_INIT,
     SYSFS_CLASS_INIT,
     RULE_TABLE_INIT,
-    LOGS_INIT
+    LOGS_INIT,
+    CONNECTION_TABLE_INIT
 };
 
 /*
@@ -30,7 +31,7 @@ enum stage{
 
 	Parameters:
     - stg: A designated enum member that represents the stage of initialization the module is at.
-        The enum is stage, and it's defined in hw3secws.c.
+        The enum is stage, and it's defined in hw4secws.c.
 */
 static void cleanup(enum stage stg)
 {
@@ -38,6 +39,8 @@ static void cleanup(enum stage stg)
     {
         case FIRST:
             break;
+        case CONNECTION_TABLE_INIT:
+            connection_table_destroy();
         case LOGS_INIT:
             logs_destroy();
         case RULE_TABLE_INIT:
@@ -85,6 +88,8 @@ static int __init fw_init(void)
 
     MAIN_INIT_ERR_CHECK(logs_init(), RULE_TABLE_INIT, "logs init")
 
+    MAIN_INIT_ERR_CHECK(connection_table_init(), LOGS_INIT, "connection_table_init")
+
     return MAIN_SUCEESS;
 }
 
@@ -93,7 +98,7 @@ static int __init fw_init(void)
 */
 static void __exit fw_exit(void)
 {
-    cleanup(LOGS_INIT);
+    cleanup(CONNECTION_TABLE_INIT);
 }
 
 module_init(fw_init);

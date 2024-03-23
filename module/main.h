@@ -4,6 +4,7 @@
 #include "hook.h"
 #include "logs.h"
 #include "rule_table.h"
+#include "connection_table.h"
 
 #define MAIN_SUCEESS 0 // What functions will retrun in case of success.
 #define MAIN_FAILURE -1 // What functions will retrun in case of failure.

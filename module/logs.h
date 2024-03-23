@@ -3,7 +3,7 @@
 
 #include "fw.h"
 #include "main.h"
-#include "list.h"
+#include "logs_list.h"
 
 int logs_init(void);
 void logs_destroy(void);

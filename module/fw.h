@@ -36,7 +36,8 @@ typedef enum {
 typedef enum main_minors{
     RULE_TABLE_MINOR,
     LOGS_DEV_MINOR,
-    LOGS_SYSFS_MINOR
+    LOGS_SYSFS_MINOR,
+	CONNECTION_TABLE_MINOR
 } fw_minor_t;
 
 typedef enum {

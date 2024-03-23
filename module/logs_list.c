@@ -1,4 +1,4 @@
-#include "list.h"
+#include "logs_list.h"
 
 /*
     The put function of the klist. It will be useful for log_node-related memory deallocation.
@@ -33,8 +33,8 @@ void list_get(struct klist_node* node)
     This doesn't free list, for reusability reasons.
             
     Parameters:
-    - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.
-    - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from list.c in practice.
+    - list: A pointer to the list we're destroying, it will be log_list from logs.c in practice.
+    - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from logs.c in practice.
 */
 void list_destroy(struct klist *list, struct klist_iter *iter)
 {   

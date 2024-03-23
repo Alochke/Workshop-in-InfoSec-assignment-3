@@ -1,4 +1,4 @@
-============================= hw3secws.c =============================
+============================= hw4secws.c =============================
     
     "One c file to rule them all..."
 
@@ -11,7 +11,7 @@
         Cleans the module.
 
         Parameters:
-        - stg: A designated enum member that represents the stage of initialization the module is at. The enum is stage, and it's defined in hw3secws.c.
+        - stg: A designated enum member that represents the stage of initialization the module is at. The enum is stage, and it's defined in hw4secws.c.
 
     static char *setmode(struct device *dev, umode_t *mode)
         This function sets the permissions for a /dev device that is created by device_create.
@@ -57,7 +57,7 @@
         A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the hook part of the module,
         in case the initialization of that part of the module is done.
 
-============================= list.c =============================
+============================= log_list.c =============================
     
     This file implements a linked list that is used by logs.c,
     It utilizes the kernel klist API, implemented and documented at include/linux/klist.h and /lib/klist.c:
@@ -84,8 +84,8 @@
         This doesn't free list, for reusability reasons.
             
         Parameters:
-        - list: A pointer to the list we're destroying, it will be log_list from list.c in practice.
-        - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from list.c in practice.
+        - list: A pointer to the list we're destroying, it will be log_list from logs.c in practice.
+        - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from logs.c in practice.
 
 ============================= logs.c =============================
 

@@ -1,5 +1,5 @@
 #include "logs.h"
-#include "list.h"
+#include "logs_list.h"
 
 #define DEV_DEVICE "fw_log" // The name of the device the user space program will interact with thraugh its /dev interface.
 #define SYSFS_DEVICE "log" // The name of the device the user space program will interact with thraugh its sysfs interface.
