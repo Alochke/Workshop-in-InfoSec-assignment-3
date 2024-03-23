@@ -7,7 +7,7 @@ static struct klist* connection_table; // The connection table.
 static struct klist_iter* iter; // An klist_iter we'll use to iterate over the connection_table.
 
 // Declares the attributes for the device
-static DEVICE_ATTR(reset, 0200, NULL, NULL);
+static DEVICE_ATTR(conn, 0400, NULL, NULL);
 
 /*
     The next enum is for the cleanup function in connection_table.c. Items represent the state of the logs initialization the module is currently at.
@@ -56,7 +56,7 @@ int connection_table_init(void)
 	MAIN_INIT_ERR_CHECK(IS_ERR(device = device_create(sysfs_class, NULL, MKDEV(major_number, CONNECTION_TABLE_MINOR), NULL, DEVICE)), FIRST, "device_create")
 
     // Create sysfs attributes.
-    MAIN_INIT_ERR_CHECK(device_create_file(device, (const struct device_attribute *)&dev_attr_reset.attr), DEVICE_INIT, "device_create_file")
+    MAIN_INIT_ERR_CHECK(device_create_file(device, (const struct device_attribute *)&dev_attr_conn.attr), DEVICE_INIT, "device_create_file")
 
     MAIN_INIT_ERR_CHECK((iter = kmalloc(sizeof(struct klist_iter), GFP_KERNEL)) == NULL, ATTRIBUTE_INIT, "kmalloc")
 
