@@ -8,8 +8,6 @@
 #ifndef LIST
 #define LIST
 
-dsfaza
-
 void list_destroy(struct klist *list, struct klist_iter *iter);
 void list_put(struct klist_node* node);
 
