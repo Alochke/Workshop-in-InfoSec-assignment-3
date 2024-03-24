@@ -11,7 +11,7 @@
 void list_destroy(struct klist *list, struct klist_iter *iter);
 void list_put(struct klist_node* node);
 
-typedef struct{
+typedef struct node{
     struct klist_node _node;
     struct void* content;
 }node;
