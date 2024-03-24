@@ -83,4 +83,13 @@ typedef struct {
 	unsigned int   	count;        	// counts this line's hits
 } log_row_t;
 
+typedef struct connection_table_entry
+{
+    __be32  src_ip;
+    __be16	src_port;
+    __be32  dst_ip;
+    __be16	dst_port;
+    state  cur_state;
+}connection_table_entry;
+
 #endif // _FW_H_

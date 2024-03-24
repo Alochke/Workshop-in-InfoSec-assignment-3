@@ -3,6 +3,7 @@
 
 #include "fw.h"
 #include "list.h"
+#include "connection_table.h"
 
 void list_get(struct klist_node*);
 
