@@ -1,5 +1,5 @@
-#ifndef LIST
-#define LIST
+#ifndef LOGS_LIST
+#define LOGS_LIST
 
 #include "fw.h"
 #include "list.h"

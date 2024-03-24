@@ -1,5 +1,5 @@
-#ifndef LIST
-#define LIST
+#ifndef CONNECTION_TABLE_LIST
+#define CONNECTION_TABLE_LIST
 
 #include "fw.h"
 #include "list.h"
