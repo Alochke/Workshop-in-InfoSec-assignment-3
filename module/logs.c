@@ -33,7 +33,7 @@ static unsigned int row_num = 0; // The number of rows in the logs.
 */
 int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __be32 dst_ip, __be16 src_port, __be16 dst_port, reason_t reason)
 {
-    log_node* node; // If a new row has to be added to the logs, we'll use that pointer to point to it.
+    node* n; // If a new row has to be added to the logs, we'll use that pointer to point to it.
     log_row_t* log_row; // Will point to the log_row_t the function inspects to at a given point in time.
     struct timeval ktv; // This will be used to get the current time.
     do_gettimeofday(&ktv);
@@ -63,9 +63,9 @@ int logs_update(unsigned char protocol, unsigned char action, __be32 src_ip, __b
         }
     }
     klist_iter_exit(iter);
-    MAIN_ERR_CHECK((node = kmalloc(sizeof(log_node), GFP_KERNEL)) == NULL,, "kmalloc has failed");
-    klist_add_tail(&node->node, log_list);
-    MAIN_ERR_CHECK(node->log == NULL, klist_del(&node->node);, "kmalloc has failed"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
+    MAIN_ERR_CHECK((n = kmalloc(sizeof(node), GFP_KERNEL)) == NULL,, "kmalloc has failed");
+    klist_add_tail(&n->_node, log_list);
+    MAIN_ERR_CHECK(n->log == NULL, klist_del(&node->node);, "kmalloc has failed"); // Checks if the get function of log_list has failed to allocate a log_row_t for the log member of node to point to and handles properly.
     log_row = (log_row_t*)node->log;
     log_row->timestamp = ktv.tv_sec;
     log_row->protocol = protocol;

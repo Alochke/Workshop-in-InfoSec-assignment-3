@@ -1,4 +1,4 @@
-#include "logs_list.h"
+#include "connection_table_list.h"
 
 /*
     The get function of the klist. It will be useful for node-related memory allocation.
@@ -7,8 +7,8 @@
     Parameters:
     - node: The node that is being added to a list.
 */
-void list_get(struct klist_node* n)
+void list_get(struct klist_node* node)
 {
-    ((node*)n)->content = NULL;
-    ((node*)n)->content = kmalloc(sizeof(log_row_t), GFP_KERNEL);
+    ((node*)node)->log = NULL;
+    ((node*)node)->log = kmalloc(sizeof(connection_table_entry), GFP_KERNEL);
 }

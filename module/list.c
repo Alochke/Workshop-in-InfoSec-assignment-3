@@ -13,3 +13,18 @@ void list_destroy(struct klist *list, struct klist_iter *iter)
     for (klist_iter_init(list, iter); klist_next(iter) != NULL; klist_del(iter->i_cur));
     klist_iter_exit(iter);
 }
+
+/*
+    The put function of the klist. It will be useful for node-related memory deallocation.
+    This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
+
+    Parameters:
+    - node: The node that is being removed from a list.
+*/
+void list_put(struct klist_node* node)
+{
+    if (likely(((node*)node)->content != NULL))
+    {
+        kfree(((node*)node)->content);
+    }
+}
