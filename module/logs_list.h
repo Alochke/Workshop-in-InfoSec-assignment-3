@@ -2,6 +2,7 @@
 #define LOGS_LIST
 
 #include "fw.h"
+#include "list.h"
 
 void logs_get(struct klist_node*);
 
