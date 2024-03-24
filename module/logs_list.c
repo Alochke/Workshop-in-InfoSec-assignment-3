@@ -7,7 +7,7 @@
     Parameters:
     - n: The node that is being added to a list.
 */
-void list_get(struct klist_node* n)
+void logs_get(struct klist_node* n)
 {
     ((node*)n)->content = NULL;
     ((node*)n)->content = kmalloc(sizeof(log_row_t), GFP_KERNEL);

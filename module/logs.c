@@ -212,7 +212,7 @@ int logs_init(void)
 
     MAIN_INIT_ERR_CHECK((log_list = kmalloc(sizeof(struct klist) ,GFP_KERNEL)) == NULL, ITER_INIT, "kmalloc")
 
-    klist_init(log_list, list_get, list_put);
+    klist_init(log_list, logs_get, list_put);
 
     return MAIN_SUCEESS;
 }

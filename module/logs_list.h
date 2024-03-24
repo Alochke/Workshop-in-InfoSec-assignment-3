@@ -4,7 +4,7 @@
 #include "fw.h"
 #include "list.h"
 
-void list_get(struct klist_node*);
+void logs_get(struct klist_node*);
 
 
 /*

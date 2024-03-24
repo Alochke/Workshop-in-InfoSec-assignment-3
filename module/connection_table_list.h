@@ -5,7 +5,7 @@
 #include "list.h"
 #include "connection_table.h"
 
-void list_get(struct klist_node*);
+void connection_table_get(struct klist_node*);
 
 /*
     Returns a pointer to the connection_table_entry that is also a member of the node that knode is a member of.

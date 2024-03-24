@@ -7,7 +7,7 @@
     Parameters:
     - node: The node that is being added to a list.
 */
-void list_get(struct klist_node* node)
+void connection_table_get(struct klist_node* node)
 {
     ((node*)node)->log = NULL;
     ((node*)node)->log = kmalloc(sizeof(connection_table_entry), GFP_KERNEL);
