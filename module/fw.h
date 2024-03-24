@@ -54,7 +54,7 @@ typedef enum {
 
 typedef enum state{
     /*
-    The reason I added the "STATE_" prefix is that apperntly TIME_WAIT is already defined,
+    The reason I added the "STATE_" prefix is that apperntly TIME_WAIT is already defined
     within the kernel source.
     */
 	STATE_LISTEN,

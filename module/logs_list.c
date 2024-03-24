@@ -1,7 +1,7 @@
 #include "logs_list.h"
 
 /*
-    The get function of the klist. It will be useful for node-related memory allocation.
+    A get function of klist. It will be useful for node-related memory allocation.
     This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with node as klist_add_tail's parameter.
 
     Parameters:
