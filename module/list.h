@@ -13,7 +13,7 @@ void list_put(struct klist_node* node);
 
 typedef struct node{
     struct klist_node _node;
-    struct void* content;
+    void* content;
 }node;
 
 #endif
