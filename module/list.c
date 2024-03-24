@@ -19,12 +19,12 @@ void list_destroy(struct klist *list, struct klist_iter *iter)
     This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
 
     Parameters:
-    - node: The node that is being removed from a list.
+    - n: The node that is being removed from a list.
 */
-void list_put(struct klist_node* node)
+void list_put(struct klist_node* n)
 {
-    if (likely(((node*)node)->content != NULL))
+    if (likely(((node*)n)->content != NULL))
     {
-        kfree(((node*)node)->content);
+        kfree(((node*)n)->content);
     }
 }
