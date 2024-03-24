@@ -9,6 +9,6 @@
 */
 void connection_table_get(struct klist_node* n)
 {
-    ((node*)n)->log = NULL;
-    ((node*)n)->log = kmalloc(sizeof(connection_table_entry), GFP_KERNEL);
+    ((node*)n)->content = NULL;
+    ((node*)n)->content = kmalloc(sizeof(connection_table_entry), GFP_KERNEL);
 }
