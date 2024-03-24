@@ -52,6 +52,30 @@ typedef enum {
 	DIRECTION_ANY 	= DIRECTION_IN | DIRECTION_OUT,
 } direction_t;
 
+typedef enum state{
+    /*
+    The reason I added the "STATE_" prefix is that apperntly TIME_WAIT is already defined,
+    within the kernel source.
+    */
+	STATE_LISTEN,
+    STATE_LISTEN_SYN_RCVD,
+    STATE_SYN_RCVD,
+    STATE_SYN_SENT,
+    STATE_SYN_SENT_ESTABLISHED,
+    STATE_SYN_SENT_RCVD,
+    STATE_ESTABLISHED,
+    STATE_ESTABLISHED_CLOSE_WAIT,
+    STATE_CLOSE_WAIT,
+    STATE_LAST_ACK,
+    STATE_FIN_WAIT_1,
+    STATE_FIN_WAIT_1_CLOSING,
+    STATE_FIN_WAIT_1_TIME_WAIT,
+    STATE_CLOSING,
+    STATE_TIME_WAIT,
+    STATE_FIN_WAIT_2,
+    STATE_FIN_WAIT_2_TIME_WAIT
+} state;
+
 // rule base
 typedef struct {
 	char rule_name[20];			// names will be no longer than 20 chars
