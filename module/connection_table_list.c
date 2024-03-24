@@ -5,10 +5,10 @@
     This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with node as klist_add_tail's parameter.
 
     Parameters:
-    - node: The node that is being added to a list.
+    - n: The node that is being added to a list.
 */
-void connection_table_get(struct klist_node* node)
+void connection_table_get(struct klist_node* n)
 {
-    ((node*)node)->log = NULL;
-    ((node*)node)->log = kmalloc(sizeof(connection_table_entry), GFP_KERNEL);
+    ((node*)n)->log = NULL;
+    ((node*)n)->log = kmalloc(sizeof(connection_table_entry), GFP_KERNEL);
 }
