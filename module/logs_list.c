@@ -27,17 +27,3 @@ void list_get(struct klist_node* node)
     ((log_node*)node)->log = NULL;
     ((log_node*)node)->log = kmalloc(sizeof(log_row_t), GFP_KERNEL);
 }
-
-/*
-    Resets list, by using iter.
-    This doesn't free list, for reusability reasons.
-            
-    Parameters:
-    - list: A pointer to the list we're destroying, it will be log_list from logs.c in practice.
-    - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from logs.c in practice.
-*/
-void list_destroy(struct klist *list, struct klist_iter *iter)
-{   
-    for (klist_iter_init(list, iter); klist_next(iter) != NULL; klist_del(iter->i_cur));
-    klist_iter_exit(iter);
-}

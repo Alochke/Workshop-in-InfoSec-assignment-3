@@ -3,6 +3,7 @@
 
 #include "fw.h"
 #include "main.h"
+#include "connection_table_list.h"
 
 typedef enum state{
     /*

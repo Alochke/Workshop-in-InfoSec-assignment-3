@@ -2,11 +2,7 @@
 #define LIST
 
 #include "fw.h"
-#include "connection_table.h"
-
-void list_put(struct klist_node*);
-void list_get(struct klist_node*);
-void list_destroy(struct klist*, struct klist_iter*);
+#include "list.h"
 
 typedef struct log_node{
     struct klist_node node;

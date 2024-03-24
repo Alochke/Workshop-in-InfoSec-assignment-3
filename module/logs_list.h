@@ -2,10 +2,10 @@
 #define LIST
 
 #include "fw.h"
+#include "list.h"
 
 void list_put(struct klist_node*);
 void list_get(struct klist_node*);
-void list_destroy(struct klist*, struct klist_iter*);
 
 typedef struct{
     struct klist_node node;

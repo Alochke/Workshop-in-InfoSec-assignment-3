@@ -79,13 +79,7 @@
         Parameters:
         - node: The node that is being added to a list.
 
-    void list_destroy(struct klist *list, struct klist_iter *iter)
-        Resets list, by using iter.
-        This doesn't free list, for reusability reasons.
-            
-        Parameters:
-        - list: A pointer to the list we're destroying, it will be log_list from logs.c in practice.
-        - iter: A pointer to the iter we'll use to iterate over the list, it will be klist_iter from logs.c in practice.
+
 
 ============================= logs.c =============================
 
@@ -188,5 +182,19 @@
     void rule_table_destroy()
         A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the rule_table part of the module,
         in case the initialization of that part of the module is done.
+
+============================= list.c =============================
+
+    Was made to eliminate code duplication.
+    The list_destroy function of logs_list and connection_table_list look exactly the same.
+    So here we store one that suitable for both.
+
+    void list_destroy(struct klist *list, struct klist_iter *iter)
+        Resets list, by using iter.
+        This doesn't free list, for reusability reasons.
+                
+        Parameters:
+        - list: A pointer to the list we're destroying.
+        - iter: A pointer to the iter we'll use to iterate over the list.
 
 note: I didn't use error codes through the code, and while it may be more professional to use them, it requires major changes and analysis so due to time-shortage, I have decided to leave it as is for now. Just wanted to let you know that I am aware of how you are supposed to write kernel code.
