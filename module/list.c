@@ -15,7 +15,7 @@ void list_destroy(struct klist *list, struct klist_iter *iter)
 }
 
 /*
-    The put function of the klist. It will be useful for node-related memory deallocation.
+    The put function of the klists. It will be useful for node-related memory deallocation.
     This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
 
     Parameters:

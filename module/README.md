@@ -57,29 +57,26 @@
         A wrapper function around cleanup, that serves as an abstraction layer of the cleanup process of the hook part of the module,
         in case the initialization of that part of the module is done.
 
-============================= log_list.c =============================
+============================= logs_list.c =============================
     
     This file implements a linked list that is used by logs.c,
     It utilizes the kernel klist API, implemented and documented at include/linux/klist.h and /lib/klist.c:
     https://elixir.bootlin.com/linux/v4.15/source/lib/klist.c
     https://elixir.bootlin.com/linux/v4.15/source/include/linux/klist.h#L20
-    Each node includes a log entry and an embedded klist_node struct, that is used by the klist API.
-
-    void list_put(struct klist_node* node)
-        The put function of the klist. It will be useful for log_node-related memory deallocation. (log_node is the struct that stores list-nodes obviously.)
-        This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
-
-        Parameters:
-        - node: The node that is being removed from a list.
+    Some of the implemintation is actualy defined within list.c, because much of log_list's functionality is identical to some of the functionality of a connecction_table_list, so we use list.c for code duplication elimination.
 
     void list_get(struct klist_node* node)
-        The get function of the klist. It will be useful for log_node-related memory allocation. (log_node is the struct that stores list-nodes obviously.)
-        This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with node as klist_add_tail's parameter.
+        A get function of a klist. It will be useful for node-related memory allocation.
+        This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with n as klist_add_tail's parameter.
 
         Parameters:
-        - node: The node that is being added to a list.
+        - n: The node that is being added to a list.
 
+    static inline log_row_t* node_to_log(struct klist_node *knode)
+        Returns a pointer to the log_row_t that is also a member of the node that the klist_node pointed by knode is a member of.
 
+        Paremeters:
+        - knode: The klist_node that shares the containing node with the extracted log_row_t.
 
 ============================= logs.c =============================
 
@@ -186,8 +183,9 @@
 ============================= list.c =============================
 
     Was made to eliminate code duplication.
-    The list_destroy function of logs_list and connection_table_list look exactly the same.
-    So here we store one that suitable for both.
+    The list_destroy and list_put function of logs_list and connection_table_list look exactly the same.
+    So here we store code that is suitable for both.
+    We also implement here a general node to be used in both lists.
 
     void list_destroy(struct klist *list, struct klist_iter *iter)
         Resets list, by using iter.
@@ -196,5 +194,33 @@
         Parameters:
         - list: A pointer to the list we're destroying.
         - iter: A pointer to the iter we'll use to iterate over the list.
+
+    void list_put(struct klist_node* n)
+        The put function of the klists. It will be useful for node-related memory deallocation.
+        This function is called each time a node is removed from the list, and in our use-case every time klist_del is called on a node, with node as klist_del's parameter.
+
+        Parameters:
+        - n: The node that is being removed from a list.
+
+============================= logs_list.c =============================
+    
+    This file implements a linked list that is used by connection_table.c for the connection table,
+    It utilizes the kernel klist API, implemented and documented at include/linux/klist.h and /lib/klist.c:
+    https://elixir.bootlin.com/linux/v4.15/source/lib/klist.c
+    https://elixir.bootlin.com/linux/v4.15/source/include/linux/klist.h#L20
+    Some of the implemintation is actualy defined within list.c, because much of connection_table_list's functionality is identical to some of the functionality of a logs_list, so we use list.c for code duplication elimination.
+
+    void connection_table_get(struct klist_node* n)
+        A get function of a klist. It will be useful for node-related memory allocation.
+        This function is called each time a node is added to the list, and in our use-case every time klist_add_tail is called on a node, with node as klist_add_tail's parameter.
+
+        Parameters:
+        - n: The node that is being added to a list.
+
+    static inline connection_table_entry* node_to_connection_table_entry(struct klist_node *knode)
+        Returns a pointer to the connection_table_entry that is also a member of the node that the klist_node pointed by knode is a member of.
+
+        Paremeters:
+        - knode: The klist_node that shares the containing node with the extracted connection_table_entry.
 
 note: I didn't use error codes through the code, and while it may be more professional to use them, it requires major changes and analysis so due to time-shortage, I have decided to leave it as is for now. Just wanted to let you know that I am aware of how you are supposed to write kernel code.
